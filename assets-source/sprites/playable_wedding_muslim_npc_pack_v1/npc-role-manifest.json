@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "recommendedBindings": {
+    "npc.greeter": [
+      "npc_greeter_hijabi_pastel_01"
+    ],
+    "npc.mc": [
+      "npc_mc_muslim_male_01"
+    ],
+    "npc.photographer": [
+      "npc_photographer_muslim_male_01"
+    ],
+    "npc.rsvp_keeper": [
+      "npc_rsvp_keeper_hijabi_01"
+    ],
+    "npc.event_coordinator": [
+      "npc_rsvp_keeper_hijabi_01"
+    ],
+    "npc.venue_guide": [
+      "npc_rsvp_keeper_hijabi_01"
+    ]
+  }
+}

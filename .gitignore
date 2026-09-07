@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+.unlazy/
+.unlazy-hook-state.json
+.DS_Store
+Thumbs.db
+*.log
+.tmp-*
+**/.tmp-*
+.env
+.env.*
+!.env.example

@@ -1,0 +1,8 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+
+neverBuiltDependencies:
+  - sharp
+allowBuilds:
+  sharp: true

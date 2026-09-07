@@ -1,0 +1,14 @@
+{
+  "templateKey": "garden-village-v1",
+  "version": 1,
+  "tilemap": "map.tmj",
+  "tileset": "../../tilesets/wedding-garden.tsj",
+  "tileSize": 16,
+  "size": {
+    "w": 56,
+    "h": 80
+  },
+  "sprites": [
+    "../../sprites/guest_01.png"
+  ]
+}

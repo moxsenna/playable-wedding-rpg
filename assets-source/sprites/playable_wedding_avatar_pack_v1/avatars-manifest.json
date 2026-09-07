@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "runtimeStandard": {
+    "frameWidth": 64,
+    "frameHeight": 64,
+    "cols": 6,
+    "rows": 4,
+    "sheetWidth": 384,
+    "sheetHeight": 256,
+    "directions": [
+      "down",
+      "up",
+      "left",
+      "right"
+    ],
+    "framesPerDirection": 6,
+    "layout": "row-major",
+    "pixelArt": true,
+    "recommendedScaleMode": "nearest"
+  },
+  "avatars": [
+    {
+      "id": "guest_male_suit_navy_01",
+      "displayName": "Navy Suit",
+      "category": "guest",
+      "genderPresentation": "male",
+      "tags": [
+        "male",
+        "formal",
+        "suit",
+        "navy",
+        "wedding"
+      ],
+      "sprite": "runtime/guest_male_suit_navy_01.png",
+      "metadata": "metadata/guest_male_suit_navy_01.json"
+    },
+    {
+      "id": "guest_male_vest_brown_01",
+      "displayName": "Brown Vest",
+      "category": "guest",
+      "genderPresentation": "male",
+      "tags": [
+        "male",
+        "formal",
+        "vest",
+        "brown",
+        "wedding"
+      ],
+      "sprite": "runtime/guest_male_vest_brown_01.png",
+      "metadata": "metadata/guest_male_vest_brown_01.json"
+    },
+    {
+      "id": "guest_male_casual_green_01",
+      "displayName": "Green Smart Casual",
+      "category": "guest",
+      "genderPresentation": "male",
+      "tags": [
+        "male",
+        "casual",
+        "green",
+        "smart-casual",
+        "guest"
+      ],
+      "sprite": "runtime/guest_male_casual_green_01.png",
+      "metadata": "metadata/guest_male_casual_green_01.json"
+    },
+    {
+      "id": "guest_male_batik_burgundy_01",
+      "displayName": "Batik Burgundy",
+      "category": "guest",
+      "genderPresentation": "male",
+      "tags": [
+        "male",
+        "batik",
+        "burgundy",
+        "indonesian",
+        "formal",
+        "wedding"
+      ],
+      "sprite": "runtime/guest_male_batik_burgundy_01.png",
+      "metadata": "metadata/guest_male_batik_burgundy_01.json"
+    }
+  ]
+}

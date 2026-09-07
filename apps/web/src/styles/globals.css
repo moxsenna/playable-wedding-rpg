@@ -1,0 +1,312 @@
+/* Portrait-first wedding RPG shell.
+   Phaser owns the world canvas; React owns overlay UI (M4+). */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #1a2233;
+    font-family: Arial, Helvetica, sans-serif;
+    overscroll-behavior: none;
+}
+
+body {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    margin: 0 auto;
+    max-width: 430px;
+}
+
+#game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+}
+
+#game-container canvas {
+    display: block;
+    image-rendering: pixelated;
+}
+
+/* DOM dialogue panel: bottom sheet, portrait-safe, readable body type. */
+.dialogue-panel {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    width: min(400px, calc(100vw - 24px));
+    max-height: 42dvh;
+    overflow-y: auto;
+    z-index: 30;
+    background: rgba(16, 22, 38, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 14px;
+    padding: 14px 16px 16px;
+    box-sizing: border-box;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.dialogue-name {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #ffd98a;
+    margin-bottom: 6px;
+}
+
+.dialogue-text {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #f2f4f8;
+    margin: 0 0 12px;
+}
+
+.dialogue-continue {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a2233;
+    background: #ffd98a;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.dialogue-continue:active {
+    background: #f2c46a;
+}
+
+.dialogue-continue:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+}
+
+/* Wedding Book: top-right safe control + full overlay sheet, compact sections. */
+.book-open-btn {
+    position: fixed;
+    top: calc(12px + env(safe-area-inset-top, 0px));
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    z-index: 40;
+    min-width: 64px;
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a2233;
+    background: #ffd98a;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.book-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    background: #101626;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.book-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 17px;
+}
+
+.book-close {
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a2233;
+    background: #ffd98a;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.book-nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.book-nav button {
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.75);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.book-nav-active {
+    color: #1a2233 !important;
+    background: #ffd98a !important;
+    border-color: #ffd98a !important;
+    font-weight: 700;
+}
+
+.book-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 16px 32px;
+}
+
+.book-body h2 {
+    font-size: 20px;
+    margin: 0 0 10px;
+}
+
+.book-body h3 {
+    font-size: 16px;
+    margin: 0 0 4px;
+}
+
+.book-body p {
+    font-size: 15px;
+    line-height: 1.55;
+    margin: 0 0 10px;
+}
+
+.book-event, .book-venue, .book-story {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.book-venue button {
+    min-height: 44px;
+    padding: 0 16px;
+    margin-top: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a2233;
+    background: #9fd8ef;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.book-venue a {
+    color: #9fd8ef;
+}
+
+.book-gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.book-gallery img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 320 / 200;
+    display: block;
+    border-radius: 10px;
+    background: #1a2233;
+}
+
+.book-demo-tag {
+    display: inline-block;
+    font-size: 13px;
+    color: #1a2233;
+    background: #f2c46a;
+    border-radius: 8px;
+    padding: 4px 10px;
+    margin-bottom: 12px;
+}
+
+.book-rsvp-form label {
+    display: block;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.book-rsvp-form input[type="text"], .book-rsvp-form input:not([type]) {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 48px;
+    margin-top: 6px;
+    padding: 0 12px;
+    font-size: 16px;
+    color: #f2f4f8;
+    background: #1a2233;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+}
+
+.book-rsvp-form input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.book-rsvp-form button {
+    min-height: 48px;
+    padding: 0 20px;
+    margin-top: 6px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a2233;
+    background: #ffd98a;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.book-rsvp-form button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.book-gift p {
+    margin-bottom: 6px;
+}
+
+.book-open-btn:focus-visible, .book-close:focus-visible,
+.book-nav button:focus-visible, .book-venue button:focus-visible,
+.book-rsvp-form button:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+}
+
+.game-fallback {
+    padding: 24px 16px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.6;
+}

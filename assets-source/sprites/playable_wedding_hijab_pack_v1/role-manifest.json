@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "recommendedBindings": {
+    "guest_pool_hijab": [
+      "guest_female_hijab_navy_cream_01",
+      "guest_female_hijab_sage_01",
+      "guest_female_hijab_rose_01"
+    ],
+    "npc.couple_b": [
+      "couple_bride_hijab_ivory_01"
+    ]
+  }
+}

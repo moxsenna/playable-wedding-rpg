@@ -1,0 +1,24 @@
+{
+  "templateKey": "garden-village-v1",
+  "version": 1,
+  "compatibilityVersion": 1,
+  "tilemap": "map.json",
+  "files": [
+    "map.json",
+    "tileset.png",
+    "manifest.json",
+    "sprites/guest_01.png",
+    "sprites/guest_01.json",
+    "sprites/avatars.json",
+    "sprites/avatars/greeter.png",
+    "sprites/avatars/rsvp.png",
+    "sprites/avatars/story.png",
+    "sprites/avatars/photo.png",
+    "sprites/avatars/travel.png",
+    "sprites/avatars/event.png",
+    "sprites/avatars/venue.png",
+    "sprites/avatars/proposal.png",
+    "sprites/avatars/partner_a.png",
+    "sprites/avatars/partner_b.png"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "playable-wedding-rpg",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@11.9.0",
+  "scripts": {
+    "typecheck": "pnpm -r --if-present exec tsc --noEmit",
+    "gates:m0": "node scripts/verify-m0.mjs && node scripts/check-forbidden-patterns.mjs"
+  }
+}

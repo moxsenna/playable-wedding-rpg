@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "packId": "playable_wedding_muslim_npc_pack_v1",
+  "runtimeStandard": {
+    "frameWidth": 64,
+    "frameHeight": 64,
+    "cols": 6,
+    "rows": 4,
+    "sheetWidth": 384,
+    "sheetHeight": 256,
+    "directions": [
+      "down",
+      "up",
+      "left",
+      "right"
+    ],
+    "framesPerDirection": 6,
+    "layout": "row-major",
+    "pixelArt": true,
+    "recommendedScaleMode": "nearest"
+  },
+  "avatars": [
+    {
+      "id": "npc_greeter_hijabi_pastel_01",
+      "displayName": "Muslim Wedding Greeter",
+      "category": "npc",
+      "genderPresentation": "female",
+      "roleHints": [
+        "greeter"
+      ],
+      "tags": [
+        "npc",
+        "greeter",
+        "female",
+        "hijab",
+        "pastel",
+        "muslim",
+        "wedding"
+      ],
+      "sprite": "runtime/npc_greeter_hijabi_pastel_01.png",
+      "metadata": "metadata/npc_greeter_hijabi_pastel_01.json"
+    },
+    {
+      "id": "npc_mc_muslim_male_01",
+      "displayName": "Muslim Wedding MC",
+      "category": "npc",
+      "genderPresentation": "male",
+      "roleHints": [
+        "mc",
+        "host",
+        "announcer"
+      ],
+      "tags": [
+        "npc",
+        "mc",
+        "male",
+        "peci",
+        "microphone",
+        "muslim",
+        "wedding"
+      ],
+      "sprite": "runtime/npc_mc_muslim_male_01.png",
+      "metadata": "metadata/npc_mc_muslim_male_01.json"
+    },
+    {
+      "id": "npc_photographer_muslim_male_01",
+      "displayName": "Muslim Wedding Photographer",
+      "category": "npc",
+      "genderPresentation": "male",
+      "roleHints": [
+        "photographer"
+      ],
+      "tags": [
+        "npc",
+        "photographer",
+        "male",
+        "camera",
+        "muslim",
+        "wedding"
+      ],
+      "sprite": "runtime/npc_photographer_muslim_male_01.png",
+      "metadata": "metadata/npc_photographer_muslim_male_01.json"
+    },
+    {
+      "id": "npc_rsvp_keeper_hijabi_01",
+      "displayName": "Muslim Wedding RSVP Keeper",
+      "category": "npc",
+      "genderPresentation": "female",
+      "roleHints": [
+        "rsvp_keeper",
+        "event_coordinator",
+        "venue_guide"
+      ],
+      "tags": [
+        "npc",
+        "rsvp",
+        "coordinator",
+        "female",
+        "hijab",
+        "clipboard",
+        "muslim",
+        "wedding"
+      ],
+      "sprite": "runtime/npc_rsvp_keeper_hijabi_01.png",
+      "metadata": "metadata/npc_rsvp_keeper_hijabi_01.json"
+    }
+  ]
+}

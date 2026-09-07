@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "recommendedBindings": {
+    "npc.greeter": [
+      "npc_greeter_female_01",
+      "npc_host_male_01"
+    ],
+    "npc.rsvp_keeper": [
+      "npc_event_coordinator_female_01"
+    ],
+    "npc.story_keeper": [
+      "npc_host_male_01"
+    ],
+    "npc.photographer": [
+      "npc_photographer_male_01"
+    ],
+    "npc.travel_friend": [
+      "npc_host_male_01"
+    ],
+    "npc.event_coordinator": [
+      "npc_event_coordinator_female_01"
+    ],
+    "npc.venue_guide": [
+      "npc_event_coordinator_female_01"
+    ],
+    "npc.proposal_friend": [
+      "npc_host_male_01"
+    ],
+    "npc.couple_a": [
+      "couple_groom_white_01"
+    ],
+    "npc.couple_b": [
+      "couple_bride_white_01"
+    ]
+  }
+}

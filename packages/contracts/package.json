@@ -1,0 +1,16 @@
+{
+  "name": "@wedding-rpg/contracts",
+  "version": "0.1.0",
+  "description": "Shared Zod schemas + types: realtime protocol envelope, world config, wedding publication.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  }
+}

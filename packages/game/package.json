@@ -1,0 +1,18 @@
+{
+  "name": "@wedding-rpg/game",
+  "version": "0.1.0",
+  "description": "Phaser 4 wedding world runtime: Tiled loader, actors, scenes.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@wedding-rpg/contracts": "workspace:*",
+    "phaser": "4.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5"
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "runtimeStandard": {
+    "frameWidth": 64,
+    "frameHeight": 64,
+    "cols": 6,
+    "rows": 4,
+    "sheetWidth": 384,
+    "sheetHeight": 256,
+    "directions": [
+      "down",
+      "up",
+      "left",
+      "right"
+    ],
+    "framesPerDirection": 6,
+    "layout": "row-major",
+    "pixelArt": true,
+    "recommendedScaleMode": "nearest"
+  },
+  "avatars": [
+    {
+      "id": "guest_female_kebaya_pink_01",
+      "displayName": "Pink Kebaya Guest",
+      "category": "guest",
+      "genderPresentation": "female",
+      "roleHints": [
+        "guest",
+        "family",
+        "bridesmaid"
+      ],
+      "tags": [
+        "female",
+        "kebaya",
+        "pink",
+        "traditional",
+        "indonesian",
+        "wedding"
+      ],
+      "sprite": "runtime/guest_female_kebaya_pink_01.png",
+      "metadata": "metadata/guest_female_kebaya_pink_01.json"
+    },
+    {
+      "id": "guest_female_sage_dress_01",
+      "displayName": "Sage Dress Guest",
+      "category": "guest",
+      "genderPresentation": "female",
+      "roleHints": [
+        "guest",
+        "bridesmaid"
+      ],
+      "tags": [
+        "female",
+        "sage",
+        "dress",
+        "garden",
+        "wedding"
+      ],
+      "sprite": "runtime/guest_female_sage_dress_01.png",
+      "metadata": "metadata/guest_female_sage_dress_01.json"
+    },
+    {
+      "id": "guest_female_hijab_navy_01",
+      "displayName": "Navy Hijab Guest",
+      "category": "guest",
+      "genderPresentation": "female",
+      "roleHints": [
+        "guest",
+        "family",
+        "bridesmaid"
+      ],
+      "tags": [
+        "female",
+        "hijab",
+        "navy",
+        "formal",
+        "muslim",
+        "wedding"
+      ],
+      "sprite": "runtime/guest_female_hijab_navy_01.png",
+      "metadata": "metadata/guest_female_hijab_navy_01.json"
+    },
+    {
+      "id": "guest_female_kebaya_pastel_01",
+      "displayName": "Pastel Kebaya Guest",
+      "category": "guest",
+      "genderPresentation": "female",
+      "roleHints": [
+        "guest",
+        "family",
+        "bridesmaid"
+      ],
+      "tags": [
+        "female",
+        "kebaya",
+        "pastel",
+        "traditional",
+        "indonesian",
+        "wedding"
+      ],
+      "sprite": "runtime/guest_female_kebaya_pastel_01.png",
+      "metadata": "metadata/guest_female_kebaya_pastel_01.json"
+    },
+    {
+      "id": "npc_greeter_female_01",
+      "displayName": "Wedding Greeter",
+      "category": "npc",
+      "genderPresentation": "female",
+      "roleHints": [
+        "greeter"
+      ],
+      "tags": [
+        "female",
+        "greeter",
+        "staff",
+        "wedding"
+      ],
+      "sprite": "runtime/npc_greeter_female_01.png",
+      "metadata": "metadata/npc_greeter_female_01.json"
+    },
+    {
+      "id": "npc_event_coordinator_female_01",
+      "displayName": "Event Coordinator",
+      "category": "npc",
+      "genderPresentation": "female",
+      "roleHints": [
+        "event_coordinator",
+        "rsvp_keeper",
+        "venue_guide"
+      ],
+      "tags": [
+        "female",
+        "coordinator",
+        "staff",
+        "teal",
+        "wedding"
+      ],
+      "sprite": "runtime/npc_event_coordinator_female_01.png",
+      "metadata": "metadata/npc_event_coordinator_female_01.json"
+    },
+    {
+      "id": "npc_photographer_male_01",
+      "displayName": "Wedding Photographer",
+      "category": "npc",
+      "genderPresentation": "male",
+      "roleHints": [
+        "photographer"
+      ],
+      "tags": [
+        "male",
+        "photographer",
+        "camera",
+        "staff",
+        "wedding"
+      ],
+      "sprite": "runtime/npc_photographer_male_01.png",
+      "metadata": "metadata/npc_photographer_male_01.json"
+    },
+    {
+      "id": "npc_host_male_01",
+      "displayName": "Wedding Host",
+      "category": "npc",
+      "genderPresentation": "male",
+      "roleHints": [
+        "greeter",
+        "story_keeper",
+        "travel_friend",
+        "proposal_friend"
+      ],
+      "tags": [
+        "male",
+        "host",
+        "formal",
+        "wedding"
+      ],
+      "sprite": "runtime/npc_host_male_01.png",
+      "metadata": "metadata/npc_host_male_01.json"
+    },
+    {
+      "id": "couple_bride_white_01",
+      "displayName": "Bride White Gown",
+      "category": "couple",
+      "genderPresentation": "female",
+      "roleHints": [
+        "couple_b"
+      ],
+      "tags": [
+        "female",
+        "bride",
+        "white",
+        "gown",
+        "wedding"
+      ],
+      "sprite": "runtime/couple_bride_white_01.png",
+      "metadata": "metadata/couple_bride_white_01.json"
+    },
+    {
+      "id": "couple_groom_white_01",
+      "displayName": "Groom White Suit",
+      "category": "couple",
+      "genderPresentation": "male",
+      "roleHints": [
+        "couple_a"
+      ],
+      "tags": [
+        "male",
+        "groom",
+        "white",
+        "suit",
+        "wedding"
+      ],
+      "sprite": "runtime/couple_groom_white_01.png",
+      "metadata": "metadata/couple_groom_white_01.json"
+    }
+  ]
+}

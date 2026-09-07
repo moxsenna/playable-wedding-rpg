@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "runtimeStandard": {
+    "frameWidth": 64,
+    "frameHeight": 64,
+    "cols": 6,
+    "rows": 4,
+    "sheetWidth": 384,
+    "sheetHeight": 256,
+    "directions": [
+      "down",
+      "up",
+      "left",
+      "right"
+    ],
+    "framesPerDirection": 6,
+    "layout": "row-major",
+    "pixelArt": true,
+    "recommendedScaleMode": "nearest"
+  },
+  "avatars": [
+    {
+      "id": "guest_female_hijab_navy_cream_01",
+      "displayName": "Navy Cream Hijab Guest",
+      "category": "guest",
+      "genderPresentation": "female",
+      "roleHints": [
+        "guest",
+        "family",
+        "bridesmaid"
+      ],
+      "tags": [
+        "female",
+        "hijab",
+        "navy",
+        "cream",
+        "formal",
+        "wedding"
+      ],
+      "sprite": "runtime/guest_female_hijab_navy_cream_01.png",
+      "metadata": "metadata/guest_female_hijab_navy_cream_01.json"
+    },
+    {
+      "id": "guest_female_hijab_sage_01",
+      "displayName": "Sage Hijab Guest",
+      "category": "guest",
+      "genderPresentation": "female",
+      "roleHints": [
+        "guest",
+        "family",
+        "bridesmaid"
+      ],
+      "tags": [
+        "female",
+        "hijab",
+        "sage",
+        "modest",
+        "garden",
+        "wedding"
+      ],
+      "sprite": "runtime/guest_female_hijab_sage_01.png",
+      "metadata": "metadata/guest_female_hijab_sage_01.json"
+    },
+    {
+      "id": "guest_female_hijab_rose_01",
+      "displayName": "Rose Hijab Guest",
+      "category": "guest",
+      "genderPresentation": "female",
+      "roleHints": [
+        "guest",
+        "family",
+        "bridesmaid"
+      ],
+      "tags": [
+        "female",
+        "hijab",
+        "rose",
+        "pink",
+        "formal",
+        "wedding"
+      ],
+      "sprite": "runtime/guest_female_hijab_rose_01.png",
+      "metadata": "metadata/guest_female_hijab_rose_01.json"
+    },
+    {
+      "id": "couple_bride_hijab_ivory_01",
+      "displayName": "Ivory Hijab Bride",
+      "category": "couple",
+      "genderPresentation": "female",
+      "roleHints": [
+        "couple_b"
+      ],
+      "tags": [
+        "female",
+        "hijab",
+        "bride",
+        "ivory",
+        "gold",
+        "wedding"
+      ],
+      "sprite": "runtime/couple_bride_hijab_ivory_01.png",
+      "metadata": "metadata/couple_bride_hijab_ivory_01.json"
+    }
+  ]
+}
