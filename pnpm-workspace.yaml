@@ -5,4 +5,5 @@ packages:
 neverBuiltDependencies:
   - sharp
 allowBuilds:
+  esbuild: true
   sharp: true

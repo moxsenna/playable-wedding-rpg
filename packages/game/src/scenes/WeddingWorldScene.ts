@@ -15,7 +15,17 @@ import {
   type QuestDefinitionLike,
   type QuestStateLike,
 } from "../systems/quest/quest-controller";
-import type { AvatarDefinition, AvatarRegistry, NpcBinding, RuntimeEnvRegistry } from "@wedding-rpg/contracts";
+import { NetClient, type SocketLike } from "../networking/net-client";
+import { RemotePlayerStore, type RemotePlayer } from "../networking/remote-store";
+import { INTERP_DELAY_MS } from "../networking/interpolation";
+import type {
+  AvatarDefinition,
+  AvatarRegistry,
+  Direction,
+  MovementState,
+  NpcBinding,
+  RuntimeEnvRegistry,
+} from "@wedding-rpg/contracts";
 import { collectOurStoryDefinition, type QuestState } from "@wedding-rpg/contracts";
 import { landmarkIdSchema } from "@wedding-rpg/contracts";
 import type { HudScene } from "./HudScene";
@@ -27,6 +37,23 @@ const HEART_LABELS: Record<string, string> = {
   "heart.memories": "Momen Foto",
   "heart.journey": "Perjalanan",
   "heart.proposal": "Lamaran",
+};
+
+interface RemotePlayerSeed {
+  playerId: string;
+  displayName: string;
+  avatarId: string;
+  x: number;
+  y: number;
+  facing: Direction;
+}
+
+const EMOTE_GLYPHS: Record<string, string> = {
+  wave: "Halo!",
+  heart: "♥",
+  celebrate: "Hore!",
+  laugh: "Ha!",
+  blessing: "Doa",
 };
 
 const TILE_LAYERS = [  "00_Ground",
@@ -60,6 +87,14 @@ export class WeddingWorldScene extends Scene {
   private gateApplied = false;
   private insideGatePrev = false;
   private unlockMarker: Phaser.GameObjects.Text | null = null;
+  private net: NetClient | null = null;
+  private remotes = new RemotePlayerStore();
+  private remoteViews = new Map<
+    string,
+    { sprite: Phaser.GameObjects.Sprite; tag: Phaser.GameObjects.Text; bubble: Phaser.GameObjects.Text }
+  >();
+  private netSelfId: string | null = null;
+  private netWasMoving = false;
 
   constructor() {
     super("WeddingWorld");
@@ -141,6 +176,7 @@ export class WeddingWorldScene extends Scene {
     }
     this.spawnPlacements();
     EventBus.on(BRIDGE_EVENTS.interactPressed, this.onInteractPressed, this);
+    EventBus.on(BRIDGE_EVENTS.emoteSelected, this.onEmoteSelected, this);
     EventBus.on(BRIDGE_EVENTS.dialogueClosed, this.onDialogueClosed, this);
     EventBus.on(BRIDGE_EVENTS.dialogueAction, this.onDialogueAction, this);
     EventBus.on(BRIDGE_EVENTS.navigateToLandmark, this.onNavigateToLandmark, this);
@@ -156,6 +192,7 @@ export class WeddingWorldScene extends Scene {
     cam.startFollow(this.player.sprite, false, 0.14, 0.14);
 
     EventBus.emit(BRIDGE_EVENTS.currentSceneReady, this);
+    this.maybeStartNet();
 
     if (typeof window !== "undefined" && process.env.NODE_ENV !== "production") {
       (window as unknown as { __wedding: unknown }).__wedding = {
@@ -166,6 +203,23 @@ export class WeddingWorldScene extends Scene {
         events: EventBus,
         targetId: () => this.getTargetId(),
         questState: () => ({ ...this.quest }),
+        net: () => ({
+          state: this.net?.getState() ?? "idle",
+          selfId: this.netSelfId,
+          remoteIds: this.remotes.ids(),
+          remoteNames: Object.fromEntries(
+            this.remotes.ids().map((id) => [id, this.remotes.get(id)?.displayName ?? null])
+          ),
+          remoteEmotes: Object.fromEntries(
+            this.remotes.ids().map((id) => [id, this.remotes.get(id)?.emote ?? null])
+          ),
+          remotePos: Object.fromEntries(
+            this.remotes.ids().map((id) => {
+              const sample = this.remotes.get(id)?.buffer.sample(Date.now() - INTERP_DELAY_MS);
+              return [id, sample ? { x: sample.x, y: sample.y } : null];
+            })
+          ),
+        }),
         interactLabel: () => this.hud?.getInteractLabel() ?? "Aksi",
         debugTeleport: (x: number, y: number) => {
           this.player.sprite.body?.reset(x, y);
@@ -386,7 +440,162 @@ export class WeddingWorldScene extends Scene {
     }
   }
 
+  private maybeStartNet(): void {
+    if (typeof window === "undefined") return;
+    const q = new URLSearchParams(window.location.search);
+    const url = q.get("net");
+    if (!url) return;
+    const socketFor = (ws: WebSocket): SocketLike => ({
+      send: (d: string) => ws.send(d),
+      close: () => ws.close(),
+      onopen: null,
+      onmessage: null,
+      onclose: null,
+      onerror: null,
+    });
+    const client = new NetClient(
+      {
+        openSocket: () => {
+          const ws = new WebSocket(url);
+          const like = socketFor(ws);
+          ws.onopen = () => like.onopen?.();
+          ws.onmessage = (ev) => like.onmessage?.({ data: String(ev.data) });
+          ws.onclose = () => like.onclose?.();
+          ws.onerror = () => like.onerror?.();
+          return like;
+        },
+      },
+      {
+        onWelcome: (p) => {
+          const w = p as { self: { playerId: string }; players: RemotePlayerSeed[] };
+          this.netSelfId = w.self.playerId;
+          for (const seed of w.players) this.addRemoteView(seed, Date.now());
+        },
+        onJoined: (p) => this.addRemoteView(p as RemotePlayerSeed, Date.now()),
+        onSnapshot: (p, ts) => {
+          const s = p as {
+            playerId: string;
+            x: number;
+            y: number;
+            vx: number;
+            vy: number;
+            facing: Direction;
+            movement: MovementState;
+          };
+          this.remotes.snapshot(
+            { ...s, facing: s.facing as string, movement: s.movement as string },
+            ts,
+            Date.now()
+          );
+        },
+        onLeft: (id) => this.dropRemoteView(id),
+        onEmote: (p) => {
+          const e = p as { playerId: string; emote: string; expiresAt: number };
+          this.remotes.emote(e.playerId, e.emote, e.expiresAt);
+        },
+      }
+    );
+    this.net = client;
+    client.connect(this.def.templateKey, (this.registry.get("playerAvatarId") as string | undefined) ?? "guest_01");
+  }
+
+  private addRemoteView(
+    seed: RemotePlayerSeed,
+    now: number
+  ): void {
+    if (seed.playerId === this.netSelfId) return;
+    this.remotes.join({ ...seed, facing: seed.facing as string }, now);
+    if (this.remoteViews.has(seed.playerId)) return;
+    if (!this.textures.exists(seed.avatarId)) {
+      console.warn(`ignoring remote with unknown avatar: ${seed.avatarId}`);
+      return;
+    }
+    const sprite = this.add.sprite(seed.x, seed.y, seed.avatarId, 0);
+    const tag = this.add
+      .text(seed.x, seed.y - 26, seed.displayName, {
+        fontSize: "11px",
+        color: "#ffffff",
+        stroke: "#1a2233",
+        strokeThickness: 3,
+      })
+      .setOrigin(0.5);
+    const bubble = this.add
+      .text(seed.x, seed.y - 40, "", { fontSize: "16px" })
+      .setOrigin(0.5)
+      .setVisible(false);
+    this.remoteViews.set(seed.playerId, { sprite, tag, bubble });
+  }
+
+  private dropRemoteView(id: string): void {
+    this.remotes.leave(id);
+    const view = this.remoteViews.get(id);
+    if (!view) return;
+    view.sprite.destroy();
+    view.tag.destroy();
+    view.bubble.destroy();
+    this.remoteViews.delete(id);
+  }
+
+  private publishNet(): void {
+    if (!this.net || this.net.getState() !== "joined") return;
+    const body = this.player.sprite.body as Phaser.Physics.Arcade.Body | null;
+    const vx = body?.velocity.x ?? 0;
+    const vy = body?.velocity.y ?? 0;
+    const moving = Math.hypot(vx, vy) > 5;
+    if (moving) {
+      this.net.sendMove({
+        x: Math.round(this.player.sprite.x * 10) / 10,
+        y: Math.round(this.player.sprite.y * 10) / 10,
+        vx: Math.round(vx),
+        vy: Math.round(vy),
+        facing: this.player.facing,
+        movement: "walk",
+      });
+    } else if (this.netWasMoving) {
+      this.net.sendIdle({
+        x: Math.round(this.player.sprite.x * 10) / 10,
+        y: Math.round(this.player.sprite.y * 10) / 10,
+        facing: this.player.facing,
+      });
+    }
+    this.netWasMoving = moving;
+  }
+
+  private renderRemotes(): void {
+    if (!this.net) return;
+    const now = Date.now();
+    for (const id of this.remotes.prune(now)) this.dropRemoteView(id);
+    const renderTime = now - INTERP_DELAY_MS;
+    for (const id of this.remotes.ids()) {
+      const player = this.remotes.get(id);
+      const view = this.remoteViews.get(id);
+      if (!player || !view) continue;
+      const sample = player.buffer.sample(renderTime);
+      view.sprite.setPosition(sample.x, sample.y);
+      view.sprite.setDepth(sample.y);
+      view.tag.setPosition(sample.x, sample.y - 26);
+      if (player.emote && now < player.emoteExpiresAt) {
+        view.bubble.setText(EMOTE_GLYPHS[player.emote] ?? "!");
+        view.bubble.setPosition(sample.x, sample.y - 40).setVisible(true);
+      } else {
+        view.bubble.setVisible(false);
+      }
+    }
+  }
+
+  private onEmoteSelected(payload: { emote?: string }): void {
+    if (!this.net || this.net.getState() !== "joined") return;
+    const emote = payload?.emote;
+    if (emote !== "wave" && emote !== "heart" && emote !== "celebrate" && emote !== "laugh" && emote !== "blessing") {
+      return;
+    }
+    this.net.sendEmote({ emote });
+  }
+
   private unsubscribeBridge(): void {
+    this.net?.close();
+    this.net = null;
+    EventBus.off(BRIDGE_EVENTS.emoteSelected, this.onEmoteSelected, this);
     EventBus.off(BRIDGE_EVENTS.interactPressed, this.onInteractPressed, this);
     EventBus.off(BRIDGE_EVENTS.dialogueClosed, this.onDialogueClosed, this);
     EventBus.off(BRIDGE_EVENTS.dialogueAction, this.onDialogueAction, this);
@@ -407,6 +616,8 @@ export class WeddingWorldScene extends Scene {
     }
     this.refreshTarget();
     this.checkFinaleGate();
+    this.publishNet();
+    this.renderRemotes();
     if (this.navZoneId) {
       const z = this.def.landmarks[this.navZoneId];
       const px = this.player.sprite.x;

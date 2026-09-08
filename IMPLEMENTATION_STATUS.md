@@ -343,3 +343,176 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   new scene, no complex particles per scope.
 - Next: M6 Single-Player Gate SP (node-sp integration + 320/360/390/430
   visual QA).
+
+## M6 — Single-Player Gate SP (VERIFIED 2026-09-08)
+
+- Status: complete. node-sp G0/G1/G2 PASS with recorded evidence; G3
+  manual visual review done (320/360/390/430).
+- Files changed: `.unlazy/wedding-rpg-v1/gates/node-sp.md`,
+  `scripts/verify-sp-regressions.mjs` (20-step runner, --from/--to ranges),
+  `tooling/e2e/sp-gate.mjs`, `tooling/e2e/m3-npc.mjs` + `m45-avatars.mjs`
+  (probe-only: 4th Continue + book close for the M5 greeter misi node),
+  `docs/qa/sp-*.png`, `.unlazy/wedding-rpg-v1/{PLAN,GATES}.md`.
+- Commands run: `node scripts/verify-sp-regressions.mjs` in 5 ranged runs
+  (1..13, 14..16, 17, 18..19, 20 — all SP REGRESSIONS VERIFIED),
+  `node tooling/e2e/sp-gate.mjs` (SP GATE VERIFIED).
+- Tests: full M1..M5 regression on the final tree (lint, forbidden
+  patterns + self-test, world/avatar/environment validators, all logic
+  oracles, all 7 browser probes, production build) + SP session (stick
+  move, greeter quest start, book over live world, zero page errors).
+- Acceptance: node-sp G0..G3 all met with evidence; root GATES G4 met.
+- Known issues / decisions: M5 content change forced probe-only updates
+  (no game-source change); HUD overlaps tree foliage slightly at top-left,
+  readable; m45-avatars and m5-quest share port 8105, always run
+  sequentially.
+- Next: M7 Reusability (Raka & Naya + Arvin & Selena, zero game-source
+  edits).
+
+## M7 — Wedding Reusability (VERIFIED 2026-09-08)
+
+- Status: complete. leaf-m7 G0/G1/G2/G3 PASS with recorded evidence; G4
+  manual visual review done (390px x3).
+- Files changed: `apps/web/src/weddings/{raka-naya,arvin-selena}.ts`
+  (fixtures), `apps/web/src/weddings/select.ts` (?wedding= resolver),
+  `apps/web/src/weddings/{demo-publication,demo-bindings}.ts` (active
+  re-exports, import sites untouched), `scripts/verify-m7-{logic,build}.mjs`,
+  `tooling/e2e/m7-weddings.mjs`, `docs/qa/m7-*-390.png`,
+  `.unlazy/wedding-rpg-v1/**`. Zero edits under `packages/game` (git clean).
+- Commands run: `node scripts/verify-m7-logic.mjs` (M7 WEDDINGS VERIFIED,
+  247 assertions), `node scripts/verify-m7-build.mjs` (M7 BUILD VERIFIED),
+  `node tooling/e2e/m7-weddings.mjs` (M7 WEDDINGS VERIFIED x3 weddings).
+- Tests: per-wedding publication/bindings/quest-chain validation, distinct
+  couples, game-source wedding-content scan, per-wedding browser quest
+  smoke (book couple, greeter start, photographer heart, HUD).
+- Acceptance: leaf-m7 G0..G4 all met with evidence; root GATES G5 met.
+- Known issues / decisions: DEMO_* export names now mean "active wedding"
+  (documented alias); player avatar stays the shared guest across weddings.
+- Next: M8 Durable wedding core port (domain only, no scene gameplay).
+
+## M8 — Durable Wedding Core (VERIFIED 2026-09-08)
+
+- Status: complete. leaf-m8 G0/G1/G2 PASS with recorded evidence; G3
+  manual API review done.
+- Files changed: `packages/contracts/src/durable.ts` (guest/token/rsvp/
+  guestbook/version/audit schemas) + index export,
+  `packages/wedding-core/**` (guests, rsvp, guestbook, publishing, audit,
+  index; package.json/tsconfig), `scripts/verify-m8-{logic,build}.mjs`,
+  `.unlazy/wedding-rpg-v1/**`. No gameplay, no storage driver.
+- Commands run: `node scripts/verify-m8-logic.mjs` (M8 CORE VERIFIED, 26
+  assertions), `node scripts/verify-m8-build.mjs` (M8 BUILD VERIFIED: 4x
+  tsc + next build).
+- Tests: token register/lookup, RSVP create+upsert+negatives, guestbook
+  bounds + link guard, draft/publish/activate/supersede/archive lifecycle
+  over the real demo fixture, frozen snapshots, audit append.
+- Acceptance: leaf-m8 G0..G3 all met with evidence.
+- Known issues / decisions: token ids sequential per store (persistence
+  arrives with M12); publishDraft takes no timestamp (transitions are
+  status-only).
+- Next: M9 Admin RPG config (World/NPC/Quest/Avatar/Realtime, no code
+  editing).
+
+## M9 — Admin RPG Config (VERIFIED 2026-09-08)
+
+- Status: complete. leaf-m9 G0/G1/G2 PASS with recorded evidence; G3
+  manual visual review done (390px).
+- Files changed: `apps/web/src/pages/admin.tsx` (picker, editors, live
+  validation, lifecycle dry-run, export, preview),
+  `apps/web/{package.json,next.config.mjs}` (+@wedding-rpg/wedding-core),
+  `apps/web/src/styles/globals.css` (admin section),
+  `scripts/verify-m9-build.mjs`, `tooling/e2e/m9-admin.mjs`,
+  `docs/qa/m9-admin-390.png`, `.unlazy/wedding-rpg-v1/**`.
+- Commands run: `node scripts/verify-m9-build.mjs` (M9 BUILD VERIFIED),
+  `node tooling/e2e/m9-admin.mjs` (M9 ADMIN VERIFIED).
+- Tests: fixture switch, edit/break/fix validation incl. draft/export
+  locks, draft→publish→activate to v1, exported JSON shape + edit
+  carried, zero page errors.
+- Acceptance: leaf-m9 G0..G3 all met with evidence.
+- Known issues / decisions: lifecycle is an in-memory dry-run (durable
+  persistence arrives with M12); custom drafts preview via built-in links
+  only; admin taps scroll into view (below-fold buttons).
+- Next: M10 Realtime protocol (client net layer + interpolation).
+
+## M10 — Realtime Protocol V1 (VERIFIED 2026-09-08)
+
+- Status: complete. leaf-m10 G0/G1/G2/G3 PASS with recorded evidence;
+  G4 manual visual review done (390px).
+- Files changed: `packages/contracts/src/protocol.ts` (+ shared net
+  schemas, index export), `packages/game/src/networking/{interpolation,
+  remote-store,net-client}.ts` + index exports,
+  `packages/game/src/scenes/WeddingWorldScene.ts` (opt-in ?net= wiring,
+  remote sprites + tags + emote bubbles, emote forward, net debug),
+  `tooling/realtime/local-relay.mjs` (M10-only test relay),
+  `scripts/verify-m10-{logic,build}.mjs`, `tooling/e2e/m10-realtime.mjs`,
+  `docs/qa/m10-duo-390.png`, `.unlazy/wedding-rpg-v1/**`.
+- Commands run: `node scripts/verify-m10-logic.mjs` (M10 PROTOCOL
+  VERIFIED, 35 assertions), `node scripts/verify-m10-build.mjs` (M10
+  BUILD VERIFIED), `node tooling/e2e/m10-realtime.mjs` (M10 REALTIME
+  VERIFIED: 125px smooth remote travel, emote seen, drop on disconnect,
+  quest starts online).
+- Tests: envelope/payload bounds + allowlists, lerp/extrapolate/settle/
+  stale-prune, move throttle + idle + emote limit + 3-strike close,
+  §20 steps 1-9 in two real browsers, zero page errors.
+- Acceptance: leaf-m10 G0..G4 all met with evidence; root GATES G6 met.
+- Known issues / decisions: net is opt-in (?net= absent = pure
+  single-player, zero behavior change); local relay trusts ?name=
+  (production identity is server-canonical in M11); emote bubbles use
+  text glyphs (no pictographic emoji).
+- Next: M11 Cloudflare Durable Object wedding room.
+
+## M11 — DO Wedding Room (VERIFIED 2026-09-08)
+
+- Status: complete. leaf-m11 G0/G1/G2 PASS with recorded evidence; G3
+  manual visual review done (390px).
+- Files changed: `apps/realtime/{package.json,tsconfig.json,
+  wrangler.jsonc,src/room.ts}` (Worker /room route + WeddingRoom DO),
+  `scripts/verify-m11-build.mjs`, `tooling/e2e/m11-room.mjs`,
+  `docs/qa/m11-duo-390.png`, `.unlazy/wedding-rpg-v1/**`.
+- Commands run: `node scripts/verify-m11-build.mjs` (M11 BUILD VERIFIED:
+  realtime tsc + wrangler deploy --dry-run),
+  `node tooling/e2e/m11-room.mjs` (M11 ROOM VERIFIED: 126px smooth DO
+  remote travel, emote seen, drop on disconnect, quest online).
+- Tests: §20 steps 1-9 against local workerd, zero page errors.
+- Acceptance: leaf-m11 G0..G3 all met with evidence.
+- Known issues / decisions: display names locally trusted from ?name=
+  (server-canonical identity arrives with M12); roster is in-memory
+  (hibernation-safe storage is M14 hardening); deploy itself is M13.
+- Next: M12 Production data (Neon + R2 + immutable template publishing).
+
+## M12 — Production Data (CODE GREEN, LIVE BLOCKED 2026-09-08)
+
+- Status: code complete, live gates blocked on credentials. leaf-m12 G0/
+  G1/G3 PASS; G2 BLOCKED.
+- Files changed: `drizzle/schema.ts` (7 tables) + `drizzle.config.ts` +
+  `drizzle/migrations/*` (offline-generated SQL),
+  `tooling/publish/publish.mjs` (content-hashed immutable publisher,
+  local + r2 drivers), `scripts/verify-m12-data.mjs`,
+  `.unlazy/wedding-rpg-v1/**`.
+- Commands run: `node scripts/verify-m12-data.mjs` (M12 DATA VERIFIED,
+  15 assertions).
+- Blocked on: DATABASE_URL (Neon) for `drizzle-kit migrate`; Cloudflare
+  login (`wrangler whoami` fails, expired token) for `wrangler r2 object
+  put` via `--driver r2`.
+- Next: M13 Deployment (BLOCKED, same login).
+
+## M13 — Deployment (BLOCKED 2026-09-08)
+
+- Status: blocked on Cloudflare authentication (`wrangler whoami`
+  fails). Config ready: realtime Worker dry-run proven (M11 G1), web
+  static export green in every build gate.
+- Unblock: `wrangler login`, then `wrangler deploy` in apps/realtime +
+  official Next.js deploy for apps/web.
+- Next: M14 Hardening (local proof).
+
+## M14 — Hardening (VERIFIED LOCAL 2026-09-08)
+
+- Status: complete locally. leaf-m14 G0/G1 PASS; production soak needs
+  M13.
+- Files changed: `tooling/e2e/m14-faults.mjs`,
+  `.unlazy/wedding-rpg-v1/**`.
+- Commands run: `node tooling/e2e/m14-faults.mjs` (M14 HARDENED:
+  offline full quest with dead relay, 20/20 load smoke, room source
+  checklist clean, zero page errors).
+- Known issues: local test relay has no strike engine by design (force-
+  close proven on the DO room in M11); roster in-memory until M14-prod
+  storage pass after deploy.
+- Next: provision credentials → M12 G2 → M13 → production soak.

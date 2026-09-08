@@ -19,6 +19,12 @@ export {
   startQuest,
 } from "./systems/quest/quest-controller";
 export type { QuestDefinitionLike, QuestStateLike } from "./systems/quest/quest-controller";
+export { SnapshotBuffer, INTERP_DELAY_MS } from "./networking/interpolation";
+export type { TransformSnapshot } from "./networking/interpolation";
+export { RemotePlayerStore } from "./networking/remote-store";
+export type { RemotePlayer } from "./networking/remote-store";
+export { NetClient } from "./networking/net-client";
+export type { NetState, SocketLike, NetClientOptions, NetEvents } from "./networking/net-client";
 
 /**
  * Create the single Phaser.Game instance for the wedding world.

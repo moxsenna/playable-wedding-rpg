@@ -6,5 +6,11 @@
   "scripts": {
     "typecheck": "pnpm -r --if-present exec tsc --noEmit",
     "gates:m0": "node scripts/verify-m0.mjs && node scripts/check-forbidden-patterns.mjs"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.18.1",
+    "drizzle-kit": "^0.31.10",
+    "drizzle-orm": "^0.45.2",
+    "ws": "^8.21.3"
   }
 }

@@ -6,6 +6,8 @@ import { z } from "zod";
 
 export * from "./npc";
 export * from "./quest";
+export * from "./durable";
+export * from "./protocol";
 export * from "./publication";
 export * from "./avatar";
 export * from "./environment";
@@ -16,16 +18,8 @@ export const PROTOCOL_VERSION = 1 as const;
 export const WORLD_TEMPLATE_KEY = "garden-village-v1" as const;
 
 /** Cardinal facing shared by player state, NPCs, and network snapshots. */
-export const directionSchema = z.enum(["up", "down", "left", "right"]);
-export type Direction = z.infer<typeof directionSchema>;
-
-/** Local animation movement state (no sprint/combat in V1). */
-export const movementStateSchema = z.enum(["idle", "walk"]);
-export type MovementState = z.infer<typeof movementStateSchema>;
-
-/** V1 social emotes. Free-text chat is explicitly out of scope. */
-export const emoteSchema = z.enum(["wave", "heart", "celebrate", "laugh", "blessing"]);
-export type Emote = z.infer<typeof emoteSchema>;
+export { directionSchema, movementStateSchema, emoteSchema } from "./shared";
+export type { Direction, MovementState, Emote } from "./shared";
 
 /** Bounded JSON envelope for every realtime message. */
 export const realtimeEnvelopeSchema = z.object({

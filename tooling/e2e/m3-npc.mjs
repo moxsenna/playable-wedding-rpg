@@ -152,7 +152,9 @@ async function main() {
     await page.mouse.up();
     if (Math.hypot(held2.x - held.x, held2.y - held.y) > 3) fail("world moved during dialogue");
     await page.screenshot({ path: join(ROOT, "docs/qa/m3-dialogue-390.png") });
-    // progress: sapa -> gerak -> buku(action OPEN_WEDDING_BOOK, terminal)
+    // progress: sapa -> gerak -> buku(action OPEN_WEDDING_BOOK, resumes misi)
+    // -> misi(action START_MAIN_QUEST, terminal). The book opens as soon as
+    // the buku action fires, so close it before finishing the misi line.
     await page.click('[data-testid="dialogue-continue"]');
     await sleep(300);
     const t1 = await page.textContent('[data-testid="dialogue-text"]');
@@ -160,19 +162,24 @@ async function main() {
     await page.click('[data-testid="dialogue-continue"]');
     await sleep(300);
     await page.click('[data-testid="dialogue-continue"]');
+    await sleep(500);
+    await page.waitForSelector('[data-testid="wedding-book"]', { state: "visible", timeout: 15000 });
+    await page.click('[data-testid="wedding-book-close"]');
+    await page.waitForSelector('[data-testid="wedding-book"]', { state: "hidden", timeout: 15000 });
+    await page.click('[data-testid="dialogue-continue"]');
     await page.waitForSelector('[data-testid="dialogue-panel"]', { state: "hidden", timeout: 15000 });
     const evs = await npcEvents();
     const opened = evs.filter((e) => e.t === "opened");
     const actions = evs.filter((e) => e.t === "action");
     const closed = evs.filter((e) => e.t === "closed");
     if (opened.length !== 1 || opened[0].p.npcId !== "sari_greeter") fail("DIALOGUE_OPENED malformed");
-    if (actions.length !== 1 || actions[0].p.action.type !== "OPEN_WEDDING_BOOK") fail("greeter must dispatch OPEN_WEDDING_BOOK");
+    const types = actions.map((a) => a.p.action.type);
+    if (JSON.stringify(types) !== JSON.stringify(["OPEN_WEDDING_BOOK", "START_MAIN_QUEST"])) {
+      fail(`greeter must dispatch book then quest start, saw ${JSON.stringify(types)}`);
+    }
     if (closed.length !== 1) fail("DIALOGUE_CLOSED missing");
-    // greeter terminal action deep-links into the Book (M4 integration)
-    await page.waitForSelector('[data-testid="wedding-book"]', { state: "visible", timeout: 15000 });
-    const homeName = await page.textContent('[data-testid="book-couple"]');
-    if (!homeName.includes("Ayu")) fail("greeter deep link did not land on book Home");
-    await page.click('[data-testid="wedding-book-close"]');
+    // the buku action already deep-linked into the Book (opened + closed
+    // above); the quest is now active from the misi line.
     await page.waitForSelector('[data-testid="wedding-book"]', { state: "hidden", timeout: 15000 });
     // resumes cleanly: new input moves again, zero residual drift first
     const r0 = await pos(page);

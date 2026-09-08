@@ -1,0 +1,19 @@
+{
+  "name": "@wedding-rpg/realtime",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cloudflare Worker + WeddingRoom Durable Object (protocol V1).",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "dev": "wrangler dev --port 8787"
+  },
+  "dependencies": {
+    "@wedding-rpg/contracts": "workspace:*",
+    "zod": "^4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.0.0",
+    "@types/node": "^20",
+    "typescript": "^5"
+  }
+}

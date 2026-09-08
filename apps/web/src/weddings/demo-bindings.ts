@@ -1,9 +1,12 @@
 import type { NpcBinding } from "@wedding-rpg/contracts";
+import { RAKA_NAYA_BINDINGS } from "./raka-naya";
+import { ARVIN_SELANA_BINDINGS } from "./arvin-selena";
+import { resolveWeddingId } from "./select";
 
 // Demo wedding bindings for garden-village-v1 (M3). Wedding-specific content
 // lives here — never in actor code. M4/M7 replace this fixture with the
 // publication-driven source; the actor system stays untouched.
-export const DEMO_NPC_BINDINGS: NpcBinding[] = [
+export const DEMO_NPC_BINDINGS_DATA: NpcBinding[] = [
   {
     slotId: "npc.greeter",
     npcId: "sari_greeter",
@@ -195,3 +198,14 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     actions: [],
   },
 ];
+
+// Active bindings: ?wedding= selects the fixture, default stays the demo
+// couple. Import sites (game entry, verifiers) keep working unchanged.
+const BINDINGS: Record<string, NpcBinding[]> = {
+  "demo-ayu-bima": DEMO_NPC_BINDINGS_DATA,
+  "raka-naya": RAKA_NAYA_BINDINGS,
+  "arvin-selena": ARVIN_SELANA_BINDINGS,
+};
+
+export const DEMO_NPC_BINDINGS: NpcBinding[] =
+  BINDINGS[resolveWeddingId()] ?? DEMO_NPC_BINDINGS_DATA;

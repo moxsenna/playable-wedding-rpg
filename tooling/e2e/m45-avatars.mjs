@@ -268,9 +268,12 @@ async function main() {
     await page.click('[data-testid="dialogue-continue"]');
     await sleep(300);
     await page.click('[data-testid="dialogue-continue"]');
-    await page.waitForSelector('[data-testid="dialogue-panel"]', { state: "hidden", timeout: 15000 });
+    await sleep(500);
+    await page.waitForSelector('[data-testid="wedding-book"]', { state: "visible", timeout: 15000 });
     await page.click('[data-testid="wedding-book-close"]');
     await page.waitForSelector('[data-testid="wedding-book"]', { state: "hidden", timeout: 15000 });
+    await page.click('[data-testid="dialogue-continue"]');
+    await page.waitForSelector('[data-testid="dialogue-panel"]', { state: "hidden", timeout: 15000 });
     await page.screenshot({ path: join(ROOT, "docs/qa/m45-greeter-390.png") });
 
     // --- tour for the visual set ---

@@ -1,5 +1,17 @@
 import { z } from "zod";
 
+/** Cardinal facing shared by player state, NPCs, and network snapshots. */
+export const directionSchema = z.enum(["up", "down", "left", "right"]);
+export type Direction = z.infer<typeof directionSchema>;
+
+/** Local animation movement state (no sprint/combat in V1). */
+export const movementStateSchema = z.enum(["idle", "walk"]);
+export type MovementState = z.infer<typeof movementStateSchema>;
+
+/** V1 social emotes. Free-text chat is explicitly out of scope. */
+export const emoteSchema = z.enum(["wave", "heart", "celebrate", "laugh", "blessing"]);
+export type Emote = z.infer<typeof emoteSchema>;
+
 /** IDs shared by the wedding publication, world template, and quest systems. */
 export const npcSlotIds = [
   "npc.greeter",

@@ -11,6 +11,8 @@ Thumbs.db
 *.log
 .tmp-*
 **/.tmp-*
+.wrangler/
+**/.wrangler/
 .env
 .env.*
 !.env.example

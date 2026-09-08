@@ -407,3 +407,111 @@ body {
     outline: 3px solid #ffffff;
     outline-offset: 2px;
 }
+
+/* Admin RPG config: stacked sections, touch-sized inputs, portrait-first. */
+.admin-page {
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    padding: 16px 16px 48px;
+    padding-top: calc(16px + env(safe-area-inset-top, 0px));
+    box-sizing: border-box;
+    overflow-y: auto;
+    height: 100dvh;
+}
+
+.admin-page h1 {
+    font-size: 20px;
+    margin: 0 0 12px;
+    color: #ffd98a;
+}
+
+.admin-page section {
+    margin-bottom: 20px;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    background: rgba(16, 22, 38, 0.6);
+}
+
+.admin-page h2 {
+    font-size: 16px;
+    margin: 0 0 10px;
+}
+
+.admin-page label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.admin-page input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 44px;
+    margin-top: 4px;
+    padding: 0 12px;
+    font-size: 15px;
+    color: #f2f4f8;
+    background: #1a2233;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+}
+
+.admin-page button {
+    min-height: 44px;
+    padding: 0 16px;
+    margin: 0 8px 8px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a2233;
+    background: #ffd98a;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.admin-page button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.admin-pick-active {
+    outline: 3px solid #ffffff;
+    outline-offset: 1px;
+}
+
+.admin-page details {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.admin-page summary {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #ffd98a;
+}
+
+.admin-valid {
+    font-weight: 700;
+    color: #9fe8b8;
+}
+
+.admin-invalid {
+    font-weight: 700;
+    color: #f2a3a3;
+}
+
+.admin-page ul {
+    font-size: 14px;
+    line-height: 1.5;
+    padding-left: 20px;
+}
+
+.admin-page a {
+    color: #9fd8ef;
+}
