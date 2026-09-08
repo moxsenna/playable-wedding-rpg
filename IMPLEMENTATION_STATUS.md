@@ -303,3 +303,43 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   probe waypoint around the bigger production fountain — probe-only change),
   M4.5 AVATARS VERIFIED. No regressions.
 - Next: M5 (Four Hearts + Finale) is READY. STOPPED per mission scope.
+
+## M5 — Collect Our Story + Wedding Finale (VERIFIED 2026-09-08)
+
+- Status: complete. leaf-m5 G0/G1/G2/G3 PASS with recorded evidence; G4
+  manual visual review done (320/390/430).
+- Files changed: `packages/contracts/src/quest.ts` (quest/gate schemas,
+  `collectOurStoryDefinition`), `packages/contracts/src/index.ts` (quest
+  export), `packages/game/src/systems/quest/quest-controller.ts` (pure
+  start/grant reducer, zero imports, wedding-agnostic),
+  `packages/game/src/scenes/WeddingWorldScene.ts` (quest glue, per-frame
+  semantic gate check, unlock marker, FINALE_STARTED),
+  `packages/game/src/world/{types,loader}.ts` + `PreloadScene.ts` (gates
+  artifact), `packages/game/src/{bridge,index}.ts` (5 quest events +
+  controller exports), `apps/web/src/weddings/demo-bindings.ts` (greeter
+  START_MAIN_QUEST, photographer OPEN_GALLERY+GRANT_HEART chain, grant
+  nodes on story/travel/proposal, couple START_FINALE),
+  `apps/web/src/components/{quest-hud,finale-reveal}.tsx` + `App.tsx` +
+  `styles/globals.css` (HUD, toasts, banner, reveal),
+  `tooling/world-gen/{gen-decor,build-world}.mjs` (FINALE_GATE const +
+  gates.json source/runtime), `assets-source/tiled/garden-village-v1/
+  gates.json` + `apps/web/public/assets/worlds/garden-village-v1/gates.json`,
+  `scripts/verify-m5-{logic,build}.mjs`, `tooling/e2e/m5-quest.mjs`,
+  `docs/qa/m5-*.png`, `.unlazy/wedding-rpg-v1/**`.
+- Commands run: `node tooling/world-gen/build-world.mjs` (73 placements,
+  solid=497), `node scripts/verify-m5-logic.mjs` (M5 QUEST VERIFIED, 48
+  assertions), `node scripts/verify-m5-build.mjs` (M5 BUILD VERIFIED:
+  contracts + game + web tsc, next build), `node tooling/e2e/m5-quest.mjs`
+  (M5 QUEST VERIFIED: locked 0/4, out-of-order grants, duplicate ignored,
+  door walk-through, FINALE_STARTED x1, reveal readable).
+- Tests: reducer (start-once, pre-start/unknown quest/heart rejection,
+  out-of-order completion, duplicate no-op, missing tracking), binding
+  coverage (4 hearts exactly once, greeter/photographer/couple chains),
+  gate schema + locked tile, real-browser quest loop, no page errors.
+- Acceptance: leaf-m5 G0..G4 all met with evidence.
+- Known issues / decisions: game code resolves the gate from generated
+  gates.json (no hardcoded tiles); quest state lives in Phaser, React
+  mirrors for display; toasts/banners pointer-transparent; no audio, no
+  new scene, no complex particles per scope.
+- Next: M6 Single-Player Gate SP (node-sp integration + 320/360/390/430
+  visual QA).

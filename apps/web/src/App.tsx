@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 import { IRefPhaserGame, PhaserGame } from './PhaserGame';
 import { DialoguePanel } from './components/dialogue-panel';
+import { FinaleReveal } from './components/finale-reveal';
+import { QuestHud } from './components/quest-hud';
 import { WeddingBook } from './components/wedding-book';
 import { PhaserErrorBoundary } from './components/error-boundary';
 
@@ -18,6 +20,8 @@ function App()
                 <PhaserGame ref={phaserRef} />
             </PhaserErrorBoundary>
             <DialoguePanel />
+            <QuestHud />
+            <FinaleReveal />
             <WeddingBook />
         </div>
     )

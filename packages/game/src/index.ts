@@ -12,6 +12,13 @@ export { TouchHud } from "./input/touch-hud";
 export { DialogueRuntime } from "./systems/dialogue-runtime";
 export type { DialogueLine } from "./systems/dialogue-runtime";
 export { dispatchSemanticAction } from "./systems/semantic-actions";
+export {
+  createQuestState,
+  grantHeart,
+  missingHearts,
+  startQuest,
+} from "./systems/quest/quest-controller";
+export type { QuestDefinitionLike, QuestStateLike } from "./systems/quest/quest-controller";
 
 /**
  * Create the single Phaser.Game instance for the wedding world.

@@ -20,8 +20,8 @@ const PUB_GALLERY = join(ROOT, "apps", "web", "public", "assets", "gallery");
 
 const { buildTileset, tilesetTsj } = await import("./gen-tileset.mjs");
 const { buildGuestSheet, buildGalleryImages } = await import("./gen-sprites.mjs");
-const { planLayout, buildMap } = await import("./gen-map.mjs");
-const { planDecor } = await import("./gen-decor.mjs");
+const { planLayout, buildMap, INTERACTIONS } = await import("./gen-map.mjs");
+const { planDecor, FINALE_GATE } = await import("./gen-decor.mjs");
 const { buildRegistry } = await import("../assets/build-avatar-registry.mjs");
 const { buildEnvironment } = await import("../assets/build-environment.mjs");
 const { loadTerrain } = await import("./terrain-v2.mjs");
@@ -70,6 +70,7 @@ const srcManifest = {
   tilemap: "map.tmj",
   tileset: "../../sprites/playable_wedding_environment_pack_v2/terrain/terrain_tiles.tsj",
   placements: "placements.json",
+  gates: "gates.json",
   tileSize: 16,
   size: { w: 56, h: 80 },
   sprites: ["../../sprites/guest_01.png"],
@@ -90,13 +91,30 @@ const runtimeMap = { ...tmj, tilesets: [runtimeTsj] };
 writeFileSync(join(PUB_WORLD, "map.json"), JSON.stringify(runtimeMap) + "\n");
 copyFileSync(join(SRC_SPRITES, "guest_01.png"), join(PUB_SPRITES, "guest_01.png"));
 copyFileSync(join(SRC_WORLD, "placements.json"), join(PUB_WORLD, "placements.json"));
+const gateZone = INTERACTIONS.find(([n]) => n === FINALE_GATE.id);
+if (!gateZone) throw new Error(`interaction zone missing for ${FINALE_GATE.id}`);
+const gatesDoc = {
+  templateKey: "garden-village-v1",
+  version: 1,
+  gates: [
+    {
+      id: FINALE_GATE.id,
+      zoneTiles: { x: gateZone[1], y: gateZone[2], w: gateZone[3], h: gateZone[4] },
+      tiles: FINALE_GATE.tiles.map(([x, y]) => ({ x, y })),
+      lockedTiles: FINALE_GATE.lockedTiles.map(([x, y]) => ({ x, y })),
+    },
+  ],
+};
+writeFileSync(join(SRC_WORLD, "gates.json"), JSON.stringify(gatesDoc, null, 2) + "\n");
+copyFileSync(join(SRC_WORLD, "gates.json"), join(PUB_WORLD, "gates.json"));
 const pubManifest = {
   templateKey: "garden-village-v1",
   version: 1,
   compatibilityVersion: 1,
   tilemap: "map.json",
   placements: "placements.json",
-  files: ["map.json", "manifest.json", "placements.json", "sprites/guest_01.png"],
+  gates: "gates.json",
+  files: ["map.json", "manifest.json", "placements.json", "gates.json", "sprites/guest_01.png"],
   environment: {
     pack: "playable_wedding_environment_pack_v2",
     version: 2,

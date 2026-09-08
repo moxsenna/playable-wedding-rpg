@@ -25,6 +25,16 @@ export const BRIDGE_EVENTS = {
   dialogueClosed: "DIALOGUE_CLOSED",
   /** React->Phaser: show a navigation marker for a landmark; payload { landmarkId }. */
   navigateToLandmark: "NAVIGATE_TO_LANDMARK",
+  /** Phaser->React: quest state changed; payload { state }. */
+  questStateChanged: "QUEST_STATE_CHANGED",
+  /** Phaser->React: transient memory toast; payload { heart, label }. */
+  memoryToast: "MEMORY_TOAST",
+  /** Phaser->React: player bumped the locked finale gate; payload { collected, required }. */
+  finaleGateBlocked: "FINALE_GATE_BLOCKED",
+  /** Phaser->React: fourth heart completed, gate opening; payload { questId }. */
+  finaleUnlocked: "FINALE_UNLOCKED",
+  /** Phaser->React: couple finale accepted; payload { questId }. */
+  finaleStarted: "FINALE_STARTED",
 } as const;
 
 export type BridgeEvent = (typeof BRIDGE_EVENTS)[keyof typeof BRIDGE_EVENTS];

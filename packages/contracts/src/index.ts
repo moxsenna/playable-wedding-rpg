@@ -5,6 +5,7 @@
 import { z } from "zod";
 
 export * from "./npc";
+export * from "./quest";
 export * from "./publication";
 export * from "./avatar";
 export * from "./environment";

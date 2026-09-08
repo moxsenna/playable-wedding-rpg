@@ -2,7 +2,7 @@
 // Parsing happens once per world load; actors/scenes consume the definition,
 // never raw Tiled object names.
 import type { NpcSlot, Point, WorldDefinition, ZoneRect } from "./types";
-import { placementsFileSchema } from "@wedding-rpg/contracts";
+import { gateFileSchema, placementsFileSchema } from "@wedding-rpg/contracts";
 
 export type { NpcSlot, Point, WorldDefinition, ZoneRect } from "./types";
 
@@ -55,7 +55,8 @@ export function parseWorldDefinition(
   manifestUrl: string,
   manifest: WorldManifest,
   mapJson: TiledMap,
-  placementsDoc: unknown
+  placementsDoc: unknown,
+  gatesDoc: unknown = { templateKey: "garden-village-v1", version: 1, gates: [] }
 ): WorldDefinition {
   if (!manifest || typeof manifest.templateKey !== "string") {
     throw new Error("world manifest missing templateKey");
@@ -90,6 +91,13 @@ export function parseWorldDefinition(
     );
   }
 
+  const gatesParsed = gateFileSchema.safeParse(gatesDoc);
+  if (!gatesParsed.success) {
+    throw new Error(
+      `world gates invalid: ${gatesParsed.error.issues.map((i) => i.message).join("; ")}`
+    );
+  }
+
   return {
     templateKey: manifest.templateKey,
     version: manifest.version ?? 1,
@@ -101,6 +109,7 @@ export function parseWorldDefinition(
     landmarks,
     interactions,
     placements: placementsParsed.data.placements,
+    gates: gatesParsed.data.gates,
     manifestUrl,
   };
 }

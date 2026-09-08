@@ -16,8 +16,13 @@ const ROOT = join(HERE, "..", "..");
 /** World display scale override per asset (default: registry resolved scale). */
 const SCALE_OVERRIDES = {};
 
-const WALKABLE_NO_COLLISION = new Set([
-  "photo_terrace_01",
+export const FINALE_GATE = {
+  id: "gate.finale",
+  tiles: [[26, 9], [28, 9], [27, 9]],
+  lockedTiles: [[27, 9]],
+};
+
+const WALKABLE_NO_COLLISION = new Set([  "photo_terrace_01",
   "entrance_gate_flower_01",
   "wedding_arch_01",
   "lamp_black_01",
@@ -216,8 +221,7 @@ export function planDecor(layout, registry) {
   // explicit split-passage + locked-door collision (arch/gate posts flank paths)
   const extraCollision = [
     [24, 64], [25, 64], [30, 64], [31, 64], // entrance gate posts
-    [26, 9], [28, 9], // wedding arch posts at the hall door
-    [27, 9], // locked finale center (M5 unlocks)
+    ...FINALE_GATE.tiles, // wedding arch posts + locked finale center (M5 unlocks)
   ];
   return { placements: resolved, extraCollision, registry };
 }

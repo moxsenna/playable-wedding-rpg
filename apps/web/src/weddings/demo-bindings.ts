@@ -18,6 +18,12 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
         id: "buku",
         text: "Semua info acara ada di Buku Nikah — bisa dibuka kapan saja.",
         action: { type: "OPEN_WEDDING_BOOK" },
+        next: "misi",
+      },
+      {
+        id: "misi",
+        text: "Mau ikut misi kami? Kumpulkan 4 hati kenangan: pertemuan, foto, jalan, lamaran. Mulai dari aku!",
+        action: { type: "START_MAIN_QUEST" },
       },
     ],
     actions: [{ type: "OPEN_WEDDING_BOOK" }],
@@ -46,8 +52,17 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     avatarId: "guest_female_hijab_sage_01",
     questRewardId: "heart.first_meeting",
     dialogue: [
-      { id: "sapa", text: "Duduk sini sebentar, Nak." },
-      { id: "temu", text: "Awal kisah mereka sederhana: sapa, tawa, lalu rindu." },
+      { id: "sapa", text: "Duduk sini sebentar, Nak.", next: "temu" },
+      {
+        id: "temu",
+        text: "Awal kisah mereka sederhana: sapa, tawa, lalu rindu.",
+        next: "hati",
+      },
+      {
+        id: "hati",
+        text: "Kisah itu untukmu — satu hati kenangan! ♥",
+        action: { type: "GRANT_HEART" },
+      },
     ],
     actions: [],
   },
@@ -57,12 +72,19 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     role: "photo",
     displayName: "Aji",
     avatarId: "npc_photographer_muslim_male_01",
+    questRewardId: "heart.memories",
     dialogue: [
       { id: "sapa", text: "Senyum! Momen bagus tidak datang dua kali.", next: "galeri" },
       {
         id: "galeri",
         text: "Koleksi foto tersimpan di galeri.",
         action: { type: "OPEN_GALLERY" },
+        next: "kenang",
+      },
+      {
+        id: "kenang",
+        text: "Foto ini kusimpan untukmu — satu hati kenangan! ♥",
+        action: { type: "GRANT_HEART" },
       },
     ],
     actions: [{ type: "OPEN_GALLERY" }],
@@ -76,7 +98,16 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     questRewardId: "heart.journey",
     dialogue: [
       { id: "sapa", text: "Aku ikut mereka road trip ke pantai!", next: "jalan" },
-      { id: "jalan", text: "Tiga hari, dua ban bocor, satu kenangan tak terlupakan." },
+      {
+        id: "jalan",
+        text: "Tiga hari, dua ban bocor, satu kenangan tak terlupakan.",
+        next: "hati",
+      },
+      {
+        id: "hati",
+        text: "Rasakan debur ombaknya — satu hati kenangan! ♥",
+        action: { type: "GRANT_HEART" },
+      },
     ],
     actions: [],
   },
@@ -121,7 +152,16 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     questRewardId: "heart.proposal",
     dialogue: [
       { id: "sapa", text: "Psst, aku yang menyiapkan lamaran itu.", next: "lamar" },
-      { id: "lamar", text: "Satu lutut, satu cincin, seribu deg-degan." },
+      {
+        id: "lamar",
+        text: "Satu lutut, satu cincin, seribu deg-degan.",
+        next: "hati",
+      },
+      {
+        id: "hati",
+        text: "Dan jawabannya YA — satu hati kenangan! ♥",
+        action: { type: "GRANT_HEART" },
+      },
     ],
     actions: [],
   },
@@ -131,7 +171,18 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     role: "couple",
     displayName: "Ayu",
     avatarId: "couple_bride_hijab_ivory_01",
-    dialogue: [{ id: "sapa", text: "Terima kasih sudah datang dan bermain bersama kami!" }],
+    dialogue: [
+      {
+        id: "sapa",
+        text: "Terima kasih sudah datang dan bermain bersama kami!",
+        next: "rayakan",
+      },
+      {
+        id: "rayakan",
+        text: "Kalau empat hati sudah terkumpul, ayo rayakan di aula bersamaku!",
+        action: { type: "START_FINALE" },
+      },
+    ],
     actions: [],
   },
   {

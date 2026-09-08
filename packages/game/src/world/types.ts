@@ -1,6 +1,6 @@
 // Parsed world model: exactly what gameplay systems may consume.
 // Tiled string lookups happen once in the loader, never scattered in actors.
-import type { EnvPlacement } from "@wedding-rpg/contracts";
+import type { EnvPlacement, Gate } from "@wedding-rpg/contracts";
 
 export interface Point {
   x: number;
@@ -29,6 +29,8 @@ export interface WorldDefinition {
   npcSlots: Record<string, NpcSlot>;
   landmarks: Record<string, ZoneRect>;
   interactions: ZoneRect[];
+  /** Finale gates from generated gates.json (no hardcoded tiles in scenes). */
+  gates: Gate[];
   placements: EnvPlacement[];
   manifestUrl: string;
 }

@@ -8,13 +8,28 @@ import { neutralInput } from "../input/types";
 import { TouchHud } from "../input/touch-hud";
 import { PRIORITY, selectTarget, type InteractionCandidate } from "../systems/interaction/select";
 import { dispatchSemanticAction } from "../systems/semantic-actions";
+import {
+  createQuestState,
+  grantHeart,
+  startQuest,
+  type QuestDefinitionLike,
+  type QuestStateLike,
+} from "../systems/quest/quest-controller";
 import type { AvatarDefinition, AvatarRegistry, NpcBinding, RuntimeEnvRegistry } from "@wedding-rpg/contracts";
+import { collectOurStoryDefinition, type QuestState } from "@wedding-rpg/contracts";
 import { landmarkIdSchema } from "@wedding-rpg/contracts";
 import type { HudScene } from "./HudScene";
 import { MANIFEST_URL } from "./PreloadScene";
 
-const TILE_LAYERS = [
-  "00_Ground",
+// Short toast labels per heart; the full story text lives in the publication.
+const HEART_LABELS: Record<string, string> = {
+  "heart.first_meeting": "Pertemuan Pertama",
+  "heart.memories": "Momen Foto",
+  "heart.journey": "Perjalanan",
+  "heart.proposal": "Lamaran",
+};
+
+const TILE_LAYERS = [  "00_Ground",
   "01_Ground_Detail",
   "02_Paths",
   "03_Water",
@@ -39,6 +54,12 @@ export class WeddingWorldScene extends Scene {
   private lastLabel = "";
   private navMarker: Phaser.GameObjects.Text | null = null;
   private navZoneId: string | null = null;
+  private questDef: QuestDefinitionLike = collectOurStoryDefinition();
+  private quest: QuestStateLike = createQuestState(this.questDef);
+  private collLayer: Phaser.Tilemaps.TilemapLayer | Phaser.Tilemaps.TilemapGPULayer | null = null;
+  private gateApplied = false;
+  private insideGatePrev = false;
+  private unlockMarker: Phaser.GameObjects.Text | null = null;
 
   constructor() {
     super("WeddingWorld");
@@ -55,7 +76,12 @@ export class WeddingWorldScene extends Scene {
       typeof parseWorldDefinition
     >[2];
     const placementsDoc = this.cache.json.get("world-placements");
-    this.def = parseWorldDefinition(MANIFEST_URL, manifest, mapJson, placementsDoc);
+    const gatesDoc = this.cache.json.get("world-gates");
+    this.def = parseWorldDefinition(MANIFEST_URL, manifest, mapJson, placementsDoc, gatesDoc);
+    this.questDef = collectOurStoryDefinition();
+    this.quest = createQuestState(this.questDef);
+    this.gateApplied = false;
+    this.insideGatePrev = false;
 
     const map = this.make.tilemap({ key: "world-map" });
     const tilesetName = map.tilesets[0]?.name ?? "wedding-garden-terrain-v2";
@@ -72,6 +98,7 @@ export class WeddingWorldScene extends Scene {
     const coll = layers["06_Collision"];
     coll.setVisible(false);
     coll.setCollisionByExclusion([-1, 0]);
+    this.collLayer = coll;
     // Overhead layers always render above actors; actors Y-sort among themselves.
     layers["11_Decoration_Above"].setDepth(100);
     layers["12_Roof_Above"].setDepth(101);
@@ -138,6 +165,7 @@ export class WeddingWorldScene extends Scene {
         input: null as TouchHud | null,
         events: EventBus,
         targetId: () => this.getTargetId(),
+        questState: () => ({ ...this.quest }),
         interactLabel: () => this.hud?.getInteractLabel() ?? "Aksi",
         debugTeleport: (x: number, y: number) => {
           this.player.sprite.body?.reset(x, y);
@@ -248,7 +276,100 @@ export class WeddingWorldScene extends Scene {
       return;
     }
     const result = dispatchSemanticAction(type);
-    if (!result.handled) console.warn(result.reason);
+    if (!result.handled) {
+      console.warn(result.reason);
+      return;
+    }
+    if (result.deferred === "quest") this.applyQuestAction(type, payload?.npcId);
+  }
+
+  private emitQuestState(): void {
+    EventBus.emit(BRIDGE_EVENTS.questStateChanged, { state: { ...this.quest } as QuestState });
+  }
+
+  private applyQuestAction(type: string, npcId: string | undefined): void {
+    if (type === "START_MAIN_QUEST") {
+      const r = startQuest(this.questDef, this.quest);
+      if (!r.ok) {
+        console.warn(r.reason);
+        return;
+      }
+      this.quest = r.state;
+      this.emitQuestState();
+      return;
+    }
+    if (type === "GRANT_HEART") {
+      const binding = this.npcs
+        .map((n) => n.binding)
+        .find((b) => b.npcId === npcId);
+      const heart = binding?.questRewardId;
+      if (!heart) {
+        console.warn(`ignoring GRANT_HEART without questRewardId: ${npcId ?? "unknown"}`);
+        return;
+      }
+      const r = grantHeart(this.questDef, this.quest, heart);
+      if (!r.ok) {
+        console.warn(r.reason);
+        return;
+      }
+      this.quest = r.state;
+      this.emitQuestState();
+      if (r.granted) {
+        EventBus.emit(BRIDGE_EVENTS.memoryToast, { heart: r.granted, label: HEART_LABELS[r.granted] ?? r.granted });
+      }
+      if (r.completed) {
+        EventBus.emit(BRIDGE_EVENTS.finaleUnlocked, { questId: this.questDef.questId });
+      }
+      return;
+    }
+    if (type === "START_FINALE") {
+      if (!this.quest.finaleUnlocked) {
+        console.warn("ignoring START_FINALE before the finale unlocks");
+        return;
+      }
+      EventBus.emit(BRIDGE_EVENTS.finaleStarted, { questId: this.questDef.questId });
+    }
+  }
+
+  private checkFinaleGate(): void {
+    const gate = this.def.gates[0];
+    if (!gate) return;
+    const t = this.def.tileSize;
+    const px = this.player.sprite.x;
+    const py = this.player.sprite.y;
+    const inside =
+      px >= gate.zoneTiles.x * t &&
+      px < (gate.zoneTiles.x + gate.zoneTiles.w) * t &&
+      py >= gate.zoneTiles.y * t &&
+      py < (gate.zoneTiles.y + gate.zoneTiles.h) * t;
+    if (!inside) {
+      this.insideGatePrev = false;
+      return;
+    }
+    if (this.quest.finaleUnlocked && !this.gateApplied) {
+      this.gateApplied = true;
+      const removable = this.collLayer as unknown as {
+        removeTileAt?: (x: number, y: number) => void;
+      } | null;
+      for (const tile of gate.lockedTiles) removable?.removeTileAt?.(tile.x, tile.y);
+      const cx = (gate.zoneTiles.x + gate.zoneTiles.w / 2) * t;
+      this.unlockMarker = this.add
+        .text(cx, gate.zoneTiles.y * t - 6, "✦ Aula Terbuka ✦", {
+          fontSize: "14px",
+          color: "#ffd98a",
+          stroke: "#1a2233",
+          strokeThickness: 4,
+        })
+        .setOrigin(0.5)
+        .setDepth(150);
+    }
+    if (!this.quest.finaleUnlocked && !this.insideGatePrev) {
+      EventBus.emit(BRIDGE_EVENTS.finaleGateBlocked, {
+        collected: [...this.quest.collected],
+        required: [...this.questDef.required],
+      });
+    }
+    this.insideGatePrev = true;
   }
 
   private spawnPlacements(): void {
@@ -285,6 +406,7 @@ export class WeddingWorldScene extends Scene {
       return;
     }
     this.refreshTarget();
+    this.checkFinaleGate();
     if (this.navZoneId) {
       const z = this.def.landmarks[this.navZoneId];
       const px = this.player.sprite.x;

@@ -1,0 +1,35 @@
+{
+  "templateKey": "garden-village-v1",
+  "version": 1,
+  "gates": [
+    {
+      "id": "gate.finale",
+      "zoneTiles": {
+        "x": 25,
+        "y": 8,
+        "w": 5,
+        "h": 3
+      },
+      "tiles": [
+        {
+          "x": 26,
+          "y": 9
+        },
+        {
+          "x": 28,
+          "y": 9
+        },
+        {
+          "x": 27,
+          "y": 9
+        }
+      ],
+      "lockedTiles": [
+        {
+          "x": 27,
+          "y": 9
+        }
+      ]
+    }
+  ]
+}

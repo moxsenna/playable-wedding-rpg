@@ -4,6 +4,7 @@
   "tilemap": "map.tmj",
   "tileset": "../../sprites/playable_wedding_environment_pack_v2/terrain/terrain_tiles.tsj",
   "placements": "placements.json",
+  "gates": "gates.json",
   "tileSize": 16,
   "size": {
     "w": 56,

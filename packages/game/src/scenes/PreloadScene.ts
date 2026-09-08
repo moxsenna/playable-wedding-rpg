@@ -9,6 +9,7 @@ export const ENV_REGISTRY_URL = "assets/environment/environment-registry.json";
 interface RuntimeManifest {
   tilemap: string;
   placements?: string;
+  gates?: string;
   environment?: {
     base: string;
     registry: string;
@@ -89,6 +90,7 @@ export class PreloadScene extends Scene {
     this.load.tilemapTiledJSON("world-map", base + manifest.tilemap);
     this.load.json("world-map-json", base + manifest.tilemap);
     this.load.json("world-placements", base + (manifest.placements ?? "placements.json"));
+    this.load.json("world-gates", base + (manifest.gates ?? "gates.json"));
     this.load.image("terrain-tiles", env.base + env.terrainImage);
     for (const [key, ref] of Object.entries(env.atlases)) {
       this.load.atlas(`wedding-${key}`, env.base + ref.png, env.base + ref.json);

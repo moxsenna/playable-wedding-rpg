@@ -4,10 +4,12 @@
   "compatibilityVersion": 1,
   "tilemap": "map.json",
   "placements": "placements.json",
+  "gates": "gates.json",
   "files": [
     "map.json",
     "manifest.json",
     "placements.json",
+    "gates.json",
     "sprites/guest_01.png"
   ],
   "environment": {
