@@ -63,7 +63,7 @@ try {
     async query(text, params = []) {
       seen.push({ text, params });
       if (text.includes("COALESCE(MAX(version)")) return { rows: [{ m: 2 }], rowCount: 1 };
-      if (text.startsWith("UPDATE publication_versions SET status = 'active'")) {
+      if (text.includes("WITH target AS")) {
         return {
           rows: [{ id: "pv-1", project_id: "p1", publication_id: "pub", version: 3, status: "active", snapshot: {}, created_at: 1 }],
           rowCount: 1,
@@ -81,13 +81,16 @@ try {
   ok(up && up.params[0] === "gt_x" && up.text.includes("$1"), "rsvp upsert parameterized");
   ok(!up.text.includes("gt_x"), "no value interpolated into SQL");
 
-  // activateExclusive archives siblings first, then activates one row
+  // activateExclusive is ONE statement: archive + activate atomically.
+  // Exactly one query may touch publication_versions here.
+  const before = seen.length;
   await db.activateExclusive("p1", "pub", "pv-1");
-  const arch = seen.find((s) => s.text.includes("SET status = 'archived'"));
-  ok(arch && arch.params[0] === "p1" && arch.params[2] === "pv-1", "siblings archived excluding target");
-  const act = seen.find((s) => s.text.includes("SET status = 'active'"));
-  ok(act && act.text.includes("AND status = 'published'"), "activation requires published status");
-  ok(act.text.includes("RETURNING"), "activation returns the row");
+  const touched = seen.slice(before).filter((s) => s.text.includes("publication_versions"));
+  ok(touched.length === 1, `single atomic statement (saw ${touched.length})`);
+  const stmt = touched[0];
+  ok(stmt.text.includes("WITH target AS"), "target validated inside the statement");
+  ok(stmt.text.includes("ELSE 'archived' END"), "archive + activate in one write");
+  ok(/status = 'published'/.test(stmt.text), "target must be published");
 
   // empty activate result throws (caller maps to 409, never two actives)
   const emptyPool = { async query() { return { rows: [], rowCount: 0 }; } };

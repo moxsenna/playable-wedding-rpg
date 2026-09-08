@@ -594,3 +594,41 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   seed); env/avatar dep dirs dedupe by hash across versions.
 - Next: Cloudflare login → R2 publish --driver r2 → deploy API + realtime
   + web → production soak.
+
+## M12.7 — Deployment Readiness Closure (VERIFIED 2026-09-08)
+
+- Status: complete. leaf-m12.7 G0..G3 PASS with recorded evidence.
+  Closes the 3 audit gaps: atomic activation, pinned-manifest runtime,
+  portable CI. No gameplay/asset/protocol/admin/schema changes beyond
+  these three.
+- Files changed: `packages/wedding-core/src/store.ts` (single-statement
+  activateExclusive with target CTE), `packages/game/src/index.ts`
+  (manifestUrl option + allowlist resolver) + `scenes/PreloadScene.ts`
+  (registry manifest URL) + `scenes/WeddingWorldScene.ts` (forwards
+  registry URL to loader), `apps/web/src/game/main.ts` (?manifest= /
+  ?api&?wedding&?r2 bootstrap, local fallback) + `PhaserGame.tsx` (async
+  StartGame), `apps/api/src/api.ts` (/v1/world-config public route),
+  `tooling/resolve-wrangler.mjs` (workspace-local → PATH → legacy),
+  `scripts/{verify-m11,m125,m126}-build.mjs` + `gate-lint-all.mjs` +
+  `lint-ledger.mjs` (portable), `tooling/e2e/{m11-room,m125-integration,
+  m126-neon}.mjs` (portable), `scripts/verify-m127-atomic.mjs`,
+  `tooling/e2e/m127-manifest.mjs`, `scripts/verify-m126-logic.mjs`
+  (single-statement assertions), `scripts/verify-ci.mjs` (22 steps),
+  `.github/workflows/ci.yml` (workerd approval + chromium install),
+  `.unlazy/**`.
+- Commands run: `node scripts/verify-m127-atomic.mjs` (M127 ATOMIC
+  VERIFIED, 6), `node tooling/e2e/m127-manifest.mjs` (M127 MANIFEST
+  VERIFIED: default local, explicit pinned, invalid fallback),
+  `node tooling/e2e/m126-neon.mjs` (M126 NEON VERIFIED + failed-activation
+  leaves active intact), `node scripts/verify-ci.mjs` (CI SUBSET VERIFIED
+  22/22), `m5/m10/m11/m125/m14` probes (no regressions).
+- Tests: one-write proof, no-row throws, missing-version 404, draft-state
+  400, active survives both failures; manifest allowlist rejects
+  javascript: URLs; zero machine-specific paths remain in CI path.
+- Acceptance: leaf-m12.7 G0..G3 all met with evidence.
+- Known issues / decisions: ?manifest= allowlist is http(s)//absolute/
+  assets-only; ?api+?r2 bootstrap is convention for production deploys
+  (CDN base + API base passed at boot); wrangler resolves workspace-local
+  first so CI never needs a global install.
+- Next: Cloudflare login → R2 publish --driver r2 → set secrets → deploy
+  API + realtime + web → production E2E → soak → GO.

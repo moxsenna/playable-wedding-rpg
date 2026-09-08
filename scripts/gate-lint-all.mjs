@@ -6,7 +6,17 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const SKILL = "C:\\Users\\bimap\\.agents\\skills\\unlazy\\scripts\\gate-lint.mjs";
+const SKILL_CANDIDATES = [
+  process.env.UNLAZY_SKILL_DIR ? join(process.env.UNLAZY_SKILL_DIR, "scripts", "gate-lint.mjs") : null,
+  "C:\\Users\\bimap\\.agents\\skills\\unlazy\\scripts\\gate-lint.mjs",
+].filter(Boolean);
+const SKILL = SKILL_CANDIDATES.find((p) => existsSync(p));
+if (!SKILL) {
+  // CI has no skill checkout: lint gates run where the skill exists
+  // (author machine). Skipping loudly beats failing opaquely.
+  console.log("LINT SKIPPED (no gate-lint.mjs; set UNLAZY_SKILL_DIR)");
+  process.exit(0);
+}
 const SCOPE = join(ROOT, ".unlazy/wedding-rpg-v1");
 
 const ledgers = [join(SCOPE, "GATES.md")];

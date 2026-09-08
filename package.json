@@ -13,6 +13,7 @@
     "drizzle-kit": "^0.31.10",
     "drizzle-orm": "^0.45.2",
     "pg": "^8.23.0",
+    "wrangler": "^4.129.1",
     "ws": "^8.21.3"
   },
   "dependencies": {

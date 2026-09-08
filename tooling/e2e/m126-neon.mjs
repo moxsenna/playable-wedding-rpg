@@ -6,11 +6,19 @@
 import { spawn } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveWranglerJs } from "../resolve-wrangler.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const API_DIR = join(ROOT, "apps/api");
 const API_PORT = 8791;
-const WRANGLER_JS = "C:\\Users\\bimap\\AppData\\Roaming\\npm\\node_modules\\wrangler\\bin\\wrangler.js";
+const WRANGLER_JS = (() => {
+  try {
+    return resolveWranglerJs();
+  } catch (e) {
+    console.error(`M12.6 neon check FAILED: ${(e && e.message) || e}`);
+    process.exit(1);
+  }
+})();
 const ROOM_SECRET = "m126-live-secret-0123456789abcdef";
 const ADMIN_KEY = "m126-live-admin-key";
 
@@ -130,6 +138,27 @@ async function main() {
   const pub = await apiCall("/v1/publication?project=demo-ayu-bima&publication=live-probe");
   if (pub.status !== 200 || pub.body.version !== a2.body.version.version) {
     fail("active publication is not v2 (single-active violated)");
+  }
+  // failed activation must leave the current active untouched (atomicity)
+  const bad = await apiCall("/v1/admin/activate", {
+    method: "POST", headers: adminH, body: JSON.stringify({ versionId: "pv-does-not-exist" }),
+  });
+  if (bad.status !== 404) fail(`activating a missing version must 404, saw ${bad.status}`);
+  const still = await apiCall("/v1/publication?project=demo-ayu-bima&publication=live-probe");
+  if (still.status !== 200 || still.body.version !== a2.body.version.version) {
+    fail("failed activation disturbed the active version (not atomic)");
+  }
+  const draftOnly = await apiCall("/v1/admin/draft", {
+    method: "POST", headers: adminH,
+    body: JSON.stringify({ projectId: "demo-ayu-bima", publicationId: "live-probe", snapshot: minimal }),
+  });
+  const badState = await apiCall("/v1/admin/activate", {
+    method: "POST", headers: adminH, body: JSON.stringify({ versionId: draftOnly.body.version.id }),
+  });
+  if (badState.status !== 400) fail(`activating a draft must 400, saw ${badState.status}`);
+  const still2 = await apiCall("/v1/publication?project=demo-ayu-bima&publication=live-probe");
+  if (still2.status !== 200 || still2.body.version !== a2.body.version.version) {
+    fail("draft activation disturbed the active version (not atomic)");
   }
 
   await stopAll();

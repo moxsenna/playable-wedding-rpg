@@ -224,6 +224,16 @@ export default {
       return json({ snapshot: v.snapshot, version: v.version });
     }
 
+    // Public world-config resolution: project -> pinned template manifest
+    // ref. Null manifestRef means "use the local dev manifest". No auth:
+    // the manifest itself carries no secrets.
+    if (url.pathname === "/v1/world-config" && request.method === "GET") {
+      const project = url.searchParams.get("project") ?? "";
+      if (!project) return json({ error: "project required" }, 400);
+      const manifestRef = await store.findWorldManifestRef(project);
+      return json({ project, manifestRef });
+    }
+
     if (url.pathname.startsWith("/v1/admin/")) {
       if (!env.ADMIN_KEY || request.headers.get("x-admin-key") !== env.ADMIN_KEY) {
         return unauthorized();

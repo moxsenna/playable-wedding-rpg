@@ -93,6 +93,7 @@ export interface WeddingStore {
   findActive(projectId: string, publicationId: string): Promise<PublicationVersion | null>;
   listVersions(projectId: string): Promise<PublicationVersion[]>;
   activateExclusive(projectId: string, publicationId: string, versionId: string): Promise<PublicationVersion>;
+  findWorldManifestRef(projectId: string): Promise<string | null>;
   recordAudit(projectId: string | null, actor: string, action: string, detail: string | null, now: number): Promise<void>;
 }
 
@@ -188,27 +189,46 @@ export class NeonStore implements WeddingStore {
   }
 
   /**
-   * Exclusive activation: archive siblings, then activate the target. The
-   * pubver_single_active partial unique index is the race guard — a
-   * concurrent activation throws a 23505 unique violation, which callers
-   * must surface as a failed activation, never as two active versions.
+   * Pinned world manifest for a project: world config → template version →
+   * manifest ref. Null when the project has no world config (caller falls
+   * back to the local dev manifest).
+   */
+  async findWorldManifestRef(projectId: string): Promise<string | null> {
+    const r = await this.db.query(
+      `SELECT v.manifest_ref AS ref FROM wedding_world_configs c
+       JOIN world_template_versions v ON v.id = c.template_version_id
+       WHERE c.project_id = $1 LIMIT 1`,
+      [projectId]
+    );
+    const ref = r.rows[0]?.ref;
+    return typeof ref === "string" && ref.length > 0 ? ref : null;
+  }
+
+  /**
+   * Exclusive activation as ONE statement: the target flips to active and
+   * every other active sibling archives in the same write. If the target is
+   * not published (or missing), zero rows match and NOTHING changes — the
+   * old active is never left archived with no successor. The
+   * pubver_single_active partial unique index stays as the concurrent-race
+   * guard; callers surface a no-row result as a failed activation (409).
    */
   async activateExclusive(projectId: string, publicationId: string, versionId: string): Promise<PublicationVersion> {
-    await this.db.query(
-      `UPDATE publication_versions SET status = 'archived'
-       WHERE project_id = $1 AND publication_id = $2 AND status = 'active' AND id <> $3`,
-      [projectId, publicationId, versionId]
-    );
     const r = await this.db.query(
-      `UPDATE publication_versions SET status = 'active'
-       WHERE id = $1 AND project_id = $2 AND publication_id = $3 AND status = 'published'
-       RETURNING id, project_id, publication_id, version, status, snapshot, created_at`,
+      `WITH target AS (
+         SELECT id FROM publication_versions
+         WHERE id = $1 AND project_id = $2 AND publication_id = $3 AND status = 'published'
+       )
+       UPDATE publication_versions v SET status = CASE WHEN v.id = $1 THEN 'active' ELSE 'archived' END
+       FROM target
+       WHERE v.project_id = $2 AND v.publication_id = $3 AND v.status IN ('active', 'published')
+       RETURNING v.id, v.project_id, v.publication_id, v.version, v.status, v.snapshot, v.created_at`,
       [versionId, projectId, publicationId]
     );
-    if (r.rows.length === 0) {
+    const active = r.rows.find((row) => String(row.id) === versionId && row.status === "active");
+    if (!active) {
       throw new Error("activate-exclusive-no-row");
     }
-    return rowVersion(r.rows[0]);
+    return rowVersion(active);
   }
 
   async recordAudit(projectId: string | null, actor: string, action: string, detail: string | null, now: number): Promise<void> {

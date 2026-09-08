@@ -19,23 +19,33 @@ export const PhaserGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame
 
     useLayoutEffect(() =>
     {
+        let cancelled = false;
         if (game.current === null)
         {
 
-            game.current = StartGame("game-container");
+            StartGame("game-container").then((g) =>
+            {
+                if (cancelled)
+                {
+                    g.destroy(true);
+                    return;
+                }
+                game.current = g;
 
-            if (typeof ref === 'function')
-            {
-                ref({ game: game.current, scene: null });
-            } else if (ref)
-            {
-                ref.current = { game: game.current, scene: null };
-            }
+                if (typeof ref === 'function')
+                {
+                    ref({ game: game.current, scene: null });
+                } else if (ref)
+                {
+                    ref.current = { game: game.current, scene: null };
+                }
+            });
 
         }
 
         return () =>
         {
+            cancelled = true;
             if (game.current)
             {
                 game.current.destroy(true);

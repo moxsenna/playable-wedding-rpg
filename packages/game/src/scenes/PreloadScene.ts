@@ -2,7 +2,8 @@ import { Scene } from "phaser";
 import { BRIDGE_EVENTS, EventBus } from "../bridge";
 import { validateNpcBindings, runtimeEnvRegistrySchema, type AvatarRegistry, type NpcBinding, type RuntimeEnvRegistry } from "@wedding-rpg/contracts";
 
-export const MANIFEST_URL = "assets/worlds/garden-village-v1/manifest.json";
+export const DEFAULT_MANIFEST_URL = "assets/worlds/garden-village-v1/manifest.json";
+export const MANIFEST_URL = DEFAULT_MANIFEST_URL;
 export const LEGACY_AVATAR_BASE = "assets/avatars/";
 export const LEGACY_ENV_BASE = "assets/environment/";
 export const AVATAR_REGISTRY_URL = `${LEGACY_AVATAR_BASE}avatar-registry.json`;
@@ -30,7 +31,10 @@ export class PreloadScene extends Scene {
   }
 
   preload(): void {
-    this.load.json("world-manifest", MANIFEST_URL);
+    const manifestUrl =
+      (this.registry.get("manifestUrl") as string | undefined) ?? DEFAULT_MANIFEST_URL;
+    this.registry.set("manifestUrl", manifestUrl);
+    this.load.json("world-manifest", manifestUrl);
   }
 
   create(): void {
@@ -102,7 +106,9 @@ export class PreloadScene extends Scene {
       });
     }
 
-    const base = MANIFEST_URL.slice(0, MANIFEST_URL.lastIndexOf("/") + 1);
+    const manifestUrl =
+      (this.registry.get("manifestUrl") as string | undefined) ?? DEFAULT_MANIFEST_URL;
+    const base = manifestUrl.slice(0, manifestUrl.lastIndexOf("/") + 1);
     this.load.on("progress", (p: number) => {
       EventBus.emit(BRIDGE_EVENTS.gameLoadingProgress, p);
     });

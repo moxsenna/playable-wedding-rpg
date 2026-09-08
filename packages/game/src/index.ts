@@ -33,10 +33,21 @@ export type { NetState, SocketLike, NetClientOptions, NetEvents } from "./networ
  * The caller must destroy the game on unmount (see PhaserGame).
  */
 export interface WeddingGameOptions {
+  /** World manifest URL. Pinned R2 version in production, local dev manifest as fallback. */
+  manifestUrl?: string;
   /** Wedding-specific NPC content. Lives outside game code (web fixture now, publication later). */
   npcBindings?: NpcBinding[];
   /** Local-player avatar id from the avatar registry (guest pool). */
   playerAvatarId?: string;
+}
+
+const DEFAULT_MANIFEST_URL = "assets/worlds/garden-village-v1/manifest.json";
+
+export function resolveManifestUrl(url: string | undefined): string {
+  const trimmed = (url ?? "").trim();
+  if (!trimmed) return DEFAULT_MANIFEST_URL;
+  if (/^https?:\/\//i.test(trimmed) || trimmed.startsWith("/") || trimmed.startsWith("assets/")) return trimmed;
+  return DEFAULT_MANIFEST_URL;
 }
 
 export function createWeddingGame(parent: string, opts: WeddingGameOptions = {}): Game {
@@ -60,6 +71,7 @@ export function createWeddingGame(parent: string, opts: WeddingGameOptions = {})
     scene: [BootScene, PreloadScene, WeddingWorldScene, HudScene],
   };
   const game = new Game(config);
+  game.registry.set("manifestUrl", resolveManifestUrl(opts.manifestUrl));
   game.registry.set("npcBindings", opts.npcBindings ?? []);
   game.registry.set("playerAvatarId", opts.playerAvatarId ?? "guest_01");
   return game;

@@ -8,13 +8,21 @@ import { spawn } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { resolveWranglerJs } from "../resolve-wrangler.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const API_DIR = join(ROOT, "apps/api");
 const RT_DIR = join(ROOT, "apps/realtime");
 const API_PORT = 8788;
 const RT_PORT = 8789;
-const WRANGLER_JS = "C:\\Users\\bimap\\AppData\\Roaming\\npm\\node_modules\\wrangler\\bin\\wrangler.js";
+const WRANGLER_JS = (() => {
+  try {
+    return resolveWranglerJs();
+  } catch (e) {
+    console.error(`M12.5 integration check FAILED: ${(e && e.message) || e}`);
+    process.exit(1);
+  }
+})();
 const ROOM_SECRET = process.env.ROOM_SECRET ?? "m125-local-secret-0123456789";
 const ADMIN_KEY = "m125-local-admin-key";
 

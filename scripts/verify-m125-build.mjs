@@ -6,11 +6,11 @@ import { existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync, execFileSync } from "node:child_process";
+import { resolveWranglerJs } from "../tooling/resolve-wrangler.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const fail = (msg) => { console.error(`M12.5 build check FAILED: ${msg}`); process.exit(1); };
 const BIN = process.platform === "win32" ? ".cmd" : "";
-const WRANGLER_JS = "C:\\Users\\bimap\\AppData\\Roaming\\npm\\node_modules\\wrangler\\bin\\wrangler.js";
 
 function run(bin, args, cwd, label) {
   if (!existsSync(bin)) fail(`${label} binary missing: ${bin} (run pnpm install)`);
@@ -27,7 +27,12 @@ for (const pkg of ["packages/contracts", "packages/wedding-core", "packages/game
   run(join(dir, "node_modules", ".bin", `tsc${BIN}`), "--noEmit -p tsconfig.json", dir, `${pkg} typecheck`);
 }
 
-if (!existsSync(WRANGLER_JS)) fail(`wrangler not installed at ${WRANGLER_JS}`);
+let WRANGLER_JS;
+try {
+  WRANGLER_JS = resolveWranglerJs();
+} catch (e) {
+  fail((e && e.message) || String(e));
+}
 for (const app of ["apps/realtime", "apps/api"]) {
   try {
     execFileSync(process.execPath, [WRANGLER_JS, "deploy", "--dry-run"], {

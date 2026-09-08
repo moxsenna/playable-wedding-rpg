@@ -91,6 +91,10 @@ export class MemoryStore implements WeddingStore {
     return this.versions.versions.filter((v) => v.projectId === projectId);
   }
 
+  async findWorldManifestRef(): Promise<string | null> {
+    return null;
+  }
+
   async activateExclusive(projectId: string, publicationId: string, versionId: string): Promise<PublicationVersion> {
     const target = this.versions.versions.find(
       (v) => v.id === versionId && v.projectId === projectId && v.publicationId === publicationId

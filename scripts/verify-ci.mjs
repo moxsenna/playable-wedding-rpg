@@ -23,6 +23,7 @@ const STEPS = [
   "node scripts/verify-m10-logic.mjs",
   "node scripts/verify-m125-logic.mjs",
   "node scripts/verify-m126-logic.mjs",
+  "node scripts/verify-m127-atomic.mjs",
   "node scripts/validate-avatars.mjs",
   "node scripts/validate-environment.mjs",
   "node scripts/verify-m125-build.mjs",

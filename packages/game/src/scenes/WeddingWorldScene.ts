@@ -29,7 +29,7 @@ import type {
 import { collectOurStoryDefinition, type QuestState } from "@wedding-rpg/contracts";
 import { landmarkIdSchema } from "@wedding-rpg/contracts";
 import type { HudScene } from "./HudScene";
-import { MANIFEST_URL } from "./PreloadScene";
+import { DEFAULT_MANIFEST_URL } from "./PreloadScene";
 
 // Short toast labels per heart; the full story text lives in the publication.
 const HEART_LABELS: Record<string, string> = {
@@ -112,7 +112,9 @@ export class WeddingWorldScene extends Scene {
     >[2];
     const placementsDoc = this.cache.json.get("world-placements");
     const gatesDoc = this.cache.json.get("world-gates");
-    this.def = parseWorldDefinition(MANIFEST_URL, manifest, mapJson, placementsDoc, gatesDoc);
+    const manifestUrl =
+      (this.registry.get("manifestUrl") as string | undefined) ?? DEFAULT_MANIFEST_URL;
+    this.def = parseWorldDefinition(manifestUrl, manifest, mapJson, placementsDoc, gatesDoc);
     this.questDef = collectOurStoryDefinition();
     this.quest = createQuestState(this.questDef);
     this.gateApplied = false;

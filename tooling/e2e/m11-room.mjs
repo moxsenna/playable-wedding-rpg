@@ -8,13 +8,21 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import { mintSession, cleanupMintSession } from "./mint-session.mjs";
+import { resolveWranglerJs } from "../resolve-wrangler.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const WEB_DIR = join(ROOT, "apps/web");
 const RT_DIR = join(ROOT, "apps/realtime");
 const RT_PORT = 8787;
 const WEB_PORT = 8114;
-const WRANGLER_JS = "C:\\Users\\bimap\\AppData\\Roaming\\npm\\node_modules\\wrangler\\bin\\wrangler.js";
+const WRANGLER_JS = (() => {
+  try {
+    return resolveWranglerJs();
+  } catch (e) {
+    console.error(`M11 room check FAILED: ${(e && e.message) || e}`);
+    process.exit(1);
+  }
+})();
 const BIN = process.platform === "win32" ? ".cmd" : "";
 const ROOM_SECRET = process.env.ROOM_SECRET ?? "m125-local-secret-0123456789";
 process.env.ROOM_SECRET = ROOM_SECRET;
