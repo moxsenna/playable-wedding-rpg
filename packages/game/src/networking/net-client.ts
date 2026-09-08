@@ -77,7 +77,7 @@ export class NetClient {
     return this.state;
   }
 
-  connect(mapId: string, avatarId: string): void {
+  connect(session: string): void {
     if (this.state === "connecting" || this.state === "joined") return;
     this.setState("connecting");
     const socket = this.opts.openSocket();
@@ -86,19 +86,18 @@ export class NetClient {
       this.attempts = 0;
       this.strikes = 0;
       this.send("client.hello", {
-        mapId,
-        avatarId,
+        session,
         clientVersion: PROTOCOL_CLIENT_VERSION,
       });
     };
     socket.onmessage = (ev) => this.handleFrame(ev.data);
-    socket.onclose = () => this.scheduleReconnect(mapId, avatarId);
+    socket.onclose = () => this.scheduleReconnect(session);
     socket.onerror = () => {
       this.events.onError?.("socket error");
     };
   }
 
-  private scheduleReconnect(mapId: string, avatarId: string): void {
+  private scheduleReconnect(session: string): void {
     if (this.state === "closed") return;
     this.setState("reconnecting");
     this.socket = null;
@@ -111,7 +110,7 @@ export class NetClient {
     this.retryTimer = setTimeout(() => {
       this.retryTimer = null;
       this.setState("idle");
-      this.connect(mapId, avatarId);
+      this.connect(session);
     }, backoff);
   }
 

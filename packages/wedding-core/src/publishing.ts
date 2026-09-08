@@ -25,13 +25,14 @@ function deepFreeze(value: unknown): void {
   for (const v of Object.values(value as Record<string, unknown>)) deepFreeze(v);
 }
 
-function next(store: VersionStore, publicationId: string, status: PublicationVersion["status"], snapshot: Publication, now: number): PublicationVersion {
+function next(store: VersionStore, projectId: string, publicationId: string, status: PublicationVersion["status"], snapshot: Publication, now: number): PublicationVersion {
   store.seq += 1;
   const versionNumbers = store.versions
-    .filter((v) => v.publicationId === publicationId)
+    .filter((v) => v.projectId === projectId && v.publicationId === publicationId)
     .map((v) => v.version);
   const candidate = {
     id: `pv-${store.seq}`,
+    projectId,
     publicationId,
     version: (versionNumbers.length > 0 ? Math.max(...versionNumbers) : 0) + 1,
     status,
@@ -47,13 +48,14 @@ function next(store: VersionStore, publicationId: string, status: PublicationVer
 
 export function createDraft(
   store: VersionStore,
+  projectId: string,
   publicationId: string,
   snapshot: Publication,
   now: number
 ): LifecycleResult {
   const checked = validatePublication(snapshot);
   if (!checked.ok || !checked.publication) return { ok: false, errors: checked.errors };
-  return { ok: true, version: next(store, publicationId, "draft", checked.publication, now) };
+  return { ok: true, version: next(store, projectId, publicationId, "draft", checked.publication, now) };
 }
 
 export function publishDraft(store: VersionStore, versionId: string): LifecycleResult {
@@ -71,14 +73,14 @@ export function activateVersion(store: VersionStore, versionId: string): Lifecyc
   if (!target) return { ok: false, errors: [`unknown version: ${versionId}`] };
   if (target.status !== "published") return { ok: false, errors: ["only published versions activate"] };
   for (const v of store.versions) {
-    if (v.publicationId === target.publicationId && v.status === "active") v.status = "archived";
+    if (v.projectId === target.projectId && v.publicationId === target.publicationId && v.status === "active") v.status = "archived";
   }
   target.status = "active";
   return { ok: true, version: target };
 }
 
-export function activeVersion(store: VersionStore, publicationId: string): PublicationVersion | null {
+export function activeVersion(store: VersionStore, projectId: string, publicationId: string): PublicationVersion | null {
   return (
-    store.versions.find((v) => v.publicationId === publicationId && v.status === "active") ?? null
+    store.versions.find((v) => v.projectId === projectId && v.publicationId === publicationId && v.status === "active") ?? null
   );
 }

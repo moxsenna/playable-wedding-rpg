@@ -63,9 +63,11 @@ try {
   ok(proto.checkEnvelope(env("player.left", { playerId: "p_1" }), proto.serverMessageTypes).ok, "known type passes");
 
   // --- payload schemas ---
-  const goodMove = { x: 1, y: 2, vx: 80, vy: 0, facing: "right", movement: "walk" };
+  const goodMove = { x: 1, y: 2, vx: 100, vy: 0, facing: "right", movement: "walk" };
   ok(proto.movePayloadSchema.safeParse(goodMove).success, "good move parses");
   ok(!proto.movePayloadSchema.safeParse({ ...goodMove, vx: 9999 }).success, "velocity budget enforced");
+  ok(proto.helloPayloadSchema.safeParse({ session: "sess.opaque", clientVersion: "1.0.0" }).success, "session hello parses");
+  ok(!proto.helloPayloadSchema.safeParse({ mapId: "garden-village-v1", avatarId: "guest_01", clientVersion: "1.0.0" }).success, "legacy mapId/avatarId hello rejected");
   ok(!proto.movePayloadSchema.safeParse({ ...goodMove, facing: "north" }).success, "facing allowlisted");
   ok(!proto.movePayloadSchema.safeParse({ ...goodMove, x: Infinity }).success, "finite coords enforced");
   ok(!proto.emotePayloadSchema.safeParse({ emote: "shout" }).success, "emote allowlisted");
@@ -126,10 +128,12 @@ try {
     );
   const sock = mkSock();
   const client = mkClient(sock);
-  client.connect("garden-village-v1", "guest_01");
+  client.connect("sess.opaque-token");
   ok(seen[0] === "state:connecting", "connecting first");
   sock.onopen();
   ok(sock.sent.length === 1 && JSON.parse(sock.sent[0]).type === "client.hello", "hello on open");
+  ok(JSON.parse(sock.sent[0]).payload.session === "sess.opaque-token", "hello carries the session, not identity");
+  ok(!("avatarId" in JSON.parse(sock.sent[0]).payload), "hello carries no client-chosen avatar");
   const move = { x: 10, y: 20, vx: 100, vy: 0, facing: "right", movement: "walk" };
   ok(client.sendMove(move), "first move sends");
   ok(!client.sendMove({ ...move }), "unchanged move dropped");

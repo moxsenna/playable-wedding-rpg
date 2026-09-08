@@ -444,7 +444,8 @@ export class WeddingWorldScene extends Scene {
     if (typeof window === "undefined") return;
     const q = new URLSearchParams(window.location.search);
     const url = q.get("net");
-    if (!url) return;
+    const session = q.get("session") ?? "";
+    if (!url || !session) return;
     const socketFor = (ws: WebSocket): SocketLike => ({
       send: (d: string) => ws.send(d),
       close: () => ws.close(),
@@ -496,7 +497,7 @@ export class WeddingWorldScene extends Scene {
       }
     );
     this.net = client;
-    client.connect(this.def.templateKey, (this.registry.get("playerAvatarId") as string | undefined) ?? "guest_01");
+    client.connect(session);
   }
 
   private addRemoteView(

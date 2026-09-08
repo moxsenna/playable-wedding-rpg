@@ -29,9 +29,13 @@ const migDir = join(ROOT, "drizzle/migrations");
 const sqlFiles = readdirSync(migDir).filter((f) => f.endsWith(".sql"));
 ok(sqlFiles.length >= 1, "at least one migration generated");
 const sql = sqlFiles.map((f) => readFileSync(join(migDir, f), "utf8")).join("\n");
-for (const t of ["guests", "rsvps", "guestbook", "publication_versions", "audit_events", "world_templates", "world_template_versions"]) {
+for (const t of ["wedding_projects", "guests", "rsvps", "guestbook", "publication_versions", "audit_events", "world_templates", "world_template_versions", "wedding_world_configs"]) {
   ok(sql.includes(`"${t}"`) || sql.includes(` ${t} `) || sql.includes(`(${t}`), `migration creates ${t}`);
 }
+for (const t of ["guests", "rsvps", "guestbook", "publication_versions"]) {
+  ok(sql.includes("project_id"), `${t} carries project_id`);
+}
+ok(sql.includes("guests_project_idx") && sql.includes("pubver_project_idx"), "tenant indexes present");
 
 // --- publish determinism + immutability (isolated out dir) ---
 const OUT = "out/m12-probe";

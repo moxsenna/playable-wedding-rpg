@@ -11,12 +11,13 @@ export function createAuditStore(): AuditStore {
 
 export function recordAudit(
   store: AuditStore,
-  input: { actor: string; action: string; detail?: string },
+  input: { projectId?: string; actor: string; action: string; detail?: string },
   now: number
 ): AuditEvent {
   store.seq += 1;
   const candidate = {
     id: `ae-${store.seq}`,
+    projectId: input.projectId,
     at: now,
     actor: input.actor.trim(),
     action: input.action.trim(),

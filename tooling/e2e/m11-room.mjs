@@ -7,6 +7,7 @@ import { spawn, execSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { mintSession, cleanupMintSession } from "./mint-session.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const WEB_DIR = join(ROOT, "apps/web");
@@ -15,6 +16,8 @@ const RT_PORT = 8787;
 const WEB_PORT = 8114;
 const WRANGLER_JS = "C:\\Users\\bimap\\AppData\\Roaming\\npm\\node_modules\\wrangler\\bin\\wrangler.js";
 const BIN = process.platform === "win32" ? ".cmd" : "";
+const ROOM_SECRET = process.env.ROOM_SECRET ?? "m125-local-secret-0123456789";
+process.env.ROOM_SECRET = ROOM_SECRET;
 
 const fail = (msg) => { console.error(`M11 room check FAILED: ${msg}`); process.exit(1); };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -110,7 +113,7 @@ async function waitJoined(page, who, timeoutMs = 30000) {
 }
 
 async function main() {
-  worker = spawn(process.execPath, [WRANGLER_JS, "dev", "--port", String(RT_PORT)], {
+  worker = spawn(process.execPath, [WRANGLER_JS, "dev", "--port", String(RT_PORT), "--var", `ROOM_SECRET:${ROOM_SECRET}`], {
     cwd: RT_DIR, stdio: "pipe",
   });
   worker.on("error", (e) => fail(`could not start wrangler dev: ${e.message}`));
@@ -131,8 +134,9 @@ async function main() {
       await prepPage(page);
       const logs = [];
       page.on("pageerror", (e) => logs.push(`[pageerror] ${e && e.message}`));
-      const netUrl = encodeURIComponent(`ws://localhost:${RT_PORT}/room?room=demo&name=${name}`);
-      await page.goto(`http://localhost:${WEB_PORT}/?net=${netUrl}`, {
+      const netUrl = encodeURIComponent(`ws://localhost:${RT_PORT}/room?room=demo-ayu-bima`);
+      const session = await mintSession("demo-ayu-bima", name);
+      await page.goto(`http://localhost:${WEB_PORT}/?net=${netUrl}&session=${encodeURIComponent(session)}`, {
         waitUntil: "domcontentloaded", timeout: 60000,
       });
       await page.waitForFunction(() => !!window.__wedding?.player && !!window.__wedding?.net, null, { timeout: 60000 });
@@ -248,6 +252,7 @@ async function main() {
     const allLogs = [...dinda.logs, ...maya.logs];
     if (allLogs.length > 0) fail(`page errors: ${allLogs.join(" | ").slice(0, 400)}`);
     await browser.close();
+    cleanupMintSession();
   } finally {
     await stopAll();
   }

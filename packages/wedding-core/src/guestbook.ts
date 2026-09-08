@@ -1,4 +1,8 @@
-import { guestbookEntrySchema, type GuestbookEntry } from "@wedding-rpg/contracts";
+import {
+  guestbookEntrySchema,
+  projectIdSchema,
+  type GuestbookEntry,
+} from "@wedding-rpg/contracts";
 
 export interface GuestbookStore {
   entries: GuestbookEntry[];
@@ -15,9 +19,13 @@ export type GuestbookResult =
 
 export function addGuestbookEntry(
   store: GuestbookStore,
+  projectId: string,
   input: { name: string; message: string },
   now: number
 ): GuestbookResult {
+  if (!projectIdSchema.safeParse(projectId).success) {
+    return { ok: false, errors: ["unknown project"] };
+  }
   const name = input.name.trim();
   const message = input.message.trim();
   if (name.length === 0 || name.length > 40) {
@@ -30,7 +38,7 @@ export function addGuestbookEntry(
     return { ok: false, errors: ["guestbook message must not contain links"] };
   }
   store.seq += 1;
-  const candidate = { id: `gb-${store.seq}`, name, message, createdAt: now };
+  const candidate = { id: `gb-${store.seq}`, projectId, name, message, createdAt: now };
   const parsed = guestbookEntrySchema.safeParse(candidate);
   if (!parsed.success) {
     return { ok: false, errors: parsed.error.issues.map((i) => i.message) };

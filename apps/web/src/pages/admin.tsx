@@ -76,7 +76,7 @@ export default function Admin() {
     () => [...pubCheck.errors, ...bindCheck.errors],
     [pubCheck, bindCheck]
   );
-  const active = activeVersion(storeRef.current, pub.id);
+  const active = activeVersion(storeRef.current, pub.id, pub.id);
 
   const refreshVersions = () => {
     setVersions({
@@ -85,13 +85,13 @@ export default function Admin() {
     });
   };
   const note = (line: string) => {
-    recordAudit(audit.current, { actor: "admin-ui", action: line }, Date.now());
+    recordAudit(audit.current, { projectId: pub.id, actor: "admin-ui", action: line }, Date.now());
     setLog((l) => [`${new Date().toLocaleTimeString()} ${line}`, ...l].slice(0, 20));
   };
 
   const saveDraft = () => {
     if (!pubCheck.ok || !bindCheck.ok) return;
-    const r = createDraft(storeRef.current, pub.id, pub, Date.now());
+    const r = createDraft(storeRef.current, pub.id, pub.id, pub, Date.now());
     if (!r.ok) return;
     note(`draft v${r.version.version}`);
     refreshVersions();

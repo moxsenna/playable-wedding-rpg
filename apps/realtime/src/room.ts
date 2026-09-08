@@ -9,13 +9,18 @@ import {
   movePayloadSchema,
   type MovePayload,
 } from "@wedding-rpg/contracts";
+import { verifySession } from "@wedding-rpg/wedding-core";
 
 interface Env {
   WEDDING_ROOM: DurableObjectNamespace;
+  ROOM_SECRET?: string;
 }
 
-interface RoomPlayer {
+interface Attachment {
+  expectedRoom: string;
   playerId: string;
+  guestId: string;
+  projectId: string;
   displayName: string;
   avatarId: string;
   x: number;
@@ -28,21 +33,70 @@ interface RoomPlayer {
   lastMoveAt: number;
   lastEmoteAt: number;
   strikes: number;
+  windowCount: number;
 }
+
+interface RoomPlayer extends Attachment {}
 
 const MOVE_BUDGET_MS = 50;
 const MAX_MOVE_PER_SEC = 20;
 const EMOTE_MS = 2000;
 const MAX_STRIKES = 3;
 const ROOM_KEY_RE = /^[a-z0-9_-]{1,64}$/;
+const TEMPLATE_KEY = "garden-village-v1";
 
 function send(ws: WebSocket, type: string, payload: Record<string, unknown>): void {
   ws.send(JSON.stringify({ v: 1, type, seq: 0, ts: Date.now(), payload }));
 }
 
+function blankAttachment(expectedRoom: string): Attachment {
+  return {
+    expectedRoom,
+    playerId: "",
+    guestId: "",
+    projectId: "",
+    displayName: "",
+    avatarId: "",
+    x: 440,
+    y: 1160,
+    vx: 0,
+    vy: 0,
+    facing: "down",
+    movement: "idle",
+    lastSeq: -1,
+    lastMoveAt: 0,
+    lastEmoteAt: 0,
+    strikes: 0,
+    windowCount: 0,
+  };
+}
+
 export class WeddingRoom extends DurableObject<Env> {
-  private seq = 0;
-  private readonly players = new Map<WebSocket, RoomPlayer>();
+  private sockets(): WebSocket[] {
+    try {
+      return this.ctx.getWebSockets();
+    } catch {
+      return [];
+    }
+  }
+
+  private read(ws: WebSocket): Attachment | null {
+    try {
+      const att = ws.deserializeAttachment() as Attachment | null;
+      if (!att || typeof att.expectedRoom !== "string") return null;
+      return att as RoomPlayer;
+    } catch {
+      return null;
+    }
+  }
+
+  private write(ws: WebSocket, player: Attachment): void {
+    try {
+      ws.serializeAttachment(player);
+    } catch {
+      /* socket gone */
+    }
+  }
 
   async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
@@ -51,36 +105,16 @@ export class WeddingRoom extends DurableObject<Env> {
     }
     const roomId = url.searchParams.get("room") ?? "demo-ayu-bima";
     if (!ROOM_KEY_RE.test(roomId)) return new Response("bad room", { status: 400 });
-    // M11 local trust: display name from query. M12 resolves guest identity
-    // server-side from the token against Neon; never trust these fields there.
-    const displayName = (url.searchParams.get("name") ?? "Tamu").slice(0, 40);
 
     const pair = new WebSocketPair();
     const [client, server] = Object.values(pair) as [WebSocket, WebSocket];
     this.ctx.acceptWebSocket(server);
-    const player: RoomPlayer = {
-      playerId: "",
-      displayName,
-      avatarId: "guest_01",
-      x: 440,
-      y: 1160,
-      vx: 0,
-      vy: 0,
-      facing: "down",
-      movement: "idle",
-      lastSeq: -1,
-      lastMoveAt: 0,
-      lastEmoteAt: 0,
-      strikes: 0,
-    };
-    (server as WebSocket & { __player?: RoomPlayer }).__player = player;
-    this.players.set(server, player);
-    void client;
+    this.write(server, blankAttachment(roomId));
     return new Response(null, { status: 101, webSocket: client });
   }
 
   private broadcast(except: WebSocket, type: string, payload: Record<string, unknown>): void {
-    for (const ws of this.players.keys()) {
+    for (const ws of this.sockets()) {
       if (ws === except) continue;
       try {
         send(ws, type, payload);
@@ -90,8 +124,19 @@ export class WeddingRoom extends DurableObject<Env> {
     }
   }
 
+  private joinedPlayers(except?: WebSocket): RoomPlayer[] {
+    const out: RoomPlayer[] = [];
+    for (const ws of this.sockets()) {
+      if (except && ws === except) continue;
+      const p = this.read(ws);
+      if (p && p.playerId) out.push(p);
+    }
+    return out;
+  }
+
   private strike(ws: WebSocket, player: RoomPlayer): void {
     player.strikes += 1;
+    this.write(ws, player);
     if (player.strikes >= MAX_STRIKES) {
       try {
         ws.close(4400, "protocol violations");
@@ -102,7 +147,7 @@ export class WeddingRoom extends DurableObject<Env> {
   }
 
   async webSocketMessage(ws: WebSocket, raw: string | ArrayBuffer): Promise<void> {
-    const player = this.players.get(ws);
+    const player = this.read(ws);
     if (!player) return;
     const text = typeof raw === "string" ? raw : "";
     if (text.length === 0 || text.length > MAX_MESSAGE_BYTES) {
@@ -127,13 +172,36 @@ export class WeddingRoom extends DurableObject<Env> {
           this.strike(ws, player);
           break;
         }
-        this.seq += 1;
-        player.playerId = `p_${this.seq}`;
-        player.avatarId = h.data.avatarId;
-        const others = [...this.players.values()].filter((o) => o !== player && o.playerId);
+        const secret = this.env.ROOM_SECRET ?? "";
+        const verified = await verifySession(h.data.session, secret, Date.now());
+        if (!verified.ok) {
+          this.strike(ws, player);
+          try {
+            ws.close(4401, "bad session");
+          } catch {
+            /* already gone */
+          }
+          break;
+        }
+        const claims = verified.claims;
+        if (claims.projectId !== player.expectedRoom) {
+          try {
+            ws.close(4403, "wrong project");
+          } catch {
+            /* already gone */
+          }
+          break;
+        }
+        player.playerId = `p_${claims.guestId}`;
+        player.guestId = claims.guestId;
+        player.projectId = claims.projectId;
+        player.displayName = claims.displayName;
+        player.avatarId = claims.avatarId;
+        this.write(ws, player);
+        const others = this.joinedPlayers(ws);
         send(ws, "room.welcome", {
           self: { playerId: player.playerId, displayName: player.displayName, avatarId: player.avatarId },
-          room: { mapId: h.data.mapId, onlineCount: this.players.size },
+          room: { mapId: TEMPLATE_KEY, onlineCount: others.length + 1 },
           players: others.map((o) => ({
             playerId: o.playerId,
             displayName: o.displayName,
@@ -151,7 +219,7 @@ export class WeddingRoom extends DurableObject<Env> {
           y: player.y,
           facing: player.facing,
         });
-        this.broadcast(ws, "room.presence", { onlineCount: this.players.size });
+        this.broadcast(ws, "room.presence", { onlineCount: others.length + 1 });
         break;
       }
       case "player.move":
@@ -168,13 +236,12 @@ export class WeddingRoom extends DurableObject<Env> {
         }
         const now = Date.now();
         if (now - player.lastMoveAt < MOVE_BUDGET_MS) break;
-        const moves = (player as RoomPlayer & { windowCount?: number }).windowCount ?? 0;
         if (now - player.lastMoveAt > 1000) {
-          (player as RoomPlayer & { windowCount?: number }).windowCount = 1;
-        } else if (moves >= MAX_MOVE_PER_SEC) {
+          player.windowCount = 1;
+        } else if (player.windowCount >= MAX_MOVE_PER_SEC) {
           break;
         } else {
-          (player as RoomPlayer & { windowCount?: number }).windowCount = moves + 1;
+          player.windowCount += 1;
         }
         player.lastMoveAt = now;
         const mv = m.data as Partial<MovePayload> & { x: number; y: number; facing: string };
@@ -182,6 +249,7 @@ export class WeddingRoom extends DurableObject<Env> {
         player.y = mv.y;
         player.facing = mv.facing;
         player.movement = checked.type === "player.move" ? "walk" : "idle";
+        this.write(ws, player);
         this.broadcast(ws, "player.snapshot", {
           playerId: player.playerId,
           x: player.x,
@@ -206,6 +274,7 @@ export class WeddingRoom extends DurableObject<Env> {
         const now = Date.now();
         if (now - player.lastEmoteAt < EMOTE_MS) break;
         player.lastEmoteAt = now;
+        this.write(ws, player);
         this.broadcast(ws, "player.emote", {
           playerId: player.playerId,
           emote: e.data.emote,
@@ -219,11 +288,11 @@ export class WeddingRoom extends DurableObject<Env> {
   }
 
   async webSocketClose(ws: WebSocket): Promise<void> {
-    const player = this.players.get(ws);
-    this.players.delete(ws);
+    const player = this.read(ws);
     if (player?.playerId) {
       this.broadcast(ws, "player.left", { playerId: player.playerId });
-      this.broadcast(ws, "room.presence", { onlineCount: this.players.size });
+      const remaining = this.joinedPlayers(ws).length;
+      this.broadcast(ws, "room.presence", { onlineCount: remaining });
     }
   }
 
@@ -238,7 +307,7 @@ export default {
     if (url.pathname === "/health") return new Response("ok");
     if (url.pathname.startsWith("/room")) {
       const roomId = url.searchParams.get("room") ?? "demo-ayu-bima";
-      const stub = env.WEDDING_ROOM.getByName(`wedding:${roomId}:garden-village-v1`);
+      const stub = env.WEDDING_ROOM.getByName(`wedding:${roomId}:${TEMPLATE_KEY}`);
       return stub.fetch(request);
     }
     return new Response("not found", { status: 404 });

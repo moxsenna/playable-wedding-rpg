@@ -8,12 +8,15 @@ import { spawn, execSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { mintSession, cleanupMintSession } from "./mint-session.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const WEB_DIR = join(ROOT, "apps/web");
 const RELAY_PORT = 8112;
 const WEB_PORT = 8113;
 const BIN = process.platform === "win32" ? ".cmd" : "";
+const ROOM_SECRET = process.env.ROOM_SECRET ?? "m125-local-secret-0123456789";
+process.env.ROOM_SECRET = ROOM_SECRET;
 
 const fail = (msg) => { console.error(`M10 realtime check FAILED: ${msg}`); process.exit(1); };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -100,7 +103,7 @@ async function waitJoined(page, who, timeoutMs = 30000) {
 
 async function main() {
   relay = spawn(process.execPath, [join(ROOT, "tooling/realtime/local-relay.mjs"), String(RELAY_PORT)], {
-    cwd: ROOT, stdio: "pipe",
+    cwd: ROOT, stdio: "pipe", env: { ...process.env, ROOM_SECRET },
   });
   relay.on("error", (e) => fail(`could not start relay: ${e.message}`));
   await sleep(2000);
@@ -120,8 +123,9 @@ async function main() {
       await prepPage(page);
       const logs = [];
       page.on("pageerror", (e) => logs.push(`[pageerror] ${e && e.message}`));
-      const netUrl = encodeURIComponent(`ws://localhost:${RELAY_PORT}/?name=${name}`);
-      await page.goto(`http://localhost:${WEB_PORT}/?net=${netUrl}`, {
+      const netUrl = encodeURIComponent(`ws://localhost:${RELAY_PORT}/`);
+      const session = await mintSession("demo-ayu-bima", name);
+      await page.goto(`http://localhost:${WEB_PORT}/?net=${netUrl}&session=${encodeURIComponent(session)}`, {
         waitUntil: "domcontentloaded", timeout: 60000,
       });
       await page.waitForFunction(() => !!window.__wedding?.player && !!window.__wedding?.net, null, { timeout: 60000 });
@@ -247,6 +251,7 @@ async function main() {
     const allLogs = [...dinda.logs, ...maya.logs];
     if (allLogs.length > 0) fail(`page errors: ${allLogs.join(" | ").slice(0, 400)}`);
     await browser.close();
+    cleanupMintSession();
   } finally {
     await stopAll();
   }

@@ -516,3 +516,44 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   close proven on the DO room in M11); roster in-memory until M14-prod
   storage pass after deploy.
 - Next: provision credentials → M12 G2 → M13 → production soak.
+
+## M12.5 — Production Boundary Closure (VERIFIED 2026-09-08)
+
+- Status: complete, no credentials needed. leaf-m12.5 G0..G4 PASS with
+  recorded evidence. Closes the 5 production gaps: multi-tenant DB,
+  server-canonical identity, API worker, full R2 uploads, hibernation-safe
+  roster — plus project-scoped auth, integration tests, CI.
+- Files changed: `drizzle/schema.ts` + regenerated `drizzle/migrations`
+  (wedding_projects, wedding_world_configs, project_id FK + indexes on
+  all tenant tables), `packages/contracts/src/{durable,protocol}.ts`
+  (projectId on every durable shape; session-only hello),
+  `packages/wedding-core/src/{guests,rsvp,guestbook,publishing,audit}.ts`
+  (project-scoped) + `session.ts` (HMAC claims), `apps/api/**` (sessions,
+  scoped rsvp/guestbook/publication, admin-key mutations, fail-closed
+  dev-tokens endpoint), `apps/realtime/src/room.ts` (verifySession hello,
+  attachment roster via getWebSockets, no ?name= trust),
+  `packages/game/src/networking/net-client.ts` + scene (`connect(session)`
+  via ?net=&session=), `tooling/{realtime/mint-session, e2e/mint-session,
+  e2e/m125-integration}.mjs`, `tooling/publish/publish.mjs` (all-file R2
+  loop + --dry-run plan), `scripts/verify-{m125-logic,m125-build,ci}.mjs`,
+  `scripts/verify-m5-logic.mjs` (sibling-require fix),
+  `tooling/e2e/{m10-realtime,m11-room,m14-faults}.mjs` (session flow),
+  `.github/workflows/ci.yml`, `.unlazy/wedding-rpg-v1/**`.
+- Commands run: `node scripts/verify-m125-logic.mjs` (M125 BOUNDARY
+  VERIFIED, 19 assertions), `node scripts/verify-m125-build.mjs` (M125
+  BUILD VERIFIED: 6x tsc + 2x dry-run), `node tooling/e2e/m10-realtime.mjs`
+  + `m11-room.mjs` + `m14-faults.mjs` (all green on session flow),
+  `node tooling/e2e/m125-integration.mjs` (M125 INTEGRATION VERIFIED:
+  canonical welcome, impersonation/forged hello rejected, scoped rsvp,
+  admin lifecycle), `node scripts/verify-ci.mjs` (CI SUBSET VERIFIED
+  18/18), `node tooling/publish/publish.mjs garden-village-v1 --dry-run`.
+- Tests: sign/verify/expire/tamper/wrong-secret/avatar-allowlist, cross-
+  project rsvp rejection, per-project versioning, legacy hello rejection,
+  forged-session close, sessionless 401, keyless-admin 401.
+- Acceptance: leaf-m12.5 G0..G4 all met with evidence.
+- Known issues / decisions: ADMIN_KEY + ROOM_SECRET travel as wrangler
+  --var in probes (production sets real secrets); static web export kept,
+  admin persistence via API worker; position ticks never touch Neon.
+- Next: provision credentials → `drizzle-kit migrate` (first migration
+  already on the correct schema) → R2 publish --driver r2 → deploy API +
+  realtime + web → production soak.

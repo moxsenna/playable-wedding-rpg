@@ -1,4 +1,4 @@
-export { createGuestStore, registerGuest, findGuestByToken } from "./guests";
+export { createGuestStore, registerGuest, findGuestByToken, listGuests } from "./guests";
 export type { GuestStore, GuestResult } from "./guests";
 export { createRsvpStore, submitRsvp } from "./rsvp";
 export type { RsvpStore, RsvpResult } from "./rsvp";
@@ -14,3 +14,5 @@ export {
 export type { VersionStore, LifecycleResult } from "./publishing";
 export { createAuditStore, recordAudit } from "./audit";
 export type { AuditStore } from "./audit";
+export { signSession, verifySession, SESSION_TTL_MS } from "./session";
+export type { SessionClaims, SessionResult, VerifyResult } from "./session";

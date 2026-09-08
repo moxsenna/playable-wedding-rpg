@@ -1,8 +1,9 @@
-// Local realtime relay for M10 probes only (M11 replaces it with the
-// Cloudflare Durable Object room). Speaks protocol V1 over WebSocket:
-// welcome/join/snapshot/left/emote/presence broadcast. Display names come
-// from the connection query (?name=); nothing here is trusted in production.
-// Usage: node tooling/realtime/local-relay.mjs <port>
+// Local realtime test relay (M10/M14 probes). Speaks protocol V1 over
+// WebSocket: session-verified hello + join/snapshot/left/emote/presence
+// broadcast. Identity is server-derived: client.hello carries an opaque HMAC
+// session minted by wedding-core signSession; displayName/avatar/project
+// come from verified claims only. Usage:
+//   ROOM_SECRET=<secret> node tooling/realtime/local-relay.mjs <port>
 import { createRequire } from "node:module";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,9 +13,42 @@ const rootRequire = createRequire(join(ROOT, "package.json"));
 const { WebSocketServer } = rootRequire("ws");
 
 const PORT = Number(process.argv[2] ?? "8112");
+const SECRET = process.env.ROOM_SECRET ?? "";
 if (!Number.isInteger(PORT)) {
   console.error("usage: node tooling/realtime/local-relay.mjs <port>");
   process.exit(1);
+}
+
+const text = new TextEncoder();
+function unb64url(s) {
+  const bin = Buffer.from(s.replace(/-/g, "+").replace(/_/g, "/"), "base64");
+  return new Uint8Array(bin);
+}
+async function verifySession(session) {
+  if (!SECRET || SECRET.length < 16) return null;
+  const parts = String(session).split(".");
+  if (parts.length !== 2) return null;
+  const [body, sig] = parts;
+  const key = await crypto.subtle.importKey(
+    "raw", text.encode(SECRET), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]
+  );
+  let sigBytes;
+  try {
+    sigBytes = unb64url(sig);
+  } catch {
+    return null;
+  }
+  const valid = await crypto.subtle.verify("HMAC", key, sigBytes, text.encode(body));
+  if (!valid) return null;
+  try {
+    const claims = JSON.parse(Buffer.from(body.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8"));
+    if (typeof claims.guestId !== "string" || typeof claims.projectId !== "string") return null;
+    if (typeof claims.displayName !== "string" || typeof claims.avatarId !== "string") return null;
+    if (typeof claims.exp !== "number" || Date.now() >= claims.exp) return null;
+    return claims;
+  } catch {
+    return null;
+  }
 }
 
 const ALLOWED = new Set([
@@ -40,23 +74,20 @@ const broadcast = (except, type, payload) => {
 };
 
 const wss = new WebSocketServer({ port: PORT });
-wss.on("connection", (ws, req) => {
-  const url = new URL(req.url ?? "/", "http://local");
-  const displayName = (url.searchParams.get("name") || "Tamu").slice(0, 40);
+wss.on("connection", (ws) => {
   seq += 1;
   const playerId = `p_${seq}`;
   const self = {
     ws,
     playerId,
-    displayName,
-    avatarId: "guest_01",
+    claims: null,
     x: 440,
     y: 1160,
     facing: "down",
     movement: "idle",
   };
 
-  ws.on("message", (buf) => {
+  ws.on("message", async (buf) => {
     const raw = String(buf);
     if (raw.length > 4096) return;
     let msg;
@@ -68,17 +99,27 @@ wss.on("connection", (ws, req) => {
     if (!msg || msg.v !== 1 || !ALLOWED.has(msg.type)) return;
     const p = msg.payload ?? {};
     if (msg.type === "client.hello") {
-      if (typeof p.avatarId === "string" && p.avatarId.length <= 64) self.avatarId = p.avatarId;
+      if (self.claims) return;
+      if (typeof p.session !== "string") {
+        ws.close(4400, "hello requires a session");
+        return;
+      }
+      const claims = await verifySession(p.session);
+      if (!claims) {
+        ws.close(4400, "bad session");
+        return;
+      }
+      self.claims = claims;
       players.set(playerId, self);
       send(ws, "room.welcome", {
-        self: { playerId, displayName, avatarId: self.avatarId },
+        self: { playerId, displayName: claims.displayName, avatarId: claims.avatarId },
         room: { mapId: "garden-village-v1", onlineCount: players.size },
         players: [...players.values()]
           .filter((o) => o.playerId !== playerId)
           .map((o) => ({
             playerId: o.playerId,
-            displayName: o.displayName,
-            avatarId: o.avatarId,
+            displayName: o.claims.displayName,
+            avatarId: o.claims.avatarId,
             x: o.x,
             y: o.y,
             facing: o.facing,
@@ -86,8 +127,8 @@ wss.on("connection", (ws, req) => {
       });
       broadcast(playerId, "player.joined", {
         playerId,
-        displayName,
-        avatarId: self.avatarId,
+        displayName: claims.displayName,
+        avatarId: claims.avatarId,
         x: self.x,
         y: self.y,
         facing: self.facing,

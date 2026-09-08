@@ -21,11 +21,14 @@ export type RsvpResult =
 export function submitRsvp(
   guests: GuestStore,
   store: RsvpStore,
-  input: { token: string; name: string; attending: RsvpChoice; partySize: number },
+  input: { token: string; projectId: string; name: string; attending: RsvpChoice; partySize: number },
   now: number
 ): RsvpResult {
   const guest = findGuestByToken(guests, input.token);
   if (!guest) return { ok: false, errors: ["unknown guest token"] };
+  if (guest.projectId !== input.projectId) {
+    return { ok: false, errors: ["token does not belong to this project"] };
+  }
   const trimmed = input.name.trim();
   if (trimmed.length === 0 || trimmed.length > 80) {
     return { ok: false, errors: ["rsvp name must be 1..80 characters"] };
@@ -35,6 +38,7 @@ export function submitRsvp(
   }
   const candidate = {
     token: input.token,
+    projectId: guest.projectId,
     name: trimmed,
     attending: input.attending,
     partySize: input.partySize,

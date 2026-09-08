@@ -9,13 +9,14 @@ import { spawn, execSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
-import { readFileSync } from "node:fs";
+import { readFileSync, mkdtempSync, writeFileSync, rmSync, mkdirSync } from "node:fs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const WEB_DIR = join(ROOT, "apps/web");
 const RELAY_PORT = 8116;
 const WEB_PORT = 8115;
 const BIN = process.platform === "win32" ? ".cmd" : "";
+const ROOM_SECRET = "m14-local-secret-0123456789";
 
 const fail = (msg) => { console.error(`M14 hardening check FAILED: ${msg}`); process.exit(1); };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -76,21 +77,64 @@ async function launchBrowser() {
 const hook = (page, fn, arg) => page.evaluate(fn, arg);
 
 async function main() {
+  // Mint real HMAC sessions via the repo's own wedding-core (transpiled).
+  const gameRequire = createRequire(join(ROOT, "packages/game/package.json"));
+  const ts = gameRequire("typescript");
+  const tmp = mkdtempSync(join(ROOT, "packages/contracts", ".tmp-m14sess-"));
+  let signSession, registerGuest, createGuestStore;
+  try {
+    for (const [dir, name] of [
+      ["packages/contracts/src", "shared"],
+      ["packages/contracts/src", "durable"],
+      ["packages/wedding-core/src", "guests"],
+      ["packages/wedding-core/src", "session"],
+    ]) {
+      const src = readFileSync(join(ROOT, dir, `${name}.ts`), "utf8");
+      const out = ts.transpileModule(src, {
+        compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+      });
+      writeFileSync(join(tmp, `${name}.js`), out.outputText);
+    }
+    const shimDir = join(tmp, "node_modules", "@wedding-rpg", "contracts");
+    mkdirSync(shimDir, { recursive: true });
+    writeFileSync(join(shimDir, "package.json"), JSON.stringify({ name: "@wedding-rpg/contracts", main: "index.js" }));
+    writeFileSync(
+      join(shimDir, "index.js"),
+      `module.exports = Object.assign({}, require("../../../shared.js"), require("../../../durable.js"));`
+    );
+    const req = createRequire(join(tmp, "x.js"));
+    ({ registerGuest, createGuestStore } = req(join(tmp, "guests.js")));
+    ({ signSession } = req(join(tmp, "session.js")));
+  } catch (e) {
+    fail(`session setup failed: ${(e && e.message) || e}`);
+  }
+  const guestStore = createGuestStore();
+  const sessionFor = async (projectId, name) => {
+    const r = registerGuest(guestStore, projectId, name, Date.now());
+    if (!r.ok) fail(`seed guest failed: ${r.errors.join(";")}`);
+    const s = await signSession(r.guest, "guest_01", ["guest_01"], ROOM_SECRET, Date.now());
+    if (!s.ok) fail(`sign failed: ${s.errors.join(";")}`);
+    return s.session;
+  };
   // --- B+C first (relay only, no browser) ---
   relay = spawn(process.execPath, [join(ROOT, "tooling/realtime/local-relay.mjs"), String(RELAY_PORT)], {
-    cwd: ROOT, stdio: "pipe",
+    cwd: ROOT, stdio: "pipe", env: { ...process.env, ROOM_SECRET },
   });
   relay.on("error", (e) => fail(`could not start relay: ${e.message}`));
   await sleep(2000);
+  try {
 
-  // B: flood with malformed + oversize frames -> closed by strikes
+  // B: sessioned join first, then malformed + oversize flood.
+  // The relay has no strike engine (by design); the DO room strikes.
+  // Assert survival: relay alive, honest client still welcomed.
   {
-    const ws = new WebSocket(`ws://localhost:${RELAY_PORT}/?name=Flood`);
+    const ws = new WebSocket(`ws://localhost:${RELAY_PORT}/`);
     await new Promise((res, rej) => {
       ws.on("open", res);
       ws.on("error", rej);
     });
-    ws.send(JSON.stringify({ v: 1, type: "client.hello", payload: { mapId: "garden-village-v1", avatarId: "guest_01", clientVersion: "1.0.0" } }));
+    const sess = await sessionFor("demo-ayu-bima", "Flood");
+    ws.send(JSON.stringify({ v: 1, type: "client.hello", payload: { session: sess, clientVersion: "1.0.0" } }));
     await sleep(500);
     for (let i = 0; i < 5; i++) ws.send("{garbage");
     ws.send("x".repeat(5000));
@@ -98,17 +142,29 @@ async function main() {
       const t = setTimeout(() => res(false), 8000);
       ws.on("close", () => { clearTimeout(t); res(true); });
     });
-    // local relay tolerates (no strike engine); the DO room strikes instead —
-    // assert at least survival: socket usable or cleanly closed, never crashed relay
     console.log(`flood target closed-by-server: ${closed}`);
     try { ws.close(); } catch { /* noop */ }
+    // legacy identity hello must be rejected, not welcomed
+    const legacy = new WebSocket(`ws://localhost:${RELAY_PORT}/`);
+    await new Promise((res, rej) => {
+      legacy.on("open", res);
+      legacy.on("error", rej);
+    });
+    let legacyWelcomed = false;
+    legacy.on("message", (buf) => {
+      if (String(buf).includes("room.welcome")) legacyWelcomed = true;
+    });
+    legacy.send(JSON.stringify({ v: 1, type: "client.hello", payload: { mapId: "garden-village-v1", avatarId: "guest_01", clientVersion: "1.0.0" } }));
+    await sleep(1500);
+    if (legacyWelcomed) fail("legacy mapId/avatarId hello was welcomed");
+    try { legacy.close(); } catch { /* noop */ }
   }
 
-  // C: 20 clients join + move; every client must see snapshots
+  // C: 20 sessioned clients join + move; every client must see snapshots
   {
     const clients = [];
     for (let i = 0; i < 20; i++) {
-      const ws = new WebSocket(`ws://localhost:${RELAY_PORT}/?name=Load${i}`);
+      const ws = new WebSocket(`ws://localhost:${RELAY_PORT}/`);
       await new Promise((res, rej) => {
         ws.on("open", res);
         ws.on("error", rej);
@@ -119,9 +175,10 @@ async function main() {
         if (t.includes("room.welcome")) seen.welcome = true;
         if (t.includes("player.snapshot")) seen.snapshots += 1;
       });
+      const sess = await sessionFor("demo-ayu-bima", `Load${i}`);
       ws.send(JSON.stringify({
         v: 1, type: "client.hello",
-        payload: { mapId: "garden-village-v1", avatarId: "guest_01", clientVersion: "1.0.0" },
+        payload: { session: sess, clientVersion: "1.0.0" },
       }));
       clients.push({ ws, seen });
     }
@@ -250,6 +307,9 @@ async function main() {
     await browser.close();
   } finally {
     await stopAll();
+  }
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
   }
   console.log("M14 HARDENED");
 }

@@ -26,6 +26,9 @@ try {
     ["packages/contracts/src", "npc"],
     ["packages/contracts/src", "quest"],
     ["packages/game/src/systems/quest", "quest-controller"],
+    ["apps/web/src/weddings", "select"],
+    ["apps/web/src/weddings", "raka-naya"],
+    ["apps/web/src/weddings", "arvin-selena"],
     ["apps/web/src/weddings", "demo-bindings"],
   ]) {
     const src = readFileSync(join(ROOT, dir, `${name}.ts`), "utf8");

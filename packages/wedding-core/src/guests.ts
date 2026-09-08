@@ -1,6 +1,7 @@
 import {
   guestSchema,
   guestTokenSchema,
+  projectIdSchema,
   type Guest,
 } from "@wedding-rpg/contracts";
 
@@ -21,7 +22,15 @@ export type GuestResult =
   | { ok: true; guest: Guest }
   | { ok: false; errors: string[] };
 
-export function registerGuest(store: GuestStore, name: string, now: number): GuestResult {
+export function registerGuest(
+  store: GuestStore,
+  projectId: string,
+  name: string,
+  now: number
+): GuestResult {
+  if (!projectIdSchema.safeParse(projectId).success) {
+    return { ok: false, errors: ["unknown project"] };
+  }
   const trimmed = name.trim();
   if (trimmed.length === 0 || trimmed.length > 80) {
     return { ok: false, errors: ["guest name must be 1..80 characters"] };
@@ -29,6 +38,7 @@ export function registerGuest(store: GuestStore, name: string, now: number): Gue
   store.seq += 1;
   const candidate = {
     id: `guest-${store.seq}`,
+    projectId,
     name: trimmed,
     token: newToken(store.seq),
     createdAt: now,
@@ -44,4 +54,8 @@ export function registerGuest(store: GuestStore, name: string, now: number): Gue
 export function findGuestByToken(store: GuestStore, token: string): Guest | null {
   if (!guestTokenSchema.safeParse(token).success) return null;
   return store.guests.find((g) => g.token === token) ?? null;
+}
+
+export function listGuests(store: GuestStore, projectId: string): Guest[] {
+  return store.guests.filter((g) => g.projectId === projectId);
 }

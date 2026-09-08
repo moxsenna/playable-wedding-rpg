@@ -1,9 +1,11 @@
-// Immutable world-template publisher (M12): hashes a built world directory
+// Immutable world-template publisher (M12.5): hashes a built world directory
 // into a content-addressed, never-overwritten version.
-//   node tooling/publish/publish.mjs <templateKey> [--out <dir>] [--driver local]
-// Local driver writes versions/<key>/v<N>/ + index.json. The r2 driver shells
-// to `wrangler r2 object put` and fails loudly without Cloudflare login.
-// Prints PUBLISHED <key> v<N> <hash> on success.
+//   node tooling/publish/publish.mjs <templateKey> [--out <dir>] [--driver local|r2] [--dry-run]
+// Local driver writes versions/<key>/v<N>/ + index.json. The r2 driver
+// uploads EVERY file under the version prefix (manifest alone is not a
+// publication), and fails loudly without Cloudflare login. --dry-run lists
+// the upload plan (count + keys) without touching disk, bucket, or wrangler.
+// Prints PUBLISHED <key> v<N> <hash> (+ UPLOADED <count>/<count> for r2).
 import { createHash } from "node:crypto";
 import {
   copyFileSync,
@@ -25,7 +27,8 @@ const args = process.argv.slice(2);
 const key = args.find((a) => !a.startsWith("--"));
 const outArg = args[args.indexOf("--out") + 1];
 const driverArg = args[args.indexOf("--driver") + 1];
-if (!key) fail("usage: node tooling/publish/publish.mjs <templateKey> [--out <dir>] [--driver local|r2]");
+const DRY_RUN = args.includes("--dry-run");
+if (!key) fail("usage: node tooling/publish/publish.mjs <templateKey> [--out <dir>] [--driver local|r2] [--dry-run]");
 const OUT = outArg ? join(ROOT, outArg) : join(ROOT, "out", "templates");
 const DRIVER = driverArg ?? "local";
 
@@ -59,14 +62,8 @@ if (existsSync(indexPath)) {
 const version = index.versions.length + 1;
 const versionDir = join(keyDir, `v${version}`);
 if (existsSync(versionDir)) fail(`v${version} already published (immutable)`);
-mkdirSync(versionDir, { recursive: true });
 
 const manifest = JSON.parse(readFileSync(join(SRC, "manifest.json"), "utf8"));
-for (const f of files) {
-  const dest = join(versionDir, f);
-  mkdirSync(dirname(dest), { recursive: true });
-  copyFileSync(join(SRC, f), dest);
-}
 const versionManifest = {
   ...manifest,
   version,
@@ -75,18 +72,37 @@ const versionManifest = {
   publishedAt: new Date().toISOString(),
   files,
 };
+const uploadKeys = [...new Set([...files, "manifest.json"])];
+
+if (DRY_RUN) {
+  console.log(`DRY-RUN ${key} v${version} files=${uploadKeys.length}`);
+  for (const k of uploadKeys) console.log(`  wedding-templates/${key}/v${version}/${k}`);
+  process.exit(0);
+}
+
+mkdirSync(versionDir, { recursive: true });
+for (const f of files) {
+  const dest = join(versionDir, f);
+  mkdirSync(dirname(dest), { recursive: true });
+  copyFileSync(join(SRC, f), dest);
+}
 writeFileSync(join(versionDir, "manifest.json"), JSON.stringify(versionManifest, null, 2) + "\n");
 index.versions.push({ version, contentHash, publishedAt: versionManifest.publishedAt });
 writeFileSync(indexPath, JSON.stringify(index, null, 2) + "\n");
 
 if (DRIVER === "r2") {
-  try {
-    execFileSync("wrangler", ["r2", "object", "put", `wedding-templates/${key}/v${version}/manifest.json`, "--file", join(versionDir, "manifest.json")], {
-      cwd: ROOT, stdio: "pipe", timeout: 300000,
-    });
-  } catch (e) {
-    fail(`r2 upload needs Cloudflare login: ${((e.stdout || "") + (e.stderr || e.message || "")).toString().slice(0, 300)}`);
+  let uploaded = 0;
+  for (const k of uploadKeys) {
+    try {
+      execFileSync("wrangler", ["r2", "object", "put", `wedding-templates/${key}/v${version}/${k}`, "--file", join(versionDir, k)], {
+        cwd: ROOT, stdio: "pipe", timeout: 300000,
+      });
+      uploaded += 1;
+    } catch (e) {
+      fail(`r2 upload ${uploaded}/${uploadKeys.length} then FAILED on ${k}: r2 upload needs Cloudflare login: ${((e.stdout || "") + (e.stderr || e.message || "")).toString().slice(0, 200)}`);
+    }
   }
+  console.log(`UPLOADED ${uploaded}/${uploadKeys.length}`);
 }
 
 console.log(`PUBLISHED ${key} v${version} ${contentHash.slice(0, 12)}`);

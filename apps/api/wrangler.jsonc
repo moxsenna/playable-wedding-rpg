@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developers.cloudflare.com/workers/wrangler/configuration-schema.json",
+  "name": "wedding-rpg-api",
+  "main": "src/api.ts",
+  "compatibility_date": "2026-08-01",
+  "workers_dev": true,
+  "vars": {
+    "SEED_JSON": "{\"projects\":[{\"id\":\"demo-ayu-bima\"},{\"id\":\"raka-naya\"},{\"id\":\"arvin-selena\"}],\"guests\":[{\"projectId\":\"demo-ayu-bima\",\"name\":\"Dinda\"},{\"projectId\":\"demo-ayu-bima\",\"name\":\"Maya\"},{\"projectId\":\"raka-naya\",\"name\":\"Sinta\"}]}",
+    "PROJECT_AVATARS_JSON": "{\"demo-ayu-bima\":[\"guest_01\"],\"raka-naya\":[\"guest_01\"],\"arvin-selena\":[\"guest_01\"]}"
+  }
+}

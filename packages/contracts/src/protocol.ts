@@ -1,6 +1,9 @@
-// Realtime protocol V1 (M10): bounded JSON envelopes + allowlisted message
-// set per REALTIME_PROTOCOL.md. All inbound traffic validates here; the
-// server (M11) and the client net layer share these schemas.
+// Realtime protocol V1 (M10, session-bound since M12.5): bounded JSON
+// envelopes + allowlisted message set per REALTIME_PROTOCOL.md. Identity is
+// never client-supplied: client.hello carries an opaque HMAC session minted
+// by the API worker; the room verifies it and derives guest/project/name/
+// avatar from claims. All inbound traffic validates here; the server (M11)
+// and the client net layer share these schemas.
 import { z } from "zod";
 import { directionSchema, emoteSchema, movementStateSchema } from "./shared";
 
@@ -13,8 +16,7 @@ const finite = z.number().finite();
 const boundedCoord = finite.min(-4096).max(4096);
 
 export const helloPayloadSchema = z.object({
-  mapId: z.string().min(1).max(64),
-  avatarId: z.string().min(1).max(64),
+  session: z.string().min(8).max(2048),
   clientVersion: z.string().min(1).max(32),
 });
 export type HelloPayload = z.infer<typeof helloPayloadSchema>;
