@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "pubver_single_active" ON "publication_versions" USING btree ("project_id","publication_id") WHERE "publication_versions"."status" = 'active';

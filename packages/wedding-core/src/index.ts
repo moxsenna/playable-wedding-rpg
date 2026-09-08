@@ -16,3 +16,6 @@ export { createAuditStore, recordAudit } from "./audit";
 export type { AuditStore } from "./audit";
 export { signSession, verifySession, SESSION_TTL_MS } from "./session";
 export type { SessionClaims, SessionResult, VerifyResult } from "./session";
+export { NeonStore, neonHttpPool } from "./store";
+export type { DbPool, NeonQueryFn, QueryRow, WeddingStore } from "./store";
+export { MemoryStore } from "./memory";

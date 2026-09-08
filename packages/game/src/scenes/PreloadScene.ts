@@ -3,13 +3,19 @@ import { BRIDGE_EVENTS, EventBus } from "../bridge";
 import { validateNpcBindings, runtimeEnvRegistrySchema, type AvatarRegistry, type NpcBinding, type RuntimeEnvRegistry } from "@wedding-rpg/contracts";
 
 export const MANIFEST_URL = "assets/worlds/garden-village-v1/manifest.json";
-export const AVATAR_REGISTRY_URL = "assets/avatars/avatar-registry.json";
-export const ENV_REGISTRY_URL = "assets/environment/environment-registry.json";
+export const LEGACY_AVATAR_BASE = "assets/avatars/";
+export const LEGACY_ENV_BASE = "assets/environment/";
+export const AVATAR_REGISTRY_URL = `${LEGACY_AVATAR_BASE}avatar-registry.json`;
+export const ENV_REGISTRY_URL = `${LEGACY_ENV_BASE}environment-registry.json`;
 
 interface RuntimeManifest {
   tilemap: string;
   placements?: string;
   gates?: string;
+  avatars?: {
+    prefix?: string;
+    registry?: string;
+  };
   environment?: {
     base: string;
     registry: string;
@@ -25,8 +31,6 @@ export class PreloadScene extends Scene {
 
   preload(): void {
     this.load.json("world-manifest", MANIFEST_URL);
-    this.load.json("avatar-registry", AVATAR_REGISTRY_URL);
-    this.load.json("environment-registry", ENV_REGISTRY_URL);
   }
 
   create(): void {
@@ -34,6 +38,21 @@ export class PreloadScene extends Scene {
     if (!manifest || typeof manifest.tilemap !== "string") {
       throw new Error("world manifest missing tilemap entry");
     }
+    const env = manifest.environment;
+    if (!env || typeof env.base !== "string" || !env.atlases) {
+      throw new Error("world manifest missing environment section");
+    }
+    // Pinned dependency prefixes come from the published version manifest;
+    // dev (unpublished) manifests fall back to the legacy shared paths.
+    const envBase = env.base;
+    const avatarBase = manifest.avatars?.prefix ?? LEGACY_AVATAR_BASE;
+    this.load.json("avatar-registry", `${avatarBase}avatar-registry.json`);
+    this.load.json("environment-registry", `${envBase}${env.registry}`);
+    this.load.once("complete", () => this.continueBoot(manifest, envBase, avatarBase));
+    this.load.start();
+  }
+
+  private continueBoot(manifest: RuntimeManifest, envBase: string, avatarBase: string): void {
     const env = manifest.environment;
     if (!env || typeof env.base !== "string" || !env.atlases) {
       throw new Error("world manifest missing environment section");
@@ -77,7 +96,7 @@ export class PreloadScene extends Scene {
         console.error(msg);
         continue;
       }
-      this.load.spritesheet(id, `assets/avatars/${id}.png`, {
+      this.load.spritesheet(id, `${avatarBase}${id}.png`, {
         frameWidth: def.sprite.frameWidth,
         frameHeight: def.sprite.frameHeight,
       });
@@ -91,9 +110,9 @@ export class PreloadScene extends Scene {
     this.load.json("world-map-json", base + manifest.tilemap);
     this.load.json("world-placements", base + (manifest.placements ?? "placements.json"));
     this.load.json("world-gates", base + (manifest.gates ?? "gates.json"));
-    this.load.image("terrain-tiles", env.base + env.terrainImage);
+    this.load.image("terrain-tiles", envBase + env.terrainImage);
     for (const [key, ref] of Object.entries(env.atlases)) {
-      this.load.atlas(`wedding-${key}`, env.base + ref.png, env.base + ref.json);
+      this.load.atlas(`wedding-${key}`, envBase + ref.png, envBase + ref.json);
     }
     this.load.once("complete", () => this.scene.start("WeddingWorld"));
     this.load.start();

@@ -8,9 +8,14 @@
     "gates:m0": "node scripts/verify-m0.mjs && node scripts/check-forbidden-patterns.mjs"
   },
   "devDependencies": {
+    "@types/pg": "^8.23.1",
     "@types/ws": "^8.18.1",
     "drizzle-kit": "^0.31.10",
     "drizzle-orm": "^0.45.2",
+    "pg": "^8.23.0",
     "ws": "^8.21.3"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0"
   }
 }

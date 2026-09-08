@@ -12,7 +12,9 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 export const versionStatus = pgEnum("version_status", ["draft", "published", "active", "archived"]);
 export const rsvpChoice = pgEnum("rsvp_choice", ["hadir", "tidak"]);
@@ -80,7 +82,10 @@ export const publicationVersions = pgTable(
     snapshot: jsonb("snapshot").notNull(),
     createdAt: bigint("created_at", { mode: "number" }).notNull(),
   },
-  (t) => [index("pubver_project_idx").on(t.projectId, t.publicationId)]
+  (t) => [
+    index("pubver_project_idx").on(t.projectId, t.publicationId),
+    uniqueIndex("pubver_single_active").on(t.projectId, t.publicationId).where(sql`${t.status} = 'active'`),
+  ]
 );
 
 export const auditEvents = pgTable(

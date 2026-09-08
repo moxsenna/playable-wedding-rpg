@@ -8,6 +8,7 @@
     "dev": "wrangler dev --port 8788"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "@wedding-rpg/contracts": "workspace:*",
     "@wedding-rpg/wedding-core": "workspace:*",
     "zod": "^4"

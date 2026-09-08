@@ -557,3 +557,40 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
 - Next: provision credentials → `drizzle-kit migrate` (first migration
   already on the correct schema) → R2 publish --driver r2 → deploy API +
   realtime + web → production soak.
+
+## M12.6 — Production Persistence + Immutable Asset Closure (VERIFIED 2026-09-08)
+
+- Status: complete. leaf-m12.6 G0..G4 PASS with recorded evidence. Neon is
+  LIVE (migrated + seeded); R2/deploy still need Cloudflare login.
+- Files changed: `packages/wedding-core/src/{store,memory}.ts` (NeonStore
+  parameterized SQL + activateExclusive + neonHttpPool; explicit dev-only
+  MemoryStore), `apps/api/src/api.ts` (Neon-first, 500 without DATABASE_URL
+  unless DEV_MEMORY_STORE=1, dev guest-mint endpoint, SEED_JSON removed),
+  `apps/api/wrangler.jsonc` (SEED_JSON dropped), `drizzle/schema.ts` +
+  `drizzle/migrations/0001_*` (pubver_single_active partial unique index,
+  applied live), `tooling/db/seed.mjs` (idempotent: 3 projects, 4 guests,
+  3 configs, template v1), `tooling/publish/publish.mjs`
+  (content-addressed environment@/avatars@ deps, pinned bases in version
+  manifest, full upload loop incl. deps), `packages/game/src/scenes/
+  PreloadScene.ts` (manifest-driven bases, legacy fallback in dev),
+  `scripts/verify-{m126-logic,m126-build,m126-assets}.mjs`,
+  `tooling/e2e/m126-neon.mjs`, `scripts/verify-ci.mjs` (21 steps),
+  `scripts/verify-m12-data.mjs` (dep-pin assertions), `.unlazy/**`.
+- Commands run: `drizzle-kit migrate` (0001 live), `node tooling/db/
+  seed.mjs` x2 (4 then 0 new — idempotent), `node scripts/verify-m126-
+  logic.mjs` (M126 STORE VERIFIED, 15), `node scripts/verify-m126-
+  build.mjs` (M126 BUILD VERIFIED), `node tooling/e2e/m126-neon.mjs`
+  (M126 NEON VERIFIED: live session/rsvp/guestbook round-trip, v1->v2
+  single-active), `node scripts/verify-m126-assets.mjs` (M126 ASSETS
+  VERIFIED, 13: 40 keys pinned), `node scripts/verify-ci.mjs` (21/21),
+  `node tooling/e2e/m125-integration.mjs` + `m5-quest.mjs` (no regressions).
+- Tests: parameterized-SQL proof, empty-activate throws (→409), no memory/
+  seed in api source, memory single-active parity, forged/legacy hello
+  still rejected, sessionless/keyless 401s hold.
+- Acceptance: leaf-m12.6 G0..G4 all met with evidence.
+- Known issues / decisions: DATABASE_URL travels as wrangler --var in
+  probes (production binds a real secret); guests minted in dev carry
+  gt_dev_ tokens; SEED_JSON gone from config (live guests come from Neon
+  seed); env/avatar dep dirs dedupe by hash across versions.
+- Next: Cloudflare login → R2 publish --driver r2 → deploy API + realtime
+  + web → production soak.

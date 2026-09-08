@@ -22,11 +22,14 @@ const STEPS = [
   "node scripts/verify-m8-logic.mjs",
   "node scripts/verify-m10-logic.mjs",
   "node scripts/verify-m125-logic.mjs",
+  "node scripts/verify-m126-logic.mjs",
   "node scripts/validate-avatars.mjs",
   "node scripts/validate-environment.mjs",
   "node scripts/verify-m125-build.mjs",
+  "node scripts/verify-m126-build.mjs",
   "node scripts/verify-m5-build.mjs",
   "node scripts/verify-m12-data.mjs",
+  "node scripts/verify-m126-assets.mjs",
   "node tooling/publish/publish.mjs garden-village-v1 --dry-run",
 ];
 

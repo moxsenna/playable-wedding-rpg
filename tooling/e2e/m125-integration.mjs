@@ -63,7 +63,7 @@ const apiCall = async (path, opts = {}) => {
 
 async function main() {
   api = spawn(process.execPath, [WRANGLER_JS, "dev", "--port", String(API_PORT),
-    "--var", `ROOM_SECRET:${ROOM_SECRET}`, "--var", `ADMIN_KEY:${ADMIN_KEY}`, "--var", "ALLOW_DEV_TOKENS:1"], {
+    "--var", `ROOM_SECRET:${ROOM_SECRET}`, "--var", `ADMIN_KEY:${ADMIN_KEY}`, "--var", "ALLOW_DEV_TOKENS:1", "--var", "DEV_MEMORY_STORE:1"], {
     cwd: API_DIR, stdio: "pipe",
   });
   api.on("error", (e) => fail(`could not start api worker: ${e.message}`));
@@ -75,12 +75,27 @@ async function main() {
   await waitFor(`http://localhost:${API_PORT}/health`);
   await waitFor(`http://localhost:${RT_PORT}/health`);
 
-  // seeded tokens (dev-only endpoint)
-  const tokens = await apiCall("/v1/dev/tokens");
+  // mint dev guests explicitly (no seed fixtures in production paths)
+  const mint = async (projectId, name) => {
+    const r = await apiCall("/v1/dev/guests", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ projectId, name }),
+    });
+    if (r.status !== 200) fail(`dev guest mint failed: ${JSON.stringify(r.body)}`);
+    return r.body.guest;
+  };
+  const dindaMinted = await mint("demo-ayu-bima", "Dinda");
+  const sintaMinted = await mint("raka-naya", "Sinta");
+
+  // dev tokens endpoint lists them back per project
+  const tokens = await apiCall("/v1/dev/tokens?project=demo-ayu-bima");
   if (tokens.status !== 200) fail("dev tokens endpoint refused with ALLOW_DEV_TOKENS=1");
   const dinda = tokens.body.guests.find((g) => g.name === "Dinda");
-  const sinta = tokens.body.guests.find((g) => g.name === "Sinta");
-  if (!dinda || !sinta) fail("seeded guests missing");
+  if (!dinda || dinda.token !== dindaMinted.token) fail("minted guest not listed back");
+  const tokensRaka = await apiCall("/v1/dev/tokens?project=raka-naya");
+  const sinta = tokensRaka.body.guests.find((g) => g.name === "Sinta");
+  if (!sinta || sinta.token !== sintaMinted.token) fail("cross-project guest not listed back");
 
   // token -> session (canonical identity)
   const sess = await apiCall("/v1/session", {
