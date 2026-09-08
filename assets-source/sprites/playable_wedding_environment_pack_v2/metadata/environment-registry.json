@@ -1,0 +1,4139 @@
+{
+  "schemaVersion": 2,
+  "packId": "playable_wedding_environment_pack_v2",
+  "worldBaseTileSize": 16,
+  "terrain": {
+    "tilesetImage": "terrain/terrain_tiles.png",
+    "tiledTsj": "terrain/terrain_tiles.tsj",
+    "metadata": "terrain/terrain_tiles.json",
+    "tileSize": 16,
+    "status": "production-ready-technical; visual seam QA still recommended"
+  },
+  "atlases": {
+    "foliage": {
+      "png": "atlases/foliage_atlas.png",
+      "json": "atlases/foliage_atlas.json",
+      "width": 2025,
+      "height": 838,
+      "count": 58
+    },
+    "decor": {
+      "png": "atlases/decor_atlas.png",
+      "json": "atlases/decor_atlas.json",
+      "width": 2035,
+      "height": 866,
+      "count": 83
+    },
+    "landmarks": {
+      "png": "atlases/landmarks_atlas.png",
+      "json": "atlases/landmarks_atlas.json",
+      "width": 1992,
+      "height": 823,
+      "count": 10
+    }
+  },
+  "aliases": {
+    "wedding_hall_garden_01": "event_pavilion_01",
+    "wedding_hall_muslim_01": "event_pavilion_01",
+    "memory_garden_01": "photo_terrace_01",
+    "couple_garden_01": "couple_garden_table_01",
+    "wishing_tree_01": "wishing_tree_landmark_01"
+  },
+  "assets": {
+    "foliage": [
+      {
+        "id": "wishing_tree_01",
+        "category": "foliage",
+        "file": "objects/foliage/wishing_tree_01.png",
+        "sourceComponentIndex": 0,
+        "sourceBounds": {
+          "x": 964,
+          "y": 12,
+          "w": 289,
+          "h": 410,
+          "area": 87218
+        },
+        "width": 292,
+        "height": 414,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        }
+      },
+      {
+        "id": "tree_pink_blossom_01",
+        "category": "foliage",
+        "file": "objects/foliage/tree_pink_blossom_01.png",
+        "sourceComponentIndex": 1,
+        "sourceBounds": {
+          "x": 209,
+          "y": 13,
+          "w": 193,
+          "h": 234,
+          "area": 30246
+        },
+        "width": 197,
+        "height": 238,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        }
+      },
+      {
+        "id": "tree_green_roses_01",
+        "category": "foliage",
+        "file": "objects/foliage/tree_green_roses_01.png",
+        "sourceComponentIndex": 2,
+        "sourceBounds": {
+          "x": 400,
+          "y": 16,
+          "w": 197,
+          "h": 231,
+          "area": 30749
+        },
+        "width": 201,
+        "height": 235,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        }
+      },
+      {
+        "id": "tree_wisteria_01",
+        "category": "foliage",
+        "file": "objects/foliage/tree_wisteria_01.png",
+        "sourceComponentIndex": 3,
+        "sourceBounds": {
+          "x": 599,
+          "y": 16,
+          "w": 387,
+          "h": 231,
+          "area": 61121
+        },
+        "width": 391,
+        "height": 235,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        }
+      },
+      {
+        "id": "tree_green_dense_01",
+        "category": "foliage",
+        "file": "objects/foliage/tree_green_dense_01.png",
+        "sourceComponentIndex": 4,
+        "sourceBounds": {
+          "x": 9,
+          "y": 18,
+          "w": 194,
+          "h": 227,
+          "area": 30220
+        },
+        "width": 198,
+        "height": 231,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        }
+      },
+      {
+        "id": "tree_green_whiteflowers_01",
+        "category": "foliage",
+        "file": "objects/foliage/tree_green_whiteflowers_01.png",
+        "sourceComponentIndex": 5,
+        "sourceBounds": {
+          "x": 157,
+          "y": 241,
+          "w": 151,
+          "h": 177,
+          "area": 16201
+        },
+        "width": 155,
+        "height": 181,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        }
+      },
+      {
+        "id": "tree_pink_blossom_small_01",
+        "category": "foliage",
+        "file": "objects/foliage/tree_pink_blossom_small_01.png",
+        "sourceComponentIndex": 6,
+        "sourceBounds": {
+          "x": 310,
+          "y": 246,
+          "w": 159,
+          "h": 174,
+          "area": 16999
+        },
+        "width": 163,
+        "height": 178,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        }
+      },
+      {
+        "id": "tree_orange_blossom_01",
+        "category": "foliage",
+        "file": "objects/foliage/tree_orange_blossom_01.png",
+        "sourceComponentIndex": 7,
+        "sourceBounds": {
+          "x": 647,
+          "y": 246,
+          "w": 145,
+          "h": 173,
+          "area": 16953
+        },
+        "width": 149,
+        "height": 177,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        }
+      },
+      {
+        "id": "tree_green_pinkflowers_01",
+        "category": "foliage",
+        "file": "objects/foliage/tree_green_pinkflowers_01.png",
+        "sourceComponentIndex": 8,
+        "sourceBounds": {
+          "x": 480,
+          "y": 247,
+          "w": 152,
+          "h": 172,
+          "area": 16898
+        },
+        "width": 156,
+        "height": 176,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        }
+      },
+      {
+        "id": "tree_green_whiteflowers_small_01",
+        "category": "foliage",
+        "file": "objects/foliage/tree_green_whiteflowers_small_01.png",
+        "sourceComponentIndex": 9,
+        "sourceBounds": {
+          "x": 803,
+          "y": 247,
+          "w": 174,
+          "h": 173,
+          "area": 23834
+        },
+        "width": 178,
+        "height": 177,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        }
+      },
+      {
+        "id": "tree_willow_01",
+        "category": "foliage",
+        "file": "objects/foliage/tree_willow_01.png",
+        "sourceComponentIndex": 10,
+        "sourceBounds": {
+          "x": 11,
+          "y": 248,
+          "w": 141,
+          "h": 172,
+          "area": 15215
+        },
+        "width": 145,
+        "height": 176,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        }
+      },
+      {
+        "id": "hedge_vertical_short_01",
+        "category": "foliage",
+        "file": "objects/foliage/hedge_vertical_short_01.png",
+        "sourceComponentIndex": 11,
+        "sourceBounds": {
+          "x": 1167,
+          "y": 422,
+          "w": 70,
+          "h": 131,
+          "area": 7231
+        },
+        "width": 74,
+        "height": 135,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        }
+      },
+      {
+        "id": "hedge_arch_pink_01",
+        "category": "foliage",
+        "file": "objects/foliage/hedge_arch_pink_01.png",
+        "sourceComponentIndex": 12,
+        "sourceBounds": {
+          "x": 873,
+          "y": 423,
+          "w": 208,
+          "h": 277,
+          "area": 29080
+        },
+        "width": 212,
+        "height": 281,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        }
+      },
+      {
+        "id": "hedge_corner_01",
+        "category": "foliage",
+        "file": "objects/foliage/hedge_corner_01.png",
+        "sourceComponentIndex": 13,
+        "sourceBounds": {
+          "x": 449,
+          "y": 424,
+          "w": 220,
+          "h": 135,
+          "area": 25867
+        },
+        "width": 224,
+        "height": 139,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        }
+      },
+      {
+        "id": "hedge_vertical_01",
+        "category": "foliage",
+        "file": "objects/foliage/hedge_vertical_01.png",
+        "sourceComponentIndex": 14,
+        "sourceBounds": {
+          "x": 671,
+          "y": 424,
+          "w": 61,
+          "h": 135,
+          "area": 7145
+        },
+        "width": 65,
+        "height": 139,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        }
+      },
+      {
+        "id": "hedge_vertical_short_02",
+        "category": "foliage",
+        "file": "objects/foliage/hedge_vertical_short_02.png",
+        "sourceComponentIndex": 15,
+        "sourceBounds": {
+          "x": 1088,
+          "y": 424,
+          "w": 69,
+          "h": 129,
+          "area": 7573
+        },
+        "width": 73,
+        "height": 133,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        }
+      },
+      {
+        "id": "hedge_corner_02",
+        "category": "foliage",
+        "file": "objects/foliage/hedge_corner_02.png",
+        "sourceComponentIndex": 17,
+        "sourceBounds": {
+          "x": 737,
+          "y": 426,
+          "w": 129,
+          "h": 134,
+          "area": 15549
+        },
+        "width": 133,
+        "height": 138,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        }
+      },
+      {
+        "id": "hedge_arch_pink_02",
+        "category": "foliage",
+        "file": "objects/foliage/hedge_arch_pink_02.png",
+        "sourceComponentIndex": 18,
+        "sourceBounds": {
+          "x": 1087,
+          "y": 559,
+          "w": 148,
+          "h": 149,
+          "area": 13897
+        },
+        "width": 152,
+        "height": 153,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        }
+      },
+      {
+        "id": "topiary_round_01",
+        "category": "foliage",
+        "file": "objects/foliage/topiary_round_01.png",
+        "sourceComponentIndex": 19,
+        "sourceBounds": {
+          "x": 776,
+          "y": 561,
+          "w": 55,
+          "h": 138,
+          "area": 5685
+        },
+        "width": 59,
+        "height": 142,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "topiary_spiral_01",
+        "category": "foliage",
+        "file": "objects/foliage/topiary_spiral_01.png",
+        "sourceComponentIndex": 20,
+        "sourceBounds": {
+          "x": 924,
+          "y": 561,
+          "w": 73,
+          "h": 135,
+          "area": 6930
+        },
+        "width": 77,
+        "height": 139,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "bushes_mixed_01",
+        "category": "foliage",
+        "file": "objects/foliage/bushes_mixed_01.png",
+        "sourceComponentIndex": 21,
+        "sourceBounds": {
+          "x": 200,
+          "y": 574,
+          "w": 286,
+          "h": 106,
+          "area": 23901
+        },
+        "width": 290,
+        "height": 110,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "topiary_cone_01",
+        "category": "foliage",
+        "file": "objects/foliage/topiary_cone_01.png",
+        "sourceComponentIndex": 22,
+        "sourceBounds": {
+          "x": 706,
+          "y": 575,
+          "w": 62,
+          "h": 120,
+          "area": 4979
+        },
+        "width": 66,
+        "height": 124,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "bushes_pink_white_01",
+        "category": "foliage",
+        "file": "objects/foliage/bushes_pink_white_01.png",
+        "sourceComponentIndex": 23,
+        "sourceBounds": {
+          "x": 489,
+          "y": 578,
+          "w": 205,
+          "h": 103,
+          "area": 16418
+        },
+        "width": 209,
+        "height": 107,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "bushes_white_pink_01",
+        "category": "foliage",
+        "file": "objects/foliage/bushes_white_pink_01.png",
+        "sourceComponentIndex": 24,
+        "sourceBounds": {
+          "x": 13,
+          "y": 579,
+          "w": 183,
+          "h": 100,
+          "area": 14146
+        },
+        "width": 187,
+        "height": 104,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "topiary_heart_01",
+        "category": "foliage",
+        "file": "objects/foliage/topiary_heart_01.png",
+        "sourceComponentIndex": 25,
+        "sourceBounds": {
+          "x": 839,
+          "y": 590,
+          "w": 80,
+          "h": 108,
+          "area": 5584
+        },
+        "width": 84,
+        "height": 112,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "flowerbed_white_01",
+        "category": "foliage",
+        "file": "objects/foliage/flowerbed_white_01.png",
+        "sourceComponentIndex": 26,
+        "sourceBounds": {
+          "x": 12,
+          "y": 694,
+          "w": 182,
+          "h": 90,
+          "area": 14950
+        },
+        "width": 186,
+        "height": 94,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "flowerbed_pink_01",
+        "category": "foliage",
+        "file": "objects/foliage/flowerbed_pink_01.png",
+        "sourceComponentIndex": 27,
+        "sourceBounds": {
+          "x": 202,
+          "y": 694,
+          "w": 211,
+          "h": 91,
+          "area": 17402
+        },
+        "width": 215,
+        "height": 95,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "flowerbed_blue_pink_01",
+        "category": "foliage",
+        "file": "objects/foliage/flowerbed_blue_pink_01.png",
+        "sourceComponentIndex": 28,
+        "sourceBounds": {
+          "x": 634,
+          "y": 694,
+          "w": 231,
+          "h": 93,
+          "area": 17042
+        },
+        "width": 235,
+        "height": 97,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "flowerbed_mixed_01",
+        "category": "foliage",
+        "file": "objects/foliage/flowerbed_mixed_01.png",
+        "sourceComponentIndex": 29,
+        "sourceBounds": {
+          "x": 417,
+          "y": 696,
+          "w": 210,
+          "h": 90,
+          "area": 16951
+        },
+        "width": 214,
+        "height": 94,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "planter_pink_01",
+        "category": "foliage",
+        "file": "objects/foliage/planter_pink_01.png",
+        "sourceComponentIndex": 30,
+        "sourceBounds": {
+          "x": 994,
+          "y": 705,
+          "w": 97,
+          "h": 82,
+          "area": 6539
+        },
+        "width": 101,
+        "height": 86,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "planter_white_01",
+        "category": "foliage",
+        "file": "objects/foliage/planter_white_01.png",
+        "sourceComponentIndex": 31,
+        "sourceBounds": {
+          "x": 867,
+          "y": 707,
+          "w": 121,
+          "h": 80,
+          "area": 8568
+        },
+        "width": 125,
+        "height": 84,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "vine_arch_01",
+        "category": "foliage",
+        "file": "objects/foliage/vine_arch_01.png",
+        "sourceComponentIndex": 32,
+        "sourceBounds": {
+          "x": 1078,
+          "y": 709,
+          "w": 157,
+          "h": 238,
+          "area": 23052
+        },
+        "width": 161,
+        "height": 242,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "planter_box_pink_01",
+        "category": "foliage",
+        "file": "objects/foliage/planter_box_pink_01.png",
+        "sourceComponentIndex": 33,
+        "sourceBounds": {
+          "x": 12,
+          "y": 799,
+          "w": 89,
+          "h": 124,
+          "area": 8572
+        },
+        "width": 93,
+        "height": 128,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "shrub_pot_square_01",
+        "category": "foliage",
+        "file": "objects/foliage/shrub_pot_square_01.png",
+        "sourceComponentIndex": 34,
+        "sourceBounds": {
+          "x": 467,
+          "y": 801,
+          "w": 85,
+          "h": 122,
+          "area": 7280
+        },
+        "width": 89,
+        "height": 126,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "urn_whiteflowers_01",
+        "category": "foliage",
+        "file": "objects/foliage/urn_whiteflowers_01.png",
+        "sourceComponentIndex": 35,
+        "sourceBounds": {
+          "x": 106,
+          "y": 805,
+          "w": 91,
+          "h": 120,
+          "area": 7527
+        },
+        "width": 95,
+        "height": 124,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "pot_green_01",
+        "category": "foliage",
+        "file": "objects/foliage/pot_green_01.png",
+        "sourceComponentIndex": 36,
+        "sourceBounds": {
+          "x": 741,
+          "y": 805,
+          "w": 86,
+          "h": 118,
+          "area": 6138
+        },
+        "width": 90,
+        "height": 122,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "urn_lavender_01",
+        "category": "foliage",
+        "file": "objects/foliage/urn_lavender_01.png",
+        "sourceComponentIndex": 37,
+        "sourceBounds": {
+          "x": 840,
+          "y": 806,
+          "w": 80,
+          "h": 257,
+          "area": 11850
+        },
+        "width": 84,
+        "height": 261,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "pot_pink_01",
+        "category": "foliage",
+        "file": "objects/foliage/pot_pink_01.png",
+        "sourceComponentIndex": 38,
+        "sourceBounds": {
+          "x": 563,
+          "y": 807,
+          "w": 87,
+          "h": 117,
+          "area": 6509
+        },
+        "width": 91,
+        "height": 121,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "barrel_lavender_01",
+        "category": "foliage",
+        "file": "objects/foliage/barrel_lavender_01.png",
+        "sourceComponentIndex": 39,
+        "sourceBounds": {
+          "x": 299,
+          "y": 812,
+          "w": 74,
+          "h": 117,
+          "area": 6660
+        },
+        "width": 78,
+        "height": 121,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "flowerbox_large_01",
+        "category": "foliage",
+        "file": "objects/foliage/flowerbox_large_01.png",
+        "sourceComponentIndex": 40,
+        "sourceBounds": {
+          "x": 931,
+          "y": 816,
+          "w": 131,
+          "h": 109,
+          "area": 10736
+        },
+        "width": 135,
+        "height": 113,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "topiary_cone_pot_01",
+        "category": "foliage",
+        "file": "objects/foliage/topiary_cone_pot_01.png",
+        "sourceComponentIndex": 41,
+        "sourceBounds": {
+          "x": 669,
+          "y": 818,
+          "w": 53,
+          "h": 106,
+          "area": 4081
+        },
+        "width": 57,
+        "height": 110,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "pot_pink_large_01",
+        "category": "foliage",
+        "file": "objects/foliage/pot_pink_large_01.png",
+        "sourceComponentIndex": 42,
+        "sourceBounds": {
+          "x": 198,
+          "y": 822,
+          "w": 94,
+          "h": 102,
+          "area": 6256
+        },
+        "width": 98,
+        "height": 106,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "pot_green_large_01",
+        "category": "foliage",
+        "file": "objects/foliage/pot_green_large_01.png",
+        "sourceComponentIndex": 43,
+        "sourceBounds": {
+          "x": 378,
+          "y": 822,
+          "w": 84,
+          "h": 101,
+          "area": 5247
+        },
+        "width": 88,
+        "height": 105,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "vine_cluster_01",
+        "category": "foliage",
+        "file": "objects/foliage/vine_cluster_01.png",
+        "sourceComponentIndex": 44,
+        "sourceBounds": {
+          "x": 920,
+          "y": 928,
+          "w": 88,
+          "h": 138,
+          "area": 8742
+        },
+        "width": 92,
+        "height": 142,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "hanging_vine_01",
+        "category": "foliage",
+        "file": "objects/foliage/hanging_vine_01.png",
+        "sourceComponentIndex": 45,
+        "sourceBounds": {
+          "x": 725,
+          "y": 934,
+          "w": 111,
+          "h": 128,
+          "area": 9184
+        },
+        "width": 115,
+        "height": 132,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "bush_lavender_01",
+        "category": "foliage",
+        "file": "objects/foliage/bush_lavender_01.png",
+        "sourceComponentIndex": 46,
+        "sourceBounds": {
+          "x": 358,
+          "y": 939,
+          "w": 105,
+          "h": 107,
+          "area": 7529
+        },
+        "width": 109,
+        "height": 111,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "leafy_cluster_01",
+        "category": "foliage",
+        "file": "objects/foliage/leafy_cluster_01.png",
+        "sourceComponentIndex": 47,
+        "sourceBounds": {
+          "x": 17,
+          "y": 942,
+          "w": 87,
+          "h": 96,
+          "area": 6441
+        },
+        "width": 91,
+        "height": 100,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "lantern_post_vine_01",
+        "category": "foliage",
+        "file": "objects/foliage/lantern_post_vine_01.png",
+        "sourceComponentIndex": 48,
+        "sourceBounds": {
+          "x": 1156,
+          "y": 946,
+          "w": 82,
+          "h": 199,
+          "area": 10193
+        },
+        "width": 86,
+        "height": 203,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "plant_leafy_01",
+        "category": "foliage",
+        "file": "objects/foliage/plant_leafy_01.png",
+        "sourceComponentIndex": 49,
+        "sourceBounds": {
+          "x": 112,
+          "y": 948,
+          "w": 79,
+          "h": 86,
+          "area": 4957
+        },
+        "width": 83,
+        "height": 90,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "grass_tuft_object_01",
+        "category": "foliage",
+        "file": "objects/foliage/grass_tuft_object_01.png",
+        "sourceComponentIndex": 50,
+        "sourceBounds": {
+          "x": 272,
+          "y": 948,
+          "w": 87,
+          "h": 93,
+          "area": 5389
+        },
+        "width": 91,
+        "height": 97,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "leafy_plant_01",
+        "category": "foliage",
+        "file": "objects/foliage/leafy_plant_01.png",
+        "sourceComponentIndex": 51,
+        "sourceBounds": {
+          "x": 194,
+          "y": 950,
+          "w": 76,
+          "h": 87,
+          "area": 4162
+        },
+        "width": 80,
+        "height": 91,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "bush_leafy_01",
+        "category": "foliage",
+        "file": "objects/foliage/bush_leafy_01.png",
+        "sourceComponentIndex": 52,
+        "sourceBounds": {
+          "x": 641,
+          "y": 952,
+          "w": 87,
+          "h": 94,
+          "area": 5763
+        },
+        "width": 91,
+        "height": 98,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "bush_whiteflower_small_01",
+        "category": "foliage",
+        "file": "objects/foliage/bush_whiteflower_small_01.png",
+        "sourceComponentIndex": 53,
+        "sourceBounds": {
+          "x": 549,
+          "y": 953,
+          "w": 87,
+          "h": 91,
+          "area": 5658
+        },
+        "width": 91,
+        "height": 95,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fallen_log_flowers_01",
+        "category": "foliage",
+        "file": "objects/foliage/fallen_log_flowers_01.png",
+        "sourceComponentIndex": 54,
+        "sourceBounds": {
+          "x": 1012,
+          "y": 954,
+          "w": 147,
+          "h": 116,
+          "area": 12095
+        },
+        "width": 151,
+        "height": 120,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "rock_moss_01",
+        "category": "foliage",
+        "file": "objects/foliage/rock_moss_01.png",
+        "sourceComponentIndex": 63,
+        "sourceBounds": {
+          "x": 646,
+          "y": 1068,
+          "w": 51,
+          "h": 43,
+          "area": 1614
+        },
+        "width": 55,
+        "height": 47,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "stump_flowers_01",
+        "category": "foliage",
+        "file": "objects/foliage/stump_flowers_01.png",
+        "sourceComponentIndex": 65,
+        "sourceBounds": {
+          "x": 871,
+          "y": 1076,
+          "w": 123,
+          "h": 74,
+          "area": 6492
+        },
+        "width": 127,
+        "height": 78,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "firefly_glow_01",
+        "category": "foliage",
+        "file": "objects/foliage/firefly_glow_01.png",
+        "sourceComponentIndex": 73,
+        "sourceBounds": {
+          "x": 792,
+          "y": 1122,
+          "w": 44,
+          "h": 44,
+          "area": 1509
+        },
+        "width": 48,
+        "height": 48,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fireflies_cluster_01",
+        "category": "foliage",
+        "file": "objects/foliage/fireflies_cluster_01.png",
+        "sourceComponentIndex": 77,
+        "sourceBounds": {
+          "x": 175,
+          "y": 1159,
+          "w": 41,
+          "h": 38,
+          "area": 1064
+        },
+        "width": 45,
+        "height": 42,
+        "origin": {
+          "x": 0.5,
+          "y": 0.9
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      }
+    ],
+    "decor": [
+      {
+        "id": "entrance_gate_wood_flower_01",
+        "category": "decor",
+        "file": "objects/decor/entrance_gate_wood_flower_01.png",
+        "sourceComponentIndex": 0,
+        "sourceBounds": {
+          "x": 471,
+          "y": 10,
+          "w": 317,
+          "h": 238,
+          "area": 51843
+        },
+        "width": 321,
+        "height": 242,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_end_flower_01",
+        "category": "decor",
+        "file": "objects/decor/fence_end_flower_01.png",
+        "sourceComponentIndex": 1,
+        "sourceBounds": {
+          "x": 213,
+          "y": 34,
+          "w": 111,
+          "h": 90,
+          "area": 7942
+        },
+        "width": 115,
+        "height": 94,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_wood_horizontal_01",
+        "category": "decor",
+        "file": "objects/decor/fence_wood_horizontal_01.png",
+        "sourceComponentIndex": 2,
+        "sourceBounds": {
+          "x": 773,
+          "y": 34,
+          "w": 199,
+          "h": 88,
+          "area": 12623
+        },
+        "width": 203,
+        "height": 92,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_post_01",
+        "category": "decor",
+        "file": "objects/decor/fence_post_01.png",
+        "sourceComponentIndex": 3,
+        "sourceBounds": {
+          "x": 992,
+          "y": 34,
+          "w": 36,
+          "h": 89,
+          "area": 2900
+        },
+        "width": 40,
+        "height": 93,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_corner_01",
+        "category": "decor",
+        "file": "objects/decor/fence_corner_01.png",
+        "sourceComponentIndex": 4,
+        "sourceBounds": {
+          "x": 1040,
+          "y": 34,
+          "w": 140,
+          "h": 105,
+          "area": 9257
+        },
+        "width": 144,
+        "height": 109,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_post_02",
+        "category": "decor",
+        "file": "objects/decor/fence_post_02.png",
+        "sourceComponentIndex": 5,
+        "sourceBounds": {
+          "x": 1197,
+          "y": 34,
+          "w": 37,
+          "h": 89,
+          "area": 2854
+        },
+        "width": 41,
+        "height": 93,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_wood_horizontal_02",
+        "category": "decor",
+        "file": "objects/decor/fence_wood_horizontal_02.png",
+        "sourceComponentIndex": 6,
+        "sourceBounds": {
+          "x": 14,
+          "y": 35,
+          "w": 187,
+          "h": 93,
+          "area": 12298
+        },
+        "width": 191,
+        "height": 97,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_corner_02",
+        "category": "decor",
+        "file": "objects/decor/fence_corner_02.png",
+        "sourceComponentIndex": 7,
+        "sourceBounds": {
+          "x": 339,
+          "y": 35,
+          "w": 70,
+          "h": 113,
+          "area": 4992
+        },
+        "width": 74,
+        "height": 117,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_short_01",
+        "category": "decor",
+        "file": "objects/decor/fence_short_01.png",
+        "sourceComponentIndex": 8,
+        "sourceBounds": {
+          "x": 421,
+          "y": 35,
+          "w": 83,
+          "h": 86,
+          "area": 5531
+        },
+        "width": 87,
+        "height": 90,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_gate_small_01",
+        "category": "decor",
+        "file": "objects/decor/fence_gate_small_01.png",
+        "sourceComponentIndex": 9,
+        "sourceBounds": {
+          "x": 17,
+          "y": 142,
+          "w": 170,
+          "h": 92,
+          "area": 11876
+        },
+        "width": 174,
+        "height": 96,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_gate_small_02",
+        "category": "decor",
+        "file": "objects/decor/fence_gate_small_02.png",
+        "sourceComponentIndex": 10,
+        "sourceBounds": {
+          "x": 206,
+          "y": 143,
+          "w": 106,
+          "h": 91,
+          "area": 7987
+        },
+        "width": 110,
+        "height": 95,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_wood_horizontal_03",
+        "category": "decor",
+        "file": "objects/decor/fence_wood_horizontal_03.png",
+        "sourceComponentIndex": 11,
+        "sourceBounds": {
+          "x": 325,
+          "y": 143,
+          "w": 132,
+          "h": 90,
+          "area": 9535
+        },
+        "width": 136,
+        "height": 94,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_wood_horizontal_04",
+        "category": "decor",
+        "file": "objects/decor/fence_wood_horizontal_04.png",
+        "sourceComponentIndex": 12,
+        "sourceBounds": {
+          "x": 803,
+          "y": 143,
+          "w": 179,
+          "h": 92,
+          "area": 12681
+        },
+        "width": 183,
+        "height": 96,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_wood_horizontal_05",
+        "category": "decor",
+        "file": "objects/decor/fence_wood_horizontal_05.png",
+        "sourceComponentIndex": 13,
+        "sourceBounds": {
+          "x": 1000,
+          "y": 143,
+          "w": 139,
+          "h": 91,
+          "area": 10042
+        },
+        "width": 143,
+        "height": 95,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "fence_post_flower_01",
+        "category": "decor",
+        "file": "objects/decor/fence_post_flower_01.png",
+        "sourceComponentIndex": 14,
+        "sourceBounds": {
+          "x": 1197,
+          "y": 144,
+          "w": 42,
+          "h": 86,
+          "area": 2943
+        },
+        "width": 46,
+        "height": 90,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "lamp_black_flower_01",
+        "category": "decor",
+        "file": "objects/decor/lamp_black_flower_01.png",
+        "sourceComponentIndex": 16,
+        "sourceBounds": {
+          "x": 16,
+          "y": 239,
+          "w": 65,
+          "h": 208,
+          "area": 7610
+        },
+        "width": 69,
+        "height": 212,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "lamp_black_flower_02",
+        "category": "decor",
+        "file": "objects/decor/lamp_black_flower_02.png",
+        "sourceComponentIndex": 17,
+        "sourceBounds": {
+          "x": 95,
+          "y": 240,
+          "w": 71,
+          "h": 207,
+          "area": 7916
+        },
+        "width": 75,
+        "height": 211,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "lamp_black_double_01",
+        "category": "decor",
+        "file": "objects/decor/lamp_black_double_01.png",
+        "sourceComponentIndex": 18,
+        "sourceBounds": {
+          "x": 293,
+          "y": 245,
+          "w": 75,
+          "h": 204,
+          "area": 8070
+        },
+        "width": 79,
+        "height": 208,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "lamp_black_01",
+        "category": "decor",
+        "file": "objects/decor/lamp_black_01.png",
+        "sourceComponentIndex": 19,
+        "sourceBounds": {
+          "x": 171,
+          "y": 250,
+          "w": 50,
+          "h": 193,
+          "area": 4771
+        },
+        "width": 54,
+        "height": 197,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "drape_white_pink_01",
+        "category": "decor",
+        "file": "objects/decor/drape_white_pink_01.png",
+        "sourceComponentIndex": 21,
+        "sourceBounds": {
+          "x": 839,
+          "y": 253,
+          "w": 398,
+          "h": 100,
+          "area": 25480
+        },
+        "width": 402,
+        "height": 104,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "banner_white_01",
+        "category": "decor",
+        "file": "objects/decor/banner_white_01.png",
+        "sourceComponentIndex": 22,
+        "sourceBounds": {
+          "x": 463,
+          "y": 255,
+          "w": 92,
+          "h": 191,
+          "area": 11214
+        },
+        "width": 96,
+        "height": 195,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "banner_pink_01",
+        "category": "decor",
+        "file": "objects/decor/banner_pink_01.png",
+        "sourceComponentIndex": 23,
+        "sourceBounds": {
+          "x": 374,
+          "y": 256,
+          "w": 81,
+          "h": 165,
+          "area": 8691
+        },
+        "width": 85,
+        "height": 169,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "lamp_hanging_vine_01",
+        "category": "decor",
+        "file": "objects/decor/lamp_hanging_vine_01.png",
+        "sourceComponentIndex": 24,
+        "sourceBounds": {
+          "x": 226,
+          "y": 267,
+          "w": 63,
+          "h": 177,
+          "area": 6332
+        },
+        "width": 67,
+        "height": 181,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "bench_wood_flower_01",
+        "category": "decor",
+        "file": "objects/decor/bench_wood_flower_01.png",
+        "sourceComponentIndex": 25,
+        "sourceBounds": {
+          "x": 680,
+          "y": 352,
+          "w": 194,
+          "h": 101,
+          "area": 13618
+        },
+        "width": 198,
+        "height": 105,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "bench_wood_01",
+        "category": "decor",
+        "file": "objects/decor/bench_wood_01.png",
+        "sourceComponentIndex": 26,
+        "sourceBounds": {
+          "x": 902,
+          "y": 360,
+          "w": 172,
+          "h": 93,
+          "area": 11454
+        },
+        "width": 176,
+        "height": 97,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "bench_wood_02",
+        "category": "decor",
+        "file": "objects/decor/bench_wood_02.png",
+        "sourceComponentIndex": 27,
+        "sourceBounds": {
+          "x": 1088,
+          "y": 360,
+          "w": 152,
+          "h": 93,
+          "area": 10283
+        },
+        "width": 156,
+        "height": 97,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "table_round_pink_01",
+        "category": "decor",
+        "file": "objects/decor/table_round_pink_01.png",
+        "sourceComponentIndex": 28,
+        "sourceBounds": {
+          "x": 558,
+          "y": 453,
+          "w": 166,
+          "h": 133,
+          "area": 17884
+        },
+        "width": 170,
+        "height": 137,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "chair_white_01",
+        "category": "decor",
+        "file": "objects/decor/chair_white_01.png",
+        "sourceComponentIndex": 29,
+        "sourceBounds": {
+          "x": 189,
+          "y": 454,
+          "w": 75,
+          "h": 126,
+          "area": 7905
+        },
+        "width": 79,
+        "height": 130,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "chair_white_bow_01",
+        "category": "decor",
+        "file": "objects/decor/chair_white_bow_01.png",
+        "sourceComponentIndex": 30,
+        "sourceBounds": {
+          "x": 283,
+          "y": 455,
+          "w": 80,
+          "h": 122,
+          "area": 8261
+        },
+        "width": 84,
+        "height": 126,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "table_round_white_01",
+        "category": "decor",
+        "file": "objects/decor/table_round_white_01.png",
+        "sourceComponentIndex": 31,
+        "sourceBounds": {
+          "x": 383,
+          "y": 456,
+          "w": 159,
+          "h": 128,
+          "area": 16620
+        },
+        "width": 163,
+        "height": 132,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "chair_wood_01",
+        "category": "decor",
+        "file": "objects/decor/chair_wood_01.png",
+        "sourceComponentIndex": 32,
+        "sourceBounds": {
+          "x": 20,
+          "y": 461,
+          "w": 66,
+          "h": 119,
+          "area": 6194
+        },
+        "width": 70,
+        "height": 123,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "chair_wood_flower_01",
+        "category": "decor",
+        "file": "objects/decor/chair_wood_flower_01.png",
+        "sourceComponentIndex": 33,
+        "sourceBounds": {
+          "x": 102,
+          "y": 461,
+          "w": 67,
+          "h": 119,
+          "area": 6489
+        },
+        "width": 71,
+        "height": 123,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "table_rect_pink_01",
+        "category": "decor",
+        "file": "objects/decor/table_rect_pink_01.png",
+        "sourceComponentIndex": 34,
+        "sourceBounds": {
+          "x": 1028,
+          "y": 464,
+          "w": 123,
+          "h": 119,
+          "area": 11849
+        },
+        "width": 127,
+        "height": 123,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "chair_wood_planter_01",
+        "category": "decor",
+        "file": "objects/decor/chair_wood_planter_01.png",
+        "sourceComponentIndex": 35,
+        "sourceBounds": {
+          "x": 1163,
+          "y": 464,
+          "w": 74,
+          "h": 119,
+          "area": 6782
+        },
+        "width": 78,
+        "height": 123,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "table_rect_flower_01",
+        "category": "decor",
+        "file": "objects/decor/table_rect_flower_01.png",
+        "sourceComponentIndex": 36,
+        "sourceBounds": {
+          "x": 736,
+          "y": 466,
+          "w": 277,
+          "h": 117,
+          "area": 28393
+        },
+        "width": 281,
+        "height": 121,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "carpet_pink_vertical_flower_01",
+        "category": "decor",
+        "file": "objects/decor/carpet_pink_vertical_flower_01.png",
+        "sourceComponentIndex": 37,
+        "sourceBounds": {
+          "x": 327,
+          "y": 590,
+          "w": 76,
+          "h": 164,
+          "area": 11602
+        },
+        "width": 80,
+        "height": 168,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "carpet_pink_vertical_flower_02",
+        "category": "decor",
+        "file": "objects/decor/carpet_pink_vertical_flower_02.png",
+        "sourceComponentIndex": 38,
+        "sourceBounds": {
+          "x": 411,
+          "y": 590,
+          "w": 95,
+          "h": 165,
+          "area": 15035
+        },
+        "width": 99,
+        "height": 169,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "carpet_corner_flower_01",
+        "category": "decor",
+        "file": "objects/decor/carpet_corner_flower_01.png",
+        "sourceComponentIndex": 39,
+        "sourceBounds": {
+          "x": 669,
+          "y": 590,
+          "w": 76,
+          "h": 66,
+          "area": 4538
+        },
+        "width": 80,
+        "height": 70,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "arch_column_flower_01",
+        "category": "decor",
+        "file": "objects/decor/arch_column_flower_01.png",
+        "sourceComponentIndex": 40,
+        "sourceBounds": {
+          "x": 759,
+          "y": 590,
+          "w": 82,
+          "h": 165,
+          "area": 9685
+        },
+        "width": 86,
+        "height": 169,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "drape_arch_01",
+        "category": "decor",
+        "file": "objects/decor/drape_arch_01.png",
+        "sourceComponentIndex": 41,
+        "sourceBounds": {
+          "x": 1014,
+          "y": 590,
+          "w": 223,
+          "h": 186,
+          "area": 24292
+        },
+        "width": 227,
+        "height": 190,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "carpet_cross_01",
+        "category": "decor",
+        "file": "objects/decor/carpet_cross_01.png",
+        "sourceComponentIndex": 42,
+        "sourceBounds": {
+          "x": 517,
+          "y": 591,
+          "w": 228,
+          "h": 181,
+          "area": 23525
+        },
+        "width": 232,
+        "height": 185,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "arch_column_flower_02",
+        "category": "decor",
+        "file": "objects/decor/arch_column_flower_02.png",
+        "sourceComponentIndex": 43,
+        "sourceBounds": {
+          "x": 926,
+          "y": 591,
+          "w": 77,
+          "h": 166,
+          "area": 9519
+        },
+        "width": 81,
+        "height": 170,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "carpet_rect_flower_01",
+        "category": "decor",
+        "file": "objects/decor/carpet_rect_flower_01.png",
+        "sourceComponentIndex": 44,
+        "sourceBounds": {
+          "x": 19,
+          "y": 592,
+          "w": 125,
+          "h": 164,
+          "area": 19526
+        },
+        "width": 129,
+        "height": 168,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "carpet_vertical_border_01",
+        "category": "decor",
+        "file": "objects/decor/carpet_vertical_border_01.png",
+        "sourceComponentIndex": 45,
+        "sourceBounds": {
+          "x": 154,
+          "y": 592,
+          "w": 52,
+          "h": 163,
+          "area": 7882
+        },
+        "width": 56,
+        "height": 167,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "carpet_vertical_plain_01",
+        "category": "decor",
+        "file": "objects/decor/carpet_vertical_plain_01.png",
+        "sourceComponentIndex": 46,
+        "sourceBounds": {
+          "x": 215,
+          "y": 594,
+          "w": 48,
+          "h": 160,
+          "area": 7662
+        },
+        "width": 52,
+        "height": 164,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "carpet_vertical_plain_02",
+        "category": "decor",
+        "file": "objects/decor/carpet_vertical_plain_02.png",
+        "sourceComponentIndex": 47,
+        "sourceBounds": {
+          "x": 273,
+          "y": 594,
+          "w": 47,
+          "h": 160,
+          "area": 7506
+        },
+        "width": 51,
+        "height": 164,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "carpet_square_01",
+        "category": "decor",
+        "file": "objects/decor/carpet_square_01.png",
+        "sourceComponentIndex": 48,
+        "sourceBounds": {
+          "x": 519,
+          "y": 594,
+          "w": 65,
+          "h": 62,
+          "area": 4014
+        },
+        "width": 69,
+        "height": 66,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "pedestal_flower_01",
+        "category": "decor",
+        "file": "objects/decor/pedestal_flower_01.png",
+        "sourceComponentIndex": 49,
+        "sourceBounds": {
+          "x": 841,
+          "y": 599,
+          "w": 78,
+          "h": 165,
+          "area": 8600
+        },
+        "width": 82,
+        "height": 169,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "welcome_table_01",
+        "category": "decor",
+        "file": "objects/decor/welcome_table_01.png",
+        "sourceComponentIndex": 50,
+        "sourceBounds": {
+          "x": 486,
+          "y": 754,
+          "w": 151,
+          "h": 166,
+          "area": 17579
+        },
+        "width": 155,
+        "height": 170,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "gift_table_01",
+        "category": "decor",
+        "file": "objects/decor/gift_table_01.png",
+        "sourceComponentIndex": 51,
+        "sourceBounds": {
+          "x": 20,
+          "y": 765,
+          "w": 179,
+          "h": 155,
+          "area": 21529
+        },
+        "width": 183,
+        "height": 159,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "guestbook_table_01",
+        "category": "decor",
+        "file": "objects/decor/guestbook_table_01.png",
+        "sourceComponentIndex": 52,
+        "sourceBounds": {
+          "x": 214,
+          "y": 770,
+          "w": 204,
+          "h": 150,
+          "area": 24246
+        },
+        "width": 208,
+        "height": 154,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "podium_flower_01",
+        "category": "decor",
+        "file": "objects/decor/podium_flower_01.png",
+        "sourceComponentIndex": 53,
+        "sourceBounds": {
+          "x": 1046,
+          "y": 777,
+          "w": 92,
+          "h": 156,
+          "area": 10888
+        },
+        "width": 96,
+        "height": 160,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "counter_corner_01",
+        "category": "decor",
+        "file": "objects/decor/counter_corner_01.png",
+        "sourceComponentIndex": 54,
+        "sourceBounds": {
+          "x": 787,
+          "y": 785,
+          "w": 164,
+          "h": 148,
+          "area": 15878
+        },
+        "width": 168,
+        "height": 152,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "counter_corner_02",
+        "category": "decor",
+        "file": "objects/decor/counter_corner_02.png",
+        "sourceComponentIndex": 55,
+        "sourceBounds": {
+          "x": 949,
+          "y": 785,
+          "w": 74,
+          "h": 134,
+          "area": 7927
+        },
+        "width": 78,
+        "height": 138,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "guestbook_podium_01",
+        "category": "decor",
+        "file": "objects/decor/guestbook_podium_01.png",
+        "sourceComponentIndex": 56,
+        "sourceBounds": {
+          "x": 1149,
+          "y": 789,
+          "w": 84,
+          "h": 144,
+          "area": 7972
+        },
+        "width": 88,
+        "height": 148,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "sideboard_flower_01",
+        "category": "decor",
+        "file": "objects/decor/sideboard_flower_01.png",
+        "sourceComponentIndex": 57,
+        "sourceBounds": {
+          "x": 643,
+          "y": 790,
+          "w": 134,
+          "h": 132,
+          "area": 13386
+        },
+        "width": 138,
+        "height": 136,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "barrel_flower_01",
+        "category": "decor",
+        "file": "objects/decor/barrel_flower_01.png",
+        "sourceComponentIndex": 58,
+        "sourceBounds": {
+          "x": 428,
+          "y": 804,
+          "w": 73,
+          "h": 131,
+          "area": 7113
+        },
+        "width": 77,
+        "height": 135,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "directional_sign_01",
+        "category": "decor",
+        "file": "objects/decor/directional_sign_01.png",
+        "sourceComponentIndex": 59,
+        "sourceBounds": {
+          "x": 18,
+          "y": 929,
+          "w": 95,
+          "h": 156,
+          "area": 9386
+        },
+        "width": 99,
+        "height": 160,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "notice_board_01",
+        "category": "decor",
+        "file": "objects/decor/notice_board_01.png",
+        "sourceComponentIndex": 60,
+        "sourceBounds": {
+          "x": 230,
+          "y": 932,
+          "w": 171,
+          "h": 144,
+          "area": 19217
+        },
+        "width": 175,
+        "height": 148,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "planter_barrel_01",
+        "category": "decor",
+        "file": "objects/decor/planter_barrel_01.png",
+        "sourceComponentIndex": 61,
+        "sourceBounds": {
+          "x": 671,
+          "y": 932,
+          "w": 268,
+          "h": 151,
+          "area": 24984
+        },
+        "width": 272,
+        "height": 155,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "planter_group_01",
+        "category": "decor",
+        "file": "objects/decor/planter_group_01.png",
+        "sourceComponentIndex": 62,
+        "sourceBounds": {
+          "x": 1137,
+          "y": 937,
+          "w": 94,
+          "h": 149,
+          "area": 9742
+        },
+        "width": 98,
+        "height": 153,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "birdcage_flower_01",
+        "category": "decor",
+        "file": "objects/decor/birdcage_flower_01.png",
+        "sourceComponentIndex": 63,
+        "sourceBounds": {
+          "x": 126,
+          "y": 942,
+          "w": 84,
+          "h": 141,
+          "area": 6767
+        },
+        "width": 88,
+        "height": 145,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "lantern_post_wood_01",
+        "category": "decor",
+        "file": "objects/decor/lantern_post_wood_01.png",
+        "sourceComponentIndex": 64,
+        "sourceBounds": {
+          "x": 543,
+          "y": 947,
+          "w": 118,
+          "h": 132,
+          "area": 13180
+        },
+        "width": 122,
+        "height": 136,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "easel_blank_01",
+        "category": "decor",
+        "file": "objects/decor/easel_blank_01.png",
+        "sourceComponentIndex": 65,
+        "sourceBounds": {
+          "x": 941,
+          "y": 947,
+          "w": 84,
+          "h": 135,
+          "area": 8268
+        },
+        "width": 88,
+        "height": 139,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "flower_crate_01",
+        "category": "decor",
+        "file": "objects/decor/flower_crate_01.png",
+        "sourceComponentIndex": 66,
+        "sourceBounds": {
+          "x": 410,
+          "y": 948,
+          "w": 114,
+          "h": 127,
+          "area": 10643
+        },
+        "width": 118,
+        "height": 131,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "easel_flower_01",
+        "category": "decor",
+        "file": "objects/decor/easel_flower_01.png",
+        "sourceComponentIndex": 67,
+        "sourceBounds": {
+          "x": 1026,
+          "y": 978,
+          "w": 102,
+          "h": 108,
+          "area": 7390
+        },
+        "width": 106,
+        "height": 112,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "candle_table_01",
+        "category": "decor",
+        "file": "objects/decor/candle_table_01.png",
+        "sourceComponentIndex": 68,
+        "sourceBounds": {
+          "x": 264,
+          "y": 1081,
+          "w": 69,
+          "h": 145,
+          "area": 6340
+        },
+        "width": 73,
+        "height": 149,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.42,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "topiary_cone_decor_01",
+        "category": "decor",
+        "file": "objects/decor/topiary_cone_decor_01.png",
+        "sourceComponentIndex": 69,
+        "sourceBounds": {
+          "x": 430,
+          "y": 1087,
+          "w": 99,
+          "h": 92,
+          "area": 6953
+        },
+        "width": 103,
+        "height": 96,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "flower_crate_02",
+        "category": "decor",
+        "file": "objects/decor/flower_crate_02.png",
+        "sourceComponentIndex": 70,
+        "sourceBounds": {
+          "x": 897,
+          "y": 1087,
+          "w": 43,
+          "h": 79,
+          "area": 2509
+        },
+        "width": 47,
+        "height": 83,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "lantern_black_small_01",
+        "category": "decor",
+        "file": "objects/decor/lantern_black_small_01.png",
+        "sourceComponentIndex": 71,
+        "sourceBounds": {
+          "x": 19,
+          "y": 1093,
+          "w": 124,
+          "h": 136,
+          "area": 10982
+        },
+        "width": 128,
+        "height": 140,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "topiary_pair_01",
+        "category": "decor",
+        "file": "objects/decor/topiary_pair_01.png",
+        "sourceComponentIndex": 72,
+        "sourceBounds": {
+          "x": 144,
+          "y": 1093,
+          "w": 49,
+          "h": 126,
+          "area": 4653
+        },
+        "width": 53,
+        "height": 130,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "topiary_pedestal_01",
+        "category": "decor",
+        "file": "objects/decor/topiary_pedestal_01.png",
+        "sourceComponentIndex": 73,
+        "sourceBounds": {
+          "x": 201,
+          "y": 1094,
+          "w": 61,
+          "h": 138,
+          "area": 6103
+        },
+        "width": 65,
+        "height": 142,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "lantern_black_small_02",
+        "category": "decor",
+        "file": "objects/decor/lantern_black_small_02.png",
+        "sourceComponentIndex": 74,
+        "sourceBounds": {
+          "x": 842,
+          "y": 1094,
+          "w": 48,
+          "h": 87,
+          "area": 3091
+        },
+        "width": 52,
+        "height": 91,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "candle_invitation_01",
+        "category": "decor",
+        "file": "objects/decor/candle_invitation_01.png",
+        "sourceComponentIndex": 75,
+        "sourceBounds": {
+          "x": 949,
+          "y": 1094,
+          "w": 102,
+          "h": 144,
+          "area": 7264
+        },
+        "width": 106,
+        "height": 148,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "flower_crate_03",
+        "category": "decor",
+        "file": "objects/decor/flower_crate_03.png",
+        "sourceComponentIndex": 76,
+        "sourceBounds": {
+          "x": 539,
+          "y": 1095,
+          "w": 109,
+          "h": 95,
+          "area": 7844
+        },
+        "width": 113,
+        "height": 99,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "candle_flower_01",
+        "category": "decor",
+        "file": "objects/decor/candle_flower_01.png",
+        "sourceComponentIndex": 77,
+        "sourceBounds": {
+          "x": 1000,
+          "y": 1098,
+          "w": 130,
+          "h": 69,
+          "area": 6289
+        },
+        "width": 134,
+        "height": 73,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "bush_whiteflowers_decor_01",
+        "category": "decor",
+        "file": "objects/decor/bush_whiteflowers_decor_01.png",
+        "sourceComponentIndex": 78,
+        "sourceBounds": {
+          "x": 338,
+          "y": 1102,
+          "w": 81,
+          "h": 91,
+          "area": 5423
+        },
+        "width": 85,
+        "height": 95,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "flower_crate_04",
+        "category": "decor",
+        "file": "objects/decor/flower_crate_04.png",
+        "sourceComponentIndex": 79,
+        "sourceBounds": {
+          "x": 660,
+          "y": 1104,
+          "w": 94,
+          "h": 80,
+          "area": 5842
+        },
+        "width": 98,
+        "height": 84,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "flower_small_01",
+        "category": "decor",
+        "file": "objects/decor/flower_small_01.png",
+        "sourceComponentIndex": 80,
+        "sourceBounds": {
+          "x": 1145,
+          "y": 1104,
+          "w": 84,
+          "h": 57,
+          "area": 3701
+        },
+        "width": 88,
+        "height": 61,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "lantern_candle_01",
+        "category": "decor",
+        "file": "objects/decor/lantern_candle_01.png",
+        "sourceComponentIndex": 81,
+        "sourceBounds": {
+          "x": 771,
+          "y": 1105,
+          "w": 70,
+          "h": 90,
+          "area": 3806
+        },
+        "width": 74,
+        "height": 94,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "flower_small_02",
+        "category": "decor",
+        "file": "objects/decor/flower_small_02.png",
+        "sourceComponentIndex": 82,
+        "sourceBounds": {
+          "x": 1151,
+          "y": 1169,
+          "w": 77,
+          "h": 65,
+          "area": 3501
+        },
+        "width": 81,
+        "height": 69,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "petal_basket_01",
+        "category": "decor",
+        "file": "objects/decor/petal_basket_01.png",
+        "sourceComponentIndex": 83,
+        "sourceBounds": {
+          "x": 885,
+          "y": 1175,
+          "w": 64,
+          "h": 59,
+          "area": 2889
+        },
+        "width": 68,
+        "height": 63,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      },
+      {
+        "id": "petal_bowl_01",
+        "category": "decor",
+        "file": "objects/decor/petal_bowl_01.png",
+        "sourceComponentIndex": 84,
+        "sourceBounds": {
+          "x": 1069,
+          "y": 1181,
+          "w": 77,
+          "h": 45,
+          "area": 2624
+        },
+        "width": 81,
+        "height": 49,
+        "origin": {
+          "x": 0.5,
+          "y": 0.92
+        },
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        }
+      }
+    ],
+    "landmarks": [
+      {
+        "id": "rsvp_pavilion_01",
+        "category": "landmarks",
+        "file": "objects/landmarks/rsvp_pavilion_01.png",
+        "sourceComponentIndex": 0,
+        "sourceBounds": {
+          "x": 890,
+          "y": 12,
+          "w": 317,
+          "h": 380,
+          "area": 96492
+        },
+        "width": 321,
+        "height": 384,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.7,
+          "wPct": 0.84,
+          "hPct": 0.24
+        }
+      },
+      {
+        "id": "fountain_main_plaza_01",
+        "category": "landmarks",
+        "file": "objects/landmarks/fountain_main_plaza_01.png",
+        "sourceComponentIndex": 1,
+        "sourceBounds": {
+          "x": 11,
+          "y": 23,
+          "w": 448,
+          "h": 420,
+          "area": 160276
+        },
+        "width": 452,
+        "height": 424,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "ellipse",
+          "xPct": 0.18,
+          "yPct": 0.48,
+          "wPct": 0.64,
+          "hPct": 0.42
+        }
+      },
+      {
+        "id": "entrance_gate_flower_01",
+        "category": "landmarks",
+        "file": "objects/landmarks/entrance_gate_flower_01.png",
+        "sourceComponentIndex": 2,
+        "sourceBounds": {
+          "x": 466,
+          "y": 100,
+          "w": 408,
+          "h": 273,
+          "area": 78361
+        },
+        "width": 412,
+        "height": 277,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.0,
+          "yPct": 0.62,
+          "wPct": 1.0,
+          "hPct": 0.24,
+          "note": "split passage collision in Tiled"
+        }
+      },
+      {
+        "id": "wedding_arch_01",
+        "category": "landmarks",
+        "file": "objects/landmarks/wedding_arch_01.png",
+        "sourceComponentIndex": 3,
+        "sourceBounds": {
+          "x": 893,
+          "y": 412,
+          "w": 358,
+          "h": 383,
+          "area": 95271
+        },
+        "width": 362,
+        "height": 387,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.0,
+          "yPct": 0.62,
+          "wPct": 1.0,
+          "hPct": 0.24,
+          "note": "split passage collision in Tiled"
+        }
+      },
+      {
+        "id": "photo_terrace_01",
+        "category": "landmarks",
+        "file": "objects/landmarks/photo_terrace_01.png",
+        "sourceComponentIndex": 4,
+        "sourceBounds": {
+          "x": 20,
+          "y": 455,
+          "w": 429,
+          "h": 311,
+          "area": 115869
+        },
+        "width": 433,
+        "height": 315,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.7,
+          "wPct": 0.84,
+          "hPct": 0.24
+        }
+      },
+      {
+        "id": "couple_garden_table_01",
+        "category": "landmarks",
+        "file": "objects/landmarks/couple_garden_table_01.png",
+        "sourceComponentIndex": 5,
+        "sourceBounds": {
+          "x": 460,
+          "y": 463,
+          "w": 328,
+          "h": 313,
+          "area": 57953
+        },
+        "width": 332,
+        "height": 317,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.7,
+          "wPct": 0.84,
+          "hPct": 0.24
+        }
+      },
+      {
+        "id": "couple_garden_topiary_01",
+        "category": "landmarks",
+        "file": "objects/landmarks/couple_garden_topiary_01.png",
+        "sourceComponentIndex": 6,
+        "sourceBounds": {
+          "x": 807,
+          "y": 502,
+          "w": 96,
+          "h": 252,
+          "area": 16543
+        },
+        "width": 100,
+        "height": 256,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.7,
+          "wPct": 0.84,
+          "hPct": 0.24
+        }
+      },
+      {
+        "id": "event_pavilion_01",
+        "category": "landmarks",
+        "file": "objects/landmarks/event_pavilion_01.png",
+        "sourceComponentIndex": 7,
+        "sourceBounds": {
+          "x": 17,
+          "y": 779,
+          "w": 436,
+          "h": 385,
+          "area": 127992
+        },
+        "width": 440,
+        "height": 389,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.7,
+          "wPct": 0.84,
+          "hPct": 0.24
+        }
+      },
+      {
+        "id": "wishing_tree_landmark_01",
+        "category": "landmarks",
+        "file": "objects/landmarks/wishing_tree_landmark_01.png",
+        "sourceComponentIndex": 8,
+        "sourceBounds": {
+          "x": 449,
+          "y": 798,
+          "w": 384,
+          "h": 412,
+          "area": 109963
+        },
+        "width": 388,
+        "height": 416,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.39,
+          "yPct": 0.65,
+          "wPct": 0.22,
+          "hPct": 0.25
+        }
+      },
+      {
+        "id": "wedding_hall_chapel_01",
+        "category": "landmarks",
+        "file": "objects/landmarks/wedding_hall_chapel_01.png",
+        "sourceComponentIndex": 9,
+        "sourceBounds": {
+          "x": 815,
+          "y": 802,
+          "w": 432,
+          "h": 404,
+          "area": 120586
+        },
+        "width": 436,
+        "height": 408,
+        "origin": {
+          "x": 0.5,
+          "y": 0.94
+        },
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.7,
+          "wPct": 0.84,
+          "hPct": 0.24
+        },
+        "defaultEligible": false,
+        "status": "optional-deprecated-for-default",
+        "notes": "Chapel-like architecture; do not use as default for Muslim wedding theme."
+      }
+    ]
+  },
+  "defaultTheme": {
+    "weddingHall": "wedding_hall_garden_01",
+    "muslimWeddingHall": "wedding_hall_muslim_01",
+    "excludedByDefault": [
+      "wedding_hall_chapel_01"
+    ]
+  }
+}

@@ -1,0 +1,521 @@
+{
+  "templateKey": "garden-village-v1",
+  "version": 1,
+  "placements": [
+    {
+      "asset": "event_pavilion_01",
+      "x": 448,
+      "y": 160,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "rsvp_pavilion_01",
+      "x": 536,
+      "y": 904,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "event_pavilion_01",
+      "x": 744,
+      "y": 496,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "fountain_main_plaza_01",
+      "x": 360,
+      "y": 528,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "entrance_gate_flower_01",
+      "x": 448,
+      "y": 1032,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "photo_terrace_01",
+      "x": 448,
+      "y": 744,
+      "layer": "below",
+      "ground": true,
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "wedding_arch_01",
+      "x": 440,
+      "y": 160,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "wishing_tree_landmark_01",
+      "x": 344,
+      "y": 216,
+      "layer": "below",
+      "scale": 0.24
+    },
+    {
+      "asset": "couple_garden_table_01",
+      "x": 544,
+      "y": 256,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_pink_blossom_small_01",
+      "x": 360,
+      "y": 968,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_green_pinkflowers_01",
+      "x": 552,
+      "y": 296,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_green_whiteflowers_01",
+      "x": 184,
+      "y": 696,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_green_dense_01",
+      "x": 392,
+      "y": 904,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_green_pinkflowers_01",
+      "x": 360,
+      "y": 248,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_pink_blossom_small_01",
+      "x": 88,
+      "y": 808,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_pink_blossom_small_01",
+      "x": 744,
+      "y": 824,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_green_dense_01",
+      "x": 632,
+      "y": 328,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_green_whiteflowers_01",
+      "x": 296,
+      "y": 856,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_orange_blossom_01",
+      "x": 664,
+      "y": 664,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_green_roses_01",
+      "x": 152,
+      "y": 232,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_pink_blossom_small_01",
+      "x": 56,
+      "y": 1080,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_green_whiteflowers_01",
+      "x": 40,
+      "y": 488,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "tree_green_roses_01",
+      "x": 56,
+      "y": 1032,
+      "layer": "below",
+      "scale": 0.31999999999999995
+    },
+    {
+      "asset": "flowerbed_pink_01",
+      "x": 104,
+      "y": 616,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "flowerbed_mixed_01",
+      "x": 728,
+      "y": 600,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "flowerbed_white_01",
+      "x": 312,
+      "y": 280,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "flowerbed_blue_pink_01",
+      "x": 536,
+      "y": 232,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "fence_wood_horizontal_01",
+      "x": 72,
+      "y": 424,
+      "layer": "below",
+      "scale": 0.27999999999999997
+    },
+    {
+      "asset": "fence_wood_horizontal_01",
+      "x": 72,
+      "y": 664,
+      "layer": "below",
+      "scale": 0.27999999999999997
+    },
+    {
+      "asset": "fence_wood_horizontal_01",
+      "x": 120,
+      "y": 424,
+      "layer": "below",
+      "scale": 0.27999999999999997
+    },
+    {
+      "asset": "fence_wood_horizontal_01",
+      "x": 120,
+      "y": 664,
+      "layer": "below",
+      "scale": 0.27999999999999997
+    },
+    {
+      "asset": "fence_wood_horizontal_01",
+      "x": 200,
+      "y": 424,
+      "layer": "below",
+      "scale": 0.27999999999999997
+    },
+    {
+      "asset": "fence_wood_horizontal_01",
+      "x": 200,
+      "y": 664,
+      "layer": "below",
+      "scale": 0.27999999999999997
+    },
+    {
+      "asset": "fence_wood_horizontal_01",
+      "x": 248,
+      "y": 424,
+      "layer": "below",
+      "scale": 0.27999999999999997
+    },
+    {
+      "asset": "fence_wood_horizontal_01",
+      "x": 248,
+      "y": 664,
+      "layer": "below",
+      "scale": 0.27999999999999997
+    },
+    {
+      "asset": "bush_leafy_01",
+      "x": 296,
+      "y": 344,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "bush_leafy_01",
+      "x": 328,
+      "y": 344,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "bush_leafy_01",
+      "x": 360,
+      "y": 344,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "bush_leafy_01",
+      "x": 392,
+      "y": 344,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "bush_leafy_01",
+      "x": 488,
+      "y": 344,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "bush_leafy_01",
+      "x": 520,
+      "y": 344,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "bush_leafy_01",
+      "x": 552,
+      "y": 344,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "bush_leafy_01",
+      "x": 584,
+      "y": 344,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "lamp_black_01",
+      "x": 408,
+      "y": 264,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "lantern_post_wood_01",
+      "x": 472,
+      "y": 392,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "lamp_black_01",
+      "x": 408,
+      "y": 776,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "lantern_post_wood_01",
+      "x": 472,
+      "y": 648,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "lamp_black_01",
+      "x": 408,
+      "y": 968,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "lantern_post_wood_01",
+      "x": 472,
+      "y": 1096,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "lamp_black_01",
+      "x": 312,
+      "y": 504,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "lantern_post_wood_01",
+      "x": 584,
+      "y": 632,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "carpet_rect_flower_01",
+      "x": 440,
+      "y": 184,
+      "layer": "below",
+      "ground": true,
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "carpet_vertical_plain_01",
+      "x": 440,
+      "y": 1064,
+      "layer": "below",
+      "ground": true,
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "carpet_vertical_plain_01",
+      "x": 440,
+      "y": 1128,
+      "layer": "below",
+      "ground": true,
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "directional_sign_01",
+      "x": 408,
+      "y": 616,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "directional_sign_01",
+      "x": 488,
+      "y": 840,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "bench_wood_01",
+      "x": 136,
+      "y": 632,
+      "layer": "below",
+      "scale": 0.27999999999999997
+    },
+    {
+      "asset": "bench_wood_01",
+      "x": 792,
+      "y": 616,
+      "layer": "below",
+      "scale": 0.27999999999999997
+    },
+    {
+      "asset": "table_round_white_01",
+      "x": 776,
+      "y": 616,
+      "layer": "below",
+      "scale": 0.27999999999999997
+    },
+    {
+      "asset": "chair_white_01",
+      "x": 744,
+      "y": 632,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "chair_white_01",
+      "x": 808,
+      "y": 616,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "easel_flower_01",
+      "x": 488,
+      "y": 760,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "gift_table_01",
+      "x": 344,
+      "y": 200,
+      "layer": "below",
+      "scale": 0.27999999999999997
+    },
+    {
+      "asset": "guestbook_podium_01",
+      "x": 536,
+      "y": 200,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "topiary_cone_01",
+      "x": 392,
+      "y": 168,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "topiary_cone_01",
+      "x": 488,
+      "y": 168,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "topiary_heart_01",
+      "x": 488,
+      "y": 264,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "pot_pink_01",
+      "x": 328,
+      "y": 216,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "pot_pink_01",
+      "x": 568,
+      "y": 216,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "planter_box_pink_01",
+      "x": 312,
+      "y": 504,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "planter_box_pink_01",
+      "x": 584,
+      "y": 632,
+      "layer": "below",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "fireflies_cluster_01",
+      "x": 400,
+      "y": 520,
+      "layer": "above",
+      "scale": 0.3333333333333333
+    },
+    {
+      "asset": "fireflies_cluster_01",
+      "x": 488,
+      "y": 264,
+      "layer": "above",
+      "scale": 0.3333333333333333
+    }
+  ]
+}

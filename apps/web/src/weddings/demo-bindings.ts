@@ -9,7 +9,7 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     npcId: "sari_greeter",
     role: "greeter",
     displayName: "Sari",
-    avatarId: "greeter",
+    avatarId: "npc_greeter_hijabi_pastel_01",
     interactLabel: "Bicara",
     dialogue: [
       { id: "sapa", text: "Halo! Selamat datang di Taman Kebahagiaan.", next: "gerak" },
@@ -26,8 +26,8 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     slotId: "npc.rsvp_keeper",
     npcId: "bimo_rsvp",
     role: "rsvp",
-    displayName: "Bimo",
-    avatarId: "rsvp",
+    displayName: "Nadia",
+    avatarId: "npc_rsvp_keeper_hijabi_01",
     dialogue: [
       { id: "sapa", text: "Hai! Sudah isi RSVP belum?", next: "tanya" },
       {
@@ -43,7 +43,7 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     npcId: "nek_rina",
     role: "story",
     displayName: "Nek Rina",
-    avatarId: "story",
+    avatarId: "guest_female_hijab_sage_01",
     questRewardId: "heart.first_meeting",
     dialogue: [
       { id: "sapa", text: "Duduk sini sebentar, Nak." },
@@ -56,7 +56,7 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     npcId: "aji_photo",
     role: "photo",
     displayName: "Aji",
-    avatarId: "photo",
+    avatarId: "npc_photographer_muslim_male_01",
     dialogue: [
       { id: "sapa", text: "Senyum! Momen bagus tidak datang dua kali.", next: "galeri" },
       {
@@ -72,7 +72,7 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     npcId: "lala_travel",
     role: "travel",
     displayName: "Lala",
-    avatarId: "travel",
+    avatarId: "guest_female_kebaya_pink_01",
     questRewardId: "heart.journey",
     dialogue: [
       { id: "sapa", text: "Aku ikut mereka road trip ke pantai!", next: "jalan" },
@@ -84,8 +84,8 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     slotId: "npc.event_coordinator",
     npcId: "rudi_event",
     role: "event",
-    displayName: "Rudi",
-    avatarId: "event",
+    displayName: "Maya",
+    avatarId: "npc_rsvp_keeper_hijabi_01",
     dialogue: [
       { id: "sapa", text: "Jadwal hari-H sudah final!", next: "acara" },
       {
@@ -101,7 +101,7 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     npcId: "wulan_venue",
     role: "venue",
     displayName: "Wulan",
-    avatarId: "venue",
+    avatarId: "npc_rsvp_keeper_hijabi_01",
     dialogue: [
       { id: "sapa", text: "Taman ini luas, tapi jangan khawatir tersesat.", next: "lokasi" },
       {
@@ -117,7 +117,7 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     npcId: "dimas_proposal",
     role: "proposal",
     displayName: "Dimas",
-    avatarId: "proposal",
+    avatarId: "npc_host_male_01",
     questRewardId: "heart.proposal",
     dialogue: [
       { id: "sapa", text: "Psst, aku yang menyiapkan lamaran itu.", next: "lamar" },
@@ -129,8 +129,8 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     slotId: "npc.couple_a",
     npcId: "mempelai_a",
     role: "couple",
-    displayName: "Mempelai A",
-    avatarId: "partner_a",
+    displayName: "Ayu",
+    avatarId: "couple_bride_hijab_ivory_01",
     dialogue: [{ id: "sapa", text: "Terima kasih sudah datang dan bermain bersama kami!" }],
     actions: [],
   },
@@ -138,8 +138,8 @@ export const DEMO_NPC_BINDINGS: NpcBinding[] = [
     slotId: "npc.couple_b",
     npcId: "mempelai_b",
     role: "couple",
-    displayName: "Mempelai B",
-    avatarId: "partner_b",
+    displayName: "Bima",
+    avatarId: "couple_groom_white_01",
     dialogue: [{ id: "sapa", text: "Nanti rayakan bersama di aula ya!" }],
     actions: [],
   },

@@ -181,6 +181,10 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   resume), venue nav marker set + cleared on arrival, gallery decode assert,
   M4-B coordinator→Acara, M4-C RSVP keeper→RSVP mock submit, M4-D asset-block
   (dead hook + couple/event/venue readable), width set 320/360/430.
+- Regression (§40) after M4, all on the final tree: M1 MOVEMENT VERIFIED
+  (104px up / 108px right), M2 TOUCH VERIFIED (drag + multitouch + modal +
+  emote), M3 NPC VERIFIED (dialogue + keyboard RSVP + tour, incl. new
+  Book-integration asserts). No regressions.
 - Acceptance: leaf-m4 G0..G4 all met with evidence.
 - Known issues / decisions: M4-D needed dev-error-overlay removal in-probe
   (Next dev renders boot-throw overlay into nextjs-portal swallowing taps;
@@ -192,3 +196,110 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   gallery placeholders until versioned media (M8/R2). Single RSVP surface for
   book + keeper paths.
 - Next: M5 (Four Hearts + Finale) is READY. M6+ per master order.
+
+## M4.5 — Production Avatar Pipeline (VERIFIED 2026-09-07)
+
+- Status: complete. leaf-m4.5 G0/G1/G2/G3 PASS via gate-checker with recorded
+  evidence; G4 manual visual review done (320/360/390/430).
+- Files changed: `packages/contracts/src/avatar.ts` (avatar/registry Zod
+  contract: 8 required anims, frame bounds, geometry, guest pool),
+  `tooling/assets/build-avatar-registry.mjs` (pack scan + registry build,
+  calibrated displayScale 0.4, legacy guest_01 synthesis),
+  `assets-source/sprites/avatar-registry.json` (23 avatars, 11-strong guest
+  pool), `apps/web/public/assets/avatars/` (23 runtime sheets + registry),
+  `tooling/world-gen/build-world.mjs` (registry-driven, stale placeholder
+  outputs deleted), `packages/game/src/actors/player.ts` +
+  `npc.ts` (metadata origin/physics/scale, derived label offsets, canonical
+  anims), `packages/game/src/scenes/PreloadScene.ts` (registry load,
+  referenced-only sheets with per-avatar geometry),
+  `packages/game/src/scenes/WeddingWorldScene.ts` (avatar resolution),
+  `packages/game/src/index.ts` (playerAvatarId option),
+  `apps/web/src/weddings/demo-bindings.ts` (muslim/couple/guest rebinds;
+  Nadia/Maya/Ayu/Bima), `apps/web/src/game/main.ts` (batik player avatar),
+  `scripts/validate-avatars.mjs`, `scripts/verify-m45-build.mjs`,
+  `tooling/e2e/m45-avatars.mjs`, `docs/qa/m45-*.png`,
+  `THIRD_PARTY_ASSETS.md` (first-party pack provenance),
+  `.unlazy/wedding-rpg-v1/**`. Source packs untouched.
+- Commands run: `node tooling/world-gen/build-world.mjs` (23 avatars),
+  `node scripts/validate-avatars.mjs` (AVATARS VALID: packs, schema,
+  dims, refs, placeholder tripwire, self-test),
+  `node scripts/verify-m45-build.mjs` (M4.5 BUILD VERIFIED),
+  `node tooling/e2e/m45-avatars.mjs` (textures/feet/8-anims/dialogue OK,
+  M4.5 AVATARS VERIFIED), gate-checker `--approve` on leaf-m4.5 (G0..G3 PASS).
+- Tests: body geometry probed live (7.2x4.8 feet, centered, at feet line);
+  all 8 anim states on production art; 10 NPCs on distinct textures;
+  guest_01 absent from NPCs; dialogue + labels over 64px heads.
+- Acceptance: leaf-m4.5 G0..G4 all met with evidence.
+- Known issues / decisions: Arcade Body.setSize freezes scale at call time
+  while offsets live-scale (verified in Phaser source) — sizes pre-scaled,
+  offsets raw; static bodies never re-sync, so NPC feet pinned explicitly
+  (dynamic player self-syncs; probe distinguishes both). Display 0.4 overrode
+  metadata 1.5 hint after calibration (25.6px chars on 16px tiles). Probe
+  self-bugs fixed along the way (seek/page params, arrival radii vs hedge
+  and photographer bodies). RSVP/event/venue share one hijabi asset until
+  more packs arrive (mission-allowed). MC registered, slotless, for later use.
+- Next: M5 (Four Hearts + Finale) is READY. Stopping here per mission scope
+  (do not start M5).
+- Regression (§22) after M4.5, all on the final tree: M1 MOVEMENT VERIFIED,
+  M2 TOUCH VERIFIED, M3 NPC VERIFIED (incl. Nadia rename maintenance),
+  M4 BOOK VERIFIED (incl. deep links + dead-Phaser readability).
+  No regressions. World build re-ran cleanly with production avatars intact
+  (registry + 384×256 runtime sheets verified post-build).
+
+## M4.6 — Production Environment / World Art Pipeline (VERIFIED 2026-09-07)
+
+- Status: complete. leaf-m4.6 G0/G1/G2/G3 PASS via gate-checker with recorded
+  evidence; G4 manual visual review done (9 stops at 390 + 3 widths + 3x
+  closeup + live depth dump).
+- Files changed: `packages/contracts/src/environment.ts` (registry/atlas/
+  placement/alias Zod contracts), `tooling/assets/build-environment.mjs`
+  (pack validate + runtime publish), `tooling/world-gen/terrain-v2.mjs`
+  (deterministic piece router, rotation-safe junctions),
+  `tooling/world-gen/gen-decor.mjs` (73 placements, footprint collision,
+  slot/path/chapel guards), `tooling/world-gen/gen-map.mjs` (planLayout +
+  pack-terrain paint + merged collision; procedural tiles retired),
+  `tooling/world-gen/build-world.mjs` (env-first orchestration, placements
+  artifact, manifest environment section),
+  `packages/game/src/world/{types,loader}.ts` (placements in definition),
+  `packages/game/src/scenes/PreloadScene.ts` (manifest-driven terrain/
+  atlases/registry/placements loads), `packages/game/src/scenes/
+  WeddingWorldScene.ts` (dynamic tileset, Y-sorted atlas objects, nav
+  marker intact), `scripts/validate-environment.mjs`,
+  `scripts/verify-m46-build.mjs`, `tooling/e2e/m46-world.mjs`,
+  `docs/qa/m46-*.png`, `THIRD_PARTY_ASSETS.md` (pack provenance),
+  `.unlazy/wedding-rpg-v1/**`. Pack sources untouched.
+- Commands run: `node scripts/validate-environment.mjs` (ENVIRONMENT VALID:
+  48 tiles, 58/83/10 assets, aliases, presets, chapel excluded, 73
+  placements, self-test), `node scripts/verify-m46-build.mjs` (double-build
+  hash match, pack tileset wired, atlases present, tsc, next build),
+  `node tooling/e2e/m46-world.mjs` (traverse + photographer-block collision
+  + book + 9-stop tour OK, transfer logged), gate-checker `--approve` on
+  leaf-m4.6 (G0..G3 PASS).
+- Tests: E2E traverse (2s progress + NPC-body block band), NPC count +
+  player avatar, book open/close, nav marker set/clear (in m4 probe
+  regression), placement guard negatives (interrupted builds failed loudly
+  on path/slot violations during authoring: gate posts, table cluster,
+  topiary cones/heart all relocated by the guard before first green build).
+- Acceptance: mission G1..G9 covered (G5 collision via fountain/tree/hedge/
+  gate footprints + photographer-block E2E; G6 all nine landmarks read
+  distinctly; G7 widths reviewed; G8 regressions below; G9 double-build
+  hashes).
+- Payload (§34 measured): 22 files, 9256KB total; atlases 7.5MB dominate
+  (foliage 2471 + decor 2429 + landmarks 2633KB). Single-stage preload kept
+  for M4.6 correctness; staged loading deferred to M14 with this trigger.
+  Animated water deferred (static shorelines verified).
+- Known issues / decisions: display = registry recommended x 2/3 uniform
+  (bench lands exactly in the 2-4 tile spec range); water diag-corner mapping
+  was a first guess, verified correct in screenshots; photo terrace + carpets
+  are ground-depth floors (depth 1, proven by live depth dump after a
+  thumbnail misread); dirt micro-texture and grass tile edges visible only
+  at 3x inspection zoom, coherent at play scale (watch-items, pack-revision
+  material, not blocking); hall/event share the pavilion asset per registry
+  alias (accepted repetition, flagged for a future distinct hall); wishing
+  tree at 0.24 to fit the garden; RSVP/event/venue share one hijabi asset
+  (unchanged from M4.5).
+- Regression (§33) after M4.6, all on the final tree: M1 MOVEMENT VERIFIED,
+  M2 TOUCH VERIFIED, M3 NPC VERIFIED, M4 BOOK VERIFIED (after re-routing one
+  probe waypoint around the bigger production fountain — probe-only change),
+  M4.5 AVATARS VERIFIED. No regressions.
+- Next: M5 (Four Hearts + Finale) is READY. STOPPED per mission scope.

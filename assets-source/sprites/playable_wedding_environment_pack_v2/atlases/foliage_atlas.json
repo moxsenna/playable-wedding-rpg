@@ -1,0 +1,2045 @@
+{
+  "frames": {
+    "wishing_tree_01": {
+      "frame": {
+        "x": 4,
+        "y": 4,
+        "w": 292,
+        "h": 414
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 292,
+        "h": 414
+      },
+      "sourceSize": {
+        "w": 292,
+        "h": 414
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "meta": {
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        },
+        "defaultEligible": true
+      }
+    },
+    "hedge_arch_pink_01": {
+      "frame": {
+        "x": 300,
+        "y": 4,
+        "w": 212,
+        "h": 281
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 212,
+        "h": 281
+      },
+      "sourceSize": {
+        "w": 212,
+        "h": 281
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        },
+        "defaultEligible": true
+      }
+    },
+    "urn_lavender_01": {
+      "frame": {
+        "x": 516,
+        "y": 4,
+        "w": 84,
+        "h": 261
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 84,
+        "h": 261
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 261
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "vine_arch_01": {
+      "frame": {
+        "x": 604,
+        "y": 4,
+        "w": 161,
+        "h": 242
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 161,
+        "h": 242
+      },
+      "sourceSize": {
+        "w": 161,
+        "h": 242
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "tree_pink_blossom_01": {
+      "frame": {
+        "x": 769,
+        "y": 4,
+        "w": 197,
+        "h": 238
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 197,
+        "h": 238
+      },
+      "sourceSize": {
+        "w": 197,
+        "h": 238
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "meta": {
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        },
+        "defaultEligible": true
+      }
+    },
+    "tree_green_roses_01": {
+      "frame": {
+        "x": 970,
+        "y": 4,
+        "w": 201,
+        "h": 235
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 201,
+        "h": 235
+      },
+      "sourceSize": {
+        "w": 201,
+        "h": 235
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "meta": {
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        },
+        "defaultEligible": true
+      }
+    },
+    "tree_wisteria_01": {
+      "frame": {
+        "x": 1175,
+        "y": 4,
+        "w": 391,
+        "h": 235
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 391,
+        "h": 235
+      },
+      "sourceSize": {
+        "w": 391,
+        "h": 235
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "meta": {
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        },
+        "defaultEligible": true
+      }
+    },
+    "tree_green_dense_01": {
+      "frame": {
+        "x": 1570,
+        "y": 4,
+        "w": 198,
+        "h": 231
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 198,
+        "h": 231
+      },
+      "sourceSize": {
+        "w": 198,
+        "h": 231
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "meta": {
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        },
+        "defaultEligible": true
+      }
+    },
+    "lantern_post_vine_01": {
+      "frame": {
+        "x": 1772,
+        "y": 4,
+        "w": 86,
+        "h": 203
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 86,
+        "h": 203
+      },
+      "sourceSize": {
+        "w": 86,
+        "h": 203
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "tree_green_whiteflowers_01": {
+      "frame": {
+        "x": 1862,
+        "y": 4,
+        "w": 155,
+        "h": 181
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 155,
+        "h": 181
+      },
+      "sourceSize": {
+        "w": 155,
+        "h": 181
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "meta": {
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        },
+        "defaultEligible": true
+      }
+    },
+    "tree_pink_blossom_small_01": {
+      "frame": {
+        "x": 4,
+        "y": 422,
+        "w": 163,
+        "h": 178
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 163,
+        "h": 178
+      },
+      "sourceSize": {
+        "w": 163,
+        "h": 178
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "meta": {
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        },
+        "defaultEligible": true
+      }
+    },
+    "tree_orange_blossom_01": {
+      "frame": {
+        "x": 171,
+        "y": 422,
+        "w": 149,
+        "h": 177
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 149,
+        "h": 177
+      },
+      "sourceSize": {
+        "w": 149,
+        "h": 177
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "meta": {
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        },
+        "defaultEligible": true
+      }
+    },
+    "tree_green_whiteflowers_small_01": {
+      "frame": {
+        "x": 324,
+        "y": 422,
+        "w": 178,
+        "h": 177
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 178,
+        "h": 177
+      },
+      "sourceSize": {
+        "w": 178,
+        "h": 177
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "meta": {
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        },
+        "defaultEligible": true
+      }
+    },
+    "tree_green_pinkflowers_01": {
+      "frame": {
+        "x": 506,
+        "y": 422,
+        "w": 156,
+        "h": 176
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 156,
+        "h": 176
+      },
+      "sourceSize": {
+        "w": 156,
+        "h": 176
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "meta": {
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        },
+        "defaultEligible": true
+      }
+    },
+    "tree_willow_01": {
+      "frame": {
+        "x": 666,
+        "y": 422,
+        "w": 145,
+        "h": 176
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 145,
+        "h": 176
+      },
+      "sourceSize": {
+        "w": 145,
+        "h": 176
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "meta": {
+        "recommendedScale": 0.48,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.38,
+          "yPct": 0.78,
+          "wPct": 0.24,
+          "hPct": 0.18
+        },
+        "defaultEligible": true
+      }
+    },
+    "hedge_arch_pink_02": {
+      "frame": {
+        "x": 815,
+        "y": 422,
+        "w": 152,
+        "h": 153
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 152,
+        "h": 153
+      },
+      "sourceSize": {
+        "w": 152,
+        "h": 153
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        },
+        "defaultEligible": true
+      }
+    },
+    "topiary_round_01": {
+      "frame": {
+        "x": 971,
+        "y": 422,
+        "w": 59,
+        "h": 142
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 59,
+        "h": 142
+      },
+      "sourceSize": {
+        "w": 59,
+        "h": 142
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "vine_cluster_01": {
+      "frame": {
+        "x": 1034,
+        "y": 422,
+        "w": 92,
+        "h": 142
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 92,
+        "h": 142
+      },
+      "sourceSize": {
+        "w": 92,
+        "h": 142
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "hedge_corner_01": {
+      "frame": {
+        "x": 1130,
+        "y": 422,
+        "w": 224,
+        "h": 139
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 224,
+        "h": 139
+      },
+      "sourceSize": {
+        "w": 224,
+        "h": 139
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        },
+        "defaultEligible": true
+      }
+    },
+    "hedge_vertical_01": {
+      "frame": {
+        "x": 1358,
+        "y": 422,
+        "w": 65,
+        "h": 139
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 65,
+        "h": 139
+      },
+      "sourceSize": {
+        "w": 65,
+        "h": 139
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        },
+        "defaultEligible": true
+      }
+    },
+    "topiary_spiral_01": {
+      "frame": {
+        "x": 1427,
+        "y": 422,
+        "w": 77,
+        "h": 139
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 77,
+        "h": 139
+      },
+      "sourceSize": {
+        "w": 77,
+        "h": 139
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "hedge_corner_02": {
+      "frame": {
+        "x": 1508,
+        "y": 422,
+        "w": 133,
+        "h": 138
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 133,
+        "h": 138
+      },
+      "sourceSize": {
+        "w": 133,
+        "h": 138
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        },
+        "defaultEligible": true
+      }
+    },
+    "hedge_vertical_short_01": {
+      "frame": {
+        "x": 1645,
+        "y": 422,
+        "w": 74,
+        "h": 135
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 74,
+        "h": 135
+      },
+      "sourceSize": {
+        "w": 74,
+        "h": 135
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        },
+        "defaultEligible": true
+      }
+    },
+    "hedge_vertical_short_02": {
+      "frame": {
+        "x": 1723,
+        "y": 422,
+        "w": 73,
+        "h": 133
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 73,
+        "h": 133
+      },
+      "sourceSize": {
+        "w": 73,
+        "h": 133
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.08,
+          "yPct": 0.55,
+          "wPct": 0.84,
+          "hPct": 0.35
+        },
+        "defaultEligible": true
+      }
+    },
+    "hanging_vine_01": {
+      "frame": {
+        "x": 1800,
+        "y": 422,
+        "w": 115,
+        "h": 132
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 115,
+        "h": 132
+      },
+      "sourceSize": {
+        "w": 115,
+        "h": 132
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "planter_box_pink_01": {
+      "frame": {
+        "x": 1919,
+        "y": 422,
+        "w": 93,
+        "h": 128
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 93,
+        "h": 128
+      },
+      "sourceSize": {
+        "w": 93,
+        "h": 128
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "shrub_pot_square_01": {
+      "frame": {
+        "x": 4,
+        "y": 604,
+        "w": 89,
+        "h": 126
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 89,
+        "h": 126
+      },
+      "sourceSize": {
+        "w": 89,
+        "h": 126
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "topiary_cone_01": {
+      "frame": {
+        "x": 97,
+        "y": 604,
+        "w": 66,
+        "h": 124
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 66,
+        "h": 124
+      },
+      "sourceSize": {
+        "w": 66,
+        "h": 124
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "urn_whiteflowers_01": {
+      "frame": {
+        "x": 167,
+        "y": 604,
+        "w": 95,
+        "h": 124
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 95,
+        "h": 124
+      },
+      "sourceSize": {
+        "w": 95,
+        "h": 124
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "pot_green_01": {
+      "frame": {
+        "x": 266,
+        "y": 604,
+        "w": 90,
+        "h": 122
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 90,
+        "h": 122
+      },
+      "sourceSize": {
+        "w": 90,
+        "h": 122
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "pot_pink_01": {
+      "frame": {
+        "x": 360,
+        "y": 604,
+        "w": 91,
+        "h": 121
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 91,
+        "h": 121
+      },
+      "sourceSize": {
+        "w": 91,
+        "h": 121
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "barrel_lavender_01": {
+      "frame": {
+        "x": 455,
+        "y": 604,
+        "w": 78,
+        "h": 121
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 78,
+        "h": 121
+      },
+      "sourceSize": {
+        "w": 78,
+        "h": 121
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "fallen_log_flowers_01": {
+      "frame": {
+        "x": 537,
+        "y": 604,
+        "w": 151,
+        "h": 120
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 151,
+        "h": 120
+      },
+      "sourceSize": {
+        "w": 151,
+        "h": 120
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "flowerbox_large_01": {
+      "frame": {
+        "x": 692,
+        "y": 604,
+        "w": 135,
+        "h": 113
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 135,
+        "h": 113
+      },
+      "sourceSize": {
+        "w": 135,
+        "h": 113
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "topiary_heart_01": {
+      "frame": {
+        "x": 831,
+        "y": 604,
+        "w": 84,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 84,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 84,
+        "h": 112
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "bush_lavender_01": {
+      "frame": {
+        "x": 919,
+        "y": 604,
+        "w": 109,
+        "h": 111
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 109,
+        "h": 111
+      },
+      "sourceSize": {
+        "w": 109,
+        "h": 111
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "bushes_mixed_01": {
+      "frame": {
+        "x": 1032,
+        "y": 604,
+        "w": 290,
+        "h": 110
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 290,
+        "h": 110
+      },
+      "sourceSize": {
+        "w": 290,
+        "h": 110
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "topiary_cone_pot_01": {
+      "frame": {
+        "x": 1326,
+        "y": 604,
+        "w": 57,
+        "h": 110
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 57,
+        "h": 110
+      },
+      "sourceSize": {
+        "w": 57,
+        "h": 110
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "bushes_pink_white_01": {
+      "frame": {
+        "x": 1387,
+        "y": 604,
+        "w": 209,
+        "h": 107
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 209,
+        "h": 107
+      },
+      "sourceSize": {
+        "w": 209,
+        "h": 107
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "pot_pink_large_01": {
+      "frame": {
+        "x": 1600,
+        "y": 604,
+        "w": 98,
+        "h": 106
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 98,
+        "h": 106
+      },
+      "sourceSize": {
+        "w": 98,
+        "h": 106
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "pot_green_large_01": {
+      "frame": {
+        "x": 1702,
+        "y": 604,
+        "w": 88,
+        "h": 105
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 88,
+        "h": 105
+      },
+      "sourceSize": {
+        "w": 88,
+        "h": 105
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "bushes_white_pink_01": {
+      "frame": {
+        "x": 1794,
+        "y": 604,
+        "w": 187,
+        "h": 104
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 187,
+        "h": 104
+      },
+      "sourceSize": {
+        "w": 187,
+        "h": 104
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "leafy_cluster_01": {
+      "frame": {
+        "x": 4,
+        "y": 734,
+        "w": 91,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 91,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 91,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "bush_leafy_01": {
+      "frame": {
+        "x": 99,
+        "y": 734,
+        "w": 91,
+        "h": 98
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 91,
+        "h": 98
+      },
+      "sourceSize": {
+        "w": 91,
+        "h": 98
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "flowerbed_blue_pink_01": {
+      "frame": {
+        "x": 194,
+        "y": 734,
+        "w": 235,
+        "h": 97
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 235,
+        "h": 97
+      },
+      "sourceSize": {
+        "w": 235,
+        "h": 97
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "grass_tuft_object_01": {
+      "frame": {
+        "x": 433,
+        "y": 734,
+        "w": 91,
+        "h": 97
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 91,
+        "h": 97
+      },
+      "sourceSize": {
+        "w": 91,
+        "h": 97
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "flowerbed_pink_01": {
+      "frame": {
+        "x": 528,
+        "y": 734,
+        "w": 215,
+        "h": 95
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 215,
+        "h": 95
+      },
+      "sourceSize": {
+        "w": 215,
+        "h": 95
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "bush_whiteflower_small_01": {
+      "frame": {
+        "x": 747,
+        "y": 734,
+        "w": 91,
+        "h": 95
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 91,
+        "h": 95
+      },
+      "sourceSize": {
+        "w": 91,
+        "h": 95
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "flowerbed_white_01": {
+      "frame": {
+        "x": 842,
+        "y": 734,
+        "w": 186,
+        "h": 94
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 186,
+        "h": 94
+      },
+      "sourceSize": {
+        "w": 186,
+        "h": 94
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "flowerbed_mixed_01": {
+      "frame": {
+        "x": 1032,
+        "y": 734,
+        "w": 214,
+        "h": 94
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 214,
+        "h": 94
+      },
+      "sourceSize": {
+        "w": 214,
+        "h": 94
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "leafy_plant_01": {
+      "frame": {
+        "x": 1250,
+        "y": 734,
+        "w": 80,
+        "h": 91
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 91
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 91
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "plant_leafy_01": {
+      "frame": {
+        "x": 1334,
+        "y": 734,
+        "w": 83,
+        "h": 90
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 83,
+        "h": 90
+      },
+      "sourceSize": {
+        "w": 83,
+        "h": 90
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "planter_pink_01": {
+      "frame": {
+        "x": 1421,
+        "y": 734,
+        "w": 101,
+        "h": 86
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 101,
+        "h": 86
+      },
+      "sourceSize": {
+        "w": 101,
+        "h": 86
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "planter_white_01": {
+      "frame": {
+        "x": 1526,
+        "y": 734,
+        "w": 125,
+        "h": 84
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 125,
+        "h": 84
+      },
+      "sourceSize": {
+        "w": 125,
+        "h": 84
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "stump_flowers_01": {
+      "frame": {
+        "x": 1655,
+        "y": 734,
+        "w": 127,
+        "h": 78
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 127,
+        "h": 78
+      },
+      "sourceSize": {
+        "w": 127,
+        "h": 78
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "firefly_glow_01": {
+      "frame": {
+        "x": 1786,
+        "y": 734,
+        "w": 48,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "rock_moss_01": {
+      "frame": {
+        "x": 1838,
+        "y": 734,
+        "w": 55,
+        "h": 47
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 55,
+        "h": 47
+      },
+      "sourceSize": {
+        "w": 55,
+        "h": 47
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    },
+    "fireflies_cluster_01": {
+      "frame": {
+        "x": 1897,
+        "y": 734,
+        "w": 45,
+        "h": 42
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 45,
+        "h": 42
+      },
+      "sourceSize": {
+        "w": 45,
+        "h": 42
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "meta": {
+        "recommendedScale": 0.5,
+        "collision": {
+          "shape": "rect",
+          "xPct": 0.1,
+          "yPct": 0.65,
+          "wPct": 0.8,
+          "hPct": 0.28
+        },
+        "defaultEligible": true
+      }
+    }
+  },
+  "meta": {
+    "app": "OpenAI-generated Playable Wedding Environment Pack V2",
+    "version": "1",
+    "image": "foliage_atlas.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 2025,
+      "h": 838
+    },
+    "scale": "1"
+  }
+}

@@ -1,0 +1,443 @@
+{
+  "schemaVersion": 1,
+  "tileSize": 16,
+  "tiles": [
+    {
+      "id": 0,
+      "name": "grass_plain_01",
+      "x": 0,
+      "y": 0,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 0
+    },
+    {
+      "id": 1,
+      "name": "grass_flowers_01",
+      "x": 16,
+      "y": 0,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 1
+    },
+    {
+      "id": 2,
+      "name": "grass_flowers_dense_01",
+      "x": 32,
+      "y": 0,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 2
+    },
+    {
+      "id": 3,
+      "name": "grass_weeds_01",
+      "x": 48,
+      "y": 0,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 3
+    },
+    {
+      "id": 4,
+      "name": "grass_bare_patch_01",
+      "x": 64,
+      "y": 0,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 4
+    },
+    {
+      "id": 5,
+      "name": "grass_plain_02",
+      "x": 80,
+      "y": 0,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 7
+    },
+    {
+      "id": 6,
+      "name": "grass_tuft_01",
+      "x": 96,
+      "y": 0,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 8
+    },
+    {
+      "id": 7,
+      "name": "grass_flowers_sparse_01",
+      "x": 112,
+      "y": 0,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 9
+    },
+    {
+      "id": 8,
+      "name": "grass_border_square_01",
+      "x": 0,
+      "y": 16,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 11
+    },
+    {
+      "id": 9,
+      "name": "grass_corner_flowers_01",
+      "x": 16,
+      "y": 16,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 12
+    },
+    {
+      "id": 10,
+      "name": "grass_corner_flowers_02",
+      "x": 32,
+      "y": 16,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 13
+    },
+    {
+      "id": 11,
+      "name": "path_dirt_vertical",
+      "x": 48,
+      "y": 16,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 16
+    },
+    {
+      "id": 12,
+      "name": "path_dirt_junction_01",
+      "x": 64,
+      "y": 16,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 17
+    },
+    {
+      "id": 13,
+      "name": "path_dirt_curve_01",
+      "x": 80,
+      "y": 16,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 18
+    },
+    {
+      "id": 14,
+      "name": "path_dirt_curve_02",
+      "x": 96,
+      "y": 16,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 19
+    },
+    {
+      "id": 15,
+      "name": "path_dirt_center_01",
+      "x": 112,
+      "y": 16,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 20
+    },
+    {
+      "id": 16,
+      "name": "path_dirt_center_02",
+      "x": 0,
+      "y": 32,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 21
+    },
+    {
+      "id": 17,
+      "name": "path_dirt_cross",
+      "x": 16,
+      "y": 32,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 22
+    },
+    {
+      "id": 18,
+      "name": "path_dirt_curve_03",
+      "x": 32,
+      "y": 32,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 23
+    },
+    {
+      "id": 19,
+      "name": "path_stone_curve_01",
+      "x": 48,
+      "y": 32,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 24
+    },
+    {
+      "id": 20,
+      "name": "path_stone_curve_02",
+      "x": 64,
+      "y": 32,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 25
+    },
+    {
+      "id": 21,
+      "name": "path_stone_curve_03",
+      "x": 80,
+      "y": 32,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 26
+    },
+    {
+      "id": 22,
+      "name": "path_stone_curve_04",
+      "x": 96,
+      "y": 32,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 27
+    },
+    {
+      "id": 23,
+      "name": "path_stone_cross",
+      "x": 112,
+      "y": 32,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 28
+    },
+    {
+      "id": 24,
+      "name": "path_stone_vertical",
+      "x": 0,
+      "y": 48,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 29
+    },
+    {
+      "id": 25,
+      "name": "path_stone_center_01",
+      "x": 16,
+      "y": 48,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 30
+    },
+    {
+      "id": 26,
+      "name": "path_stone_center_02",
+      "x": 32,
+      "y": 48,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 31
+    },
+    {
+      "id": 27,
+      "name": "water_center_01",
+      "x": 48,
+      "y": 48,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 45
+    },
+    {
+      "id": 28,
+      "name": "water_center_02",
+      "x": 64,
+      "y": 48,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 46
+    },
+    {
+      "id": 29,
+      "name": "water_edge_south_01",
+      "x": 80,
+      "y": 48,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 47
+    },
+    {
+      "id": 30,
+      "name": "water_edge_diag_01",
+      "x": 96,
+      "y": 48,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 48
+    },
+    {
+      "id": 31,
+      "name": "water_edge_diag_02",
+      "x": 112,
+      "y": 48,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 49
+    },
+    {
+      "id": 32,
+      "name": "water_edge_diag_03",
+      "x": 0,
+      "y": 64,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 50
+    },
+    {
+      "id": 33,
+      "name": "water_lily_pond_01",
+      "x": 16,
+      "y": 64,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 52
+    },
+    {
+      "id": 34,
+      "name": "water_cross_01",
+      "x": 32,
+      "y": 64,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 53
+    },
+    {
+      "id": 35,
+      "name": "water_beach_corner_01",
+      "x": 48,
+      "y": 64,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 54
+    },
+    {
+      "id": 36,
+      "name": "water_channel_vertical_01",
+      "x": 64,
+      "y": 64,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 55
+    },
+    {
+      "id": 37,
+      "name": "water_channel_vertical_02",
+      "x": 80,
+      "y": 64,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 56
+    },
+    {
+      "id": 38,
+      "name": "water_rock_corner_01",
+      "x": 96,
+      "y": 64,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 57
+    },
+    {
+      "id": 39,
+      "name": "water_rock_corner_02",
+      "x": 112,
+      "y": 64,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 58
+    },
+    {
+      "id": 40,
+      "name": "water_shore_corner_01",
+      "x": 0,
+      "y": 80,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 59
+    },
+    {
+      "id": 41,
+      "name": "water_shore_corner_02",
+      "x": 16,
+      "y": 80,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 60
+    },
+    {
+      "id": 42,
+      "name": "water_shore_corner_03",
+      "x": 32,
+      "y": 80,
+      "w": 16,
+      "h": 16,
+      "sourceComponentIndex": 61
+    },
+    {
+      "id": 43,
+      "name": "path_dirt_horizontal",
+      "x": 48,
+      "y": 80,
+      "w": 16,
+      "h": 16,
+      "derivedFrom": "path_dirt_vertical",
+      "rotation": 90
+    },
+    {
+      "id": 44,
+      "name": "path_stone_horizontal",
+      "x": 64,
+      "y": 80,
+      "w": 16,
+      "h": 16,
+      "derivedFrom": "path_stone_vertical",
+      "rotation": 90
+    },
+    {
+      "id": 45,
+      "name": "water_edge_north_01",
+      "x": 80,
+      "y": 80,
+      "w": 16,
+      "h": 16,
+      "derivedFrom": "water_edge_south_01",
+      "rotation": 180
+    },
+    {
+      "id": 46,
+      "name": "water_edge_east_01",
+      "x": 96,
+      "y": 80,
+      "w": 16,
+      "h": 16,
+      "derivedFrom": "water_edge_south_01",
+      "rotation": 90
+    },
+    {
+      "id": 47,
+      "name": "water_edge_west_01",
+      "x": 112,
+      "y": 80,
+      "w": 16,
+      "h": 16,
+      "derivedFrom": "water_edge_south_01",
+      "rotation": 270
+    }
+  ]
+}

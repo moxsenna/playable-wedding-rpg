@@ -1,0 +1,1113 @@
+{
+  "name": "wedding-foliage-v2",
+  "tilecount": 58,
+  "tilewidth": 391,
+  "tileheight": 414,
+  "type": "tileset",
+  "version": "1.10",
+  "tiledversion": "1.10.2",
+  "tiles": [
+    {
+      "id": 0,
+      "class": "wishing_tree_01",
+      "image": "wishing_tree_01.png",
+      "imagewidth": 292,
+      "imageheight": 414,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "wishing_tree_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "class": "tree_pink_blossom_01",
+      "image": "tree_pink_blossom_01.png",
+      "imagewidth": 197,
+      "imageheight": 238,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "tree_pink_blossom_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "class": "tree_green_roses_01",
+      "image": "tree_green_roses_01.png",
+      "imagewidth": 201,
+      "imageheight": 235,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "tree_green_roses_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "class": "tree_wisteria_01",
+      "image": "tree_wisteria_01.png",
+      "imagewidth": 391,
+      "imageheight": 235,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "tree_wisteria_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "class": "tree_green_dense_01",
+      "image": "tree_green_dense_01.png",
+      "imagewidth": 198,
+      "imageheight": 231,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "tree_green_dense_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "class": "tree_green_whiteflowers_01",
+      "image": "tree_green_whiteflowers_01.png",
+      "imagewidth": 155,
+      "imageheight": 181,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "tree_green_whiteflowers_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "class": "tree_pink_blossom_small_01",
+      "image": "tree_pink_blossom_small_01.png",
+      "imagewidth": 163,
+      "imageheight": 178,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "tree_pink_blossom_small_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "class": "tree_orange_blossom_01",
+      "image": "tree_orange_blossom_01.png",
+      "imagewidth": 149,
+      "imageheight": 177,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "tree_orange_blossom_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "class": "tree_green_pinkflowers_01",
+      "image": "tree_green_pinkflowers_01.png",
+      "imagewidth": 156,
+      "imageheight": 176,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "tree_green_pinkflowers_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "class": "tree_green_whiteflowers_small_01",
+      "image": "tree_green_whiteflowers_small_01.png",
+      "imagewidth": 178,
+      "imageheight": 177,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "tree_green_whiteflowers_small_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "class": "tree_willow_01",
+      "image": "tree_willow_01.png",
+      "imagewidth": 145,
+      "imageheight": 176,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "tree_willow_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "class": "hedge_vertical_short_01",
+      "image": "hedge_vertical_short_01.png",
+      "imagewidth": 74,
+      "imageheight": 135,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "hedge_vertical_short_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "class": "hedge_arch_pink_01",
+      "image": "hedge_arch_pink_01.png",
+      "imagewidth": 212,
+      "imageheight": 281,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "hedge_arch_pink_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "class": "hedge_corner_01",
+      "image": "hedge_corner_01.png",
+      "imagewidth": 224,
+      "imageheight": 139,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "hedge_corner_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "class": "hedge_vertical_01",
+      "image": "hedge_vertical_01.png",
+      "imagewidth": 65,
+      "imageheight": 139,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "hedge_vertical_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "class": "hedge_vertical_short_02",
+      "image": "hedge_vertical_short_02.png",
+      "imagewidth": 73,
+      "imageheight": 133,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "hedge_vertical_short_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "class": "hedge_corner_02",
+      "image": "hedge_corner_02.png",
+      "imagewidth": 133,
+      "imageheight": 138,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "hedge_corner_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "class": "hedge_arch_pink_02",
+      "image": "hedge_arch_pink_02.png",
+      "imagewidth": 152,
+      "imageheight": 153,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "hedge_arch_pink_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "class": "topiary_round_01",
+      "image": "topiary_round_01.png",
+      "imagewidth": 59,
+      "imageheight": 142,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "topiary_round_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "class": "topiary_spiral_01",
+      "image": "topiary_spiral_01.png",
+      "imagewidth": 77,
+      "imageheight": 139,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "topiary_spiral_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "class": "bushes_mixed_01",
+      "image": "bushes_mixed_01.png",
+      "imagewidth": 290,
+      "imageheight": 110,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "bushes_mixed_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "class": "topiary_cone_01",
+      "image": "topiary_cone_01.png",
+      "imagewidth": 66,
+      "imageheight": 124,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "topiary_cone_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "class": "bushes_pink_white_01",
+      "image": "bushes_pink_white_01.png",
+      "imagewidth": 209,
+      "imageheight": 107,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "bushes_pink_white_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "class": "bushes_white_pink_01",
+      "image": "bushes_white_pink_01.png",
+      "imagewidth": 187,
+      "imageheight": 104,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "bushes_white_pink_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "class": "topiary_heart_01",
+      "image": "topiary_heart_01.png",
+      "imagewidth": 84,
+      "imageheight": 112,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "topiary_heart_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "class": "flowerbed_white_01",
+      "image": "flowerbed_white_01.png",
+      "imagewidth": 186,
+      "imageheight": 94,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "flowerbed_white_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "class": "flowerbed_pink_01",
+      "image": "flowerbed_pink_01.png",
+      "imagewidth": 215,
+      "imageheight": 95,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "flowerbed_pink_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "class": "flowerbed_blue_pink_01",
+      "image": "flowerbed_blue_pink_01.png",
+      "imagewidth": 235,
+      "imageheight": 97,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "flowerbed_blue_pink_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "class": "flowerbed_mixed_01",
+      "image": "flowerbed_mixed_01.png",
+      "imagewidth": 214,
+      "imageheight": 94,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "flowerbed_mixed_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "class": "planter_pink_01",
+      "image": "planter_pink_01.png",
+      "imagewidth": 101,
+      "imageheight": 86,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "planter_pink_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "class": "planter_white_01",
+      "image": "planter_white_01.png",
+      "imagewidth": 125,
+      "imageheight": 84,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "planter_white_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "class": "vine_arch_01",
+      "image": "vine_arch_01.png",
+      "imagewidth": 161,
+      "imageheight": 242,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "vine_arch_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "class": "planter_box_pink_01",
+      "image": "planter_box_pink_01.png",
+      "imagewidth": 93,
+      "imageheight": 128,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "planter_box_pink_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "class": "shrub_pot_square_01",
+      "image": "shrub_pot_square_01.png",
+      "imagewidth": 89,
+      "imageheight": 126,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "shrub_pot_square_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "class": "urn_whiteflowers_01",
+      "image": "urn_whiteflowers_01.png",
+      "imagewidth": 95,
+      "imageheight": 124,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "urn_whiteflowers_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "class": "pot_green_01",
+      "image": "pot_green_01.png",
+      "imagewidth": 90,
+      "imageheight": 122,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "pot_green_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "class": "urn_lavender_01",
+      "image": "urn_lavender_01.png",
+      "imagewidth": 84,
+      "imageheight": 261,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "urn_lavender_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "class": "pot_pink_01",
+      "image": "pot_pink_01.png",
+      "imagewidth": 91,
+      "imageheight": 121,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "pot_pink_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "class": "barrel_lavender_01",
+      "image": "barrel_lavender_01.png",
+      "imagewidth": 78,
+      "imageheight": 121,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "barrel_lavender_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "class": "flowerbox_large_01",
+      "image": "flowerbox_large_01.png",
+      "imagewidth": 135,
+      "imageheight": 113,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "flowerbox_large_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "class": "topiary_cone_pot_01",
+      "image": "topiary_cone_pot_01.png",
+      "imagewidth": 57,
+      "imageheight": 110,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "topiary_cone_pot_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "class": "pot_pink_large_01",
+      "image": "pot_pink_large_01.png",
+      "imagewidth": 98,
+      "imageheight": 106,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "pot_pink_large_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "class": "pot_green_large_01",
+      "image": "pot_green_large_01.png",
+      "imagewidth": 88,
+      "imageheight": 105,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "pot_green_large_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "class": "vine_cluster_01",
+      "image": "vine_cluster_01.png",
+      "imagewidth": 92,
+      "imageheight": 142,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "vine_cluster_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "class": "hanging_vine_01",
+      "image": "hanging_vine_01.png",
+      "imagewidth": 115,
+      "imageheight": 132,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "hanging_vine_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "class": "bush_lavender_01",
+      "image": "bush_lavender_01.png",
+      "imagewidth": 109,
+      "imageheight": 111,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "bush_lavender_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "class": "leafy_cluster_01",
+      "image": "leafy_cluster_01.png",
+      "imagewidth": 91,
+      "imageheight": 100,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "leafy_cluster_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "class": "lantern_post_vine_01",
+      "image": "lantern_post_vine_01.png",
+      "imagewidth": 86,
+      "imageheight": 203,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "lantern_post_vine_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "class": "plant_leafy_01",
+      "image": "plant_leafy_01.png",
+      "imagewidth": 83,
+      "imageheight": 90,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "plant_leafy_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "class": "grass_tuft_object_01",
+      "image": "grass_tuft_object_01.png",
+      "imagewidth": 91,
+      "imageheight": 97,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "grass_tuft_object_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 50,
+      "class": "leafy_plant_01",
+      "image": "leafy_plant_01.png",
+      "imagewidth": 80,
+      "imageheight": 91,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "leafy_plant_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "class": "bush_leafy_01",
+      "image": "bush_leafy_01.png",
+      "imagewidth": 91,
+      "imageheight": 98,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "bush_leafy_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "class": "bush_whiteflower_small_01",
+      "image": "bush_whiteflower_small_01.png",
+      "imagewidth": 91,
+      "imageheight": 95,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "bush_whiteflower_small_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "class": "fallen_log_flowers_01",
+      "image": "fallen_log_flowers_01.png",
+      "imagewidth": 151,
+      "imageheight": 120,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fallen_log_flowers_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 54,
+      "class": "rock_moss_01",
+      "image": "rock_moss_01.png",
+      "imagewidth": 55,
+      "imageheight": 47,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "rock_moss_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "class": "stump_flowers_01",
+      "image": "stump_flowers_01.png",
+      "imagewidth": 127,
+      "imageheight": 78,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "stump_flowers_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "class": "firefly_glow_01",
+      "image": "firefly_glow_01.png",
+      "imagewidth": 48,
+      "imageheight": 48,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "firefly_glow_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "class": "fireflies_cluster_01",
+      "image": "fireflies_cluster_01.png",
+      "imagewidth": 45,
+      "imageheight": 42,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fireflies_cluster_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    }
+  ]
+}

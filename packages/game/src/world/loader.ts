@@ -2,6 +2,7 @@
 // Parsing happens once per world load; actors/scenes consume the definition,
 // never raw Tiled object names.
 import type { NpcSlot, Point, WorldDefinition, ZoneRect } from "./types";
+import { placementsFileSchema } from "@wedding-rpg/contracts";
 
 export type { NpcSlot, Point, WorldDefinition, ZoneRect } from "./types";
 
@@ -49,11 +50,12 @@ function requirePoint(objects: TiledObject[], layerName: string, id: string): Po
   return { x: o.x, y: o.y };
 }
 
-/** Parse cached manifest + tilemap JSON into a WorldDefinition. Pure: unit-testable. */
+/** Parse cached manifest + tilemap JSON + placements into a WorldDefinition. Pure: unit-testable. */
 export function parseWorldDefinition(
   manifestUrl: string,
   manifest: WorldManifest,
-  mapJson: TiledMap
+  mapJson: TiledMap,
+  placementsDoc: unknown
 ): WorldDefinition {
   if (!manifest || typeof manifest.templateKey !== "string") {
     throw new Error("world manifest missing templateKey");
@@ -81,6 +83,13 @@ export function parseWorldDefinition(
   // Touch the required-point helper for fail-fast validation of spawn data.
   requirePoint(layer(mapJson, "09_Spawn_Points").objects!, "09_Spawn_Points", "spawn.default");
 
+  const placementsParsed = placementsFileSchema.safeParse(placementsDoc);
+  if (!placementsParsed.success) {
+    throw new Error(
+      `world placements invalid: ${placementsParsed.error.issues.map((i) => i.message).join("; ")}`
+    );
+  }
+
   return {
     templateKey: manifest.templateKey,
     version: manifest.version ?? 1,
@@ -91,6 +100,7 @@ export function parseWorldDefinition(
     npcSlots,
     landmarks,
     interactions,
+    placements: placementsParsed.data.placements,
     manifestUrl,
   };
 }

@@ -22,6 +22,8 @@ export { dispatchSemanticAction } from "./systems/semantic-actions";
 export interface WeddingGameOptions {
   /** Wedding-specific NPC content. Lives outside game code (web fixture now, publication later). */
   npcBindings?: NpcBinding[];
+  /** Local-player avatar id from the avatar registry (guest pool). */
+  playerAvatarId?: string;
 }
 
 export function createWeddingGame(parent: string, opts: WeddingGameOptions = {}): Game {
@@ -46,5 +48,6 @@ export function createWeddingGame(parent: string, opts: WeddingGameOptions = {})
   };
   const game = new Game(config);
   game.registry.set("npcBindings", opts.npcBindings ?? []);
+  game.registry.set("playerAvatarId", opts.playerAvatarId ?? "guest_01");
   return game;
 }

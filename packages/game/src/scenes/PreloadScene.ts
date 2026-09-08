@@ -1,15 +1,20 @@
 import { Scene } from "phaser";
 import { BRIDGE_EVENTS, EventBus } from "../bridge";
-import { validateNpcBindings, type NpcBinding } from "@wedding-rpg/contracts";
+import { validateNpcBindings, runtimeEnvRegistrySchema, type AvatarRegistry, type NpcBinding, type RuntimeEnvRegistry } from "@wedding-rpg/contracts";
 
 export const MANIFEST_URL = "assets/worlds/garden-village-v1/manifest.json";
+export const AVATAR_REGISTRY_URL = "assets/avatars/avatar-registry.json";
+export const ENV_REGISTRY_URL = "assets/environment/environment-registry.json";
 
 interface RuntimeManifest {
   tilemap: string;
-}
-
-interface AvatarsManifest {
-  avatars: { id: string; file: string }[];
+  placements?: string;
+  environment?: {
+    base: string;
+    registry: string;
+    terrainImage: string;
+    atlases: Record<string, { png: string; json: string }>;
+  };
 }
 
 export class PreloadScene extends Scene {
@@ -19,8 +24,8 @@ export class PreloadScene extends Scene {
 
   preload(): void {
     this.load.json("world-manifest", MANIFEST_URL);
-    const base = MANIFEST_URL.slice(0, MANIFEST_URL.lastIndexOf("/") + 1);
-    this.load.json("avatars-manifest", `${base}sprites/avatars.json`);
+    this.load.json("avatar-registry", AVATAR_REGISTRY_URL);
+    this.load.json("environment-registry", ENV_REGISTRY_URL);
   }
 
   create(): void {
@@ -28,11 +33,16 @@ export class PreloadScene extends Scene {
     if (!manifest || typeof manifest.tilemap !== "string") {
       throw new Error("world manifest missing tilemap entry");
     }
-    const base = MANIFEST_URL.slice(0, MANIFEST_URL.lastIndexOf("/") + 1);
-    const avatarsManifest = this.cache.json.get("avatars-manifest") as AvatarsManifest | undefined;
-    const knownAvatars = new Set((avatarsManifest?.avatars ?? []).map((a) => a.id));
+    const env = manifest.environment;
+    if (!env || typeof env.base !== "string" || !env.atlases) {
+      throw new Error("world manifest missing environment section");
+    }
+    const registry = this.cache.json.get("avatar-registry") as AvatarRegistry | undefined;
+    if (!registry || typeof registry.avatars !== "object") {
+      throw new Error("avatar registry missing or malformed");
+    }
     const raw = this.registry.get("npcBindings") as unknown;
-    const checked = validateNpcBindings(raw ?? [], [...knownAvatars]);
+    const checked = validateNpcBindings(raw ?? [], Object.keys(registry.avatars));
     let bindings: NpcBinding[];
     if (!checked.ok) {
       const msg = `invalid NPC bindings: ${checked.errors.join("; ")}`;
@@ -43,24 +53,45 @@ export class PreloadScene extends Scene {
       bindings = checked.bindings;
     }
     this.registry.set("npcBindingsParsed", bindings);
-    const usedAvatars = [...new Set(bindings.map((b) => b.avatarId))];
+    this.registry.set("avatarRegistry", registry);
+    const envChecked = runtimeEnvRegistrySchema.safeParse(
+      this.cache.json.get("environment-registry")
+    );
+    if (!envChecked.success) {
+      const msg = `invalid environment registry: ${envChecked.error.issues.map((i) => i.message).join("; ")}`;
+      if (process.env.NODE_ENV !== "production") throw new Error(msg);
+      console.error(msg);
+    }
+    if (envChecked.success) {
+      this.registry.set("environmentRegistry", envChecked.data);
+    }
+    const playerAvatarId = (this.registry.get("playerAvatarId") as string | undefined) ?? "guest_01";
+    const needed = new Set(bindings.map((b) => b.avatarId));
+    needed.add(playerAvatarId);
+    for (const id of needed) {
+      const def = registry.avatars[id];
+      if (!def) {
+        const msg = `unknown avatar referenced: ${id}`;
+        if (process.env.NODE_ENV !== "production") throw new Error(msg);
+        console.error(msg);
+        continue;
+      }
+      this.load.spritesheet(id, `assets/avatars/${id}.png`, {
+        frameWidth: def.sprite.frameWidth,
+        frameHeight: def.sprite.frameHeight,
+      });
+    }
 
+    const base = MANIFEST_URL.slice(0, MANIFEST_URL.lastIndexOf("/") + 1);
     this.load.on("progress", (p: number) => {
       EventBus.emit(BRIDGE_EVENTS.gameLoadingProgress, p);
     });
     this.load.tilemapTiledJSON("world-map", base + manifest.tilemap);
     this.load.json("world-map-json", base + manifest.tilemap);
-    this.load.image("wedding-garden", `${base}tileset.png`);
-    this.load.spritesheet("guest_01", `${base}sprites/guest_01.png`, {
-      frameWidth: 16,
-      frameHeight: 16,
-    });
-    this.load.json("guest_01-meta", `${base}sprites/guest_01.json`);
-    for (const id of usedAvatars) {
-      this.load.spritesheet(id, `${base}sprites/avatars/${id}.png`, {
-        frameWidth: 16,
-        frameHeight: 16,
-      });
+    this.load.json("world-placements", base + (manifest.placements ?? "placements.json"));
+    this.load.image("terrain-tiles", env.base + env.terrainImage);
+    for (const [key, ref] of Object.entries(env.atlases)) {
+      this.load.atlas(`wedding-${key}`, env.base + ref.png, env.base + ref.json);
     }
     this.load.once("complete", () => this.scene.start("WeddingWorld"));
     this.load.start();

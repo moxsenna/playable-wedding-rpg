@@ -200,7 +200,7 @@ async function main() {
     // Two-leg route into the plaza: west first (clears the greeter), then
     // straight north along x=360 (clears stall, photographer, fountain).
     await seek(page, 360, 1000);
-    await seek(page, 360, 620);
+    await seek(page, 440, 568);
     {
       const start = Date.now();
       for (;;) {

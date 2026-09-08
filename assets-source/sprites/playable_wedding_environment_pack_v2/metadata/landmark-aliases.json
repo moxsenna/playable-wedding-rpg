@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "aliases": {
+    "wedding_hall_garden_01": "event_pavilion_01",
+    "wedding_hall_muslim_01": "event_pavilion_01",
+    "memory_garden_01": "photo_terrace_01",
+    "couple_garden_01": "couple_garden_table_01",
+    "wishing_tree_01": "wishing_tree_landmark_01"
+  },
+  "notes": {
+    "wedding_hall_muslim_01": "Temporary Muslim-compatible neutral garden pavilion alias; no religious-specific architecture in V2.",
+    "wedding_hall_chapel_01": "Retained only as optional theme-specific asset and excluded from default."
+  }
+}

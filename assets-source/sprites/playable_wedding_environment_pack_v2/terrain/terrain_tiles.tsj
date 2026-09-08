@@ -1,0 +1,545 @@
+{
+  "columns": 8,
+  "image": "terrain_tiles.png",
+  "imageheight": 96,
+  "imagewidth": 128,
+  "margin": 0,
+  "name": "wedding-garden-terrain-v2",
+  "spacing": 0,
+  "tilecount": 48,
+  "tileheight": 16,
+  "tilewidth": 16,
+  "type": "tileset",
+  "version": "1.10",
+  "tiledversion": "1.10.2",
+  "tiles": [
+    {
+      "id": 0,
+      "class": "grass_plain_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "grass_plain_01"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "class": "grass_flowers_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "grass_flowers_01"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "class": "grass_flowers_dense_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "grass_flowers_dense_01"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "class": "grass_weeds_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "grass_weeds_01"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "class": "grass_bare_patch_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "grass_bare_patch_01"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "class": "grass_plain_02",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "grass_plain_02"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "class": "grass_tuft_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "grass_tuft_01"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "class": "grass_flowers_sparse_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "grass_flowers_sparse_01"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "class": "grass_border_square_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "grass_border_square_01"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "class": "grass_corner_flowers_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "grass_corner_flowers_01"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "class": "grass_corner_flowers_02",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "grass_corner_flowers_02"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "class": "path_dirt_vertical",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_dirt_vertical"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "class": "path_dirt_junction_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_dirt_junction_01"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "class": "path_dirt_curve_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_dirt_curve_01"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "class": "path_dirt_curve_02",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_dirt_curve_02"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "class": "path_dirt_center_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_dirt_center_01"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "class": "path_dirt_center_02",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_dirt_center_02"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "class": "path_dirt_cross",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_dirt_cross"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "class": "path_dirt_curve_03",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_dirt_curve_03"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "class": "path_stone_curve_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_stone_curve_01"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "class": "path_stone_curve_02",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_stone_curve_02"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "class": "path_stone_curve_03",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_stone_curve_03"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "class": "path_stone_curve_04",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_stone_curve_04"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "class": "path_stone_cross",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_stone_cross"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "class": "path_stone_vertical",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_stone_vertical"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "class": "path_stone_center_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_stone_center_01"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "class": "path_stone_center_02",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_stone_center_02"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "class": "water_center_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_center_01"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "class": "water_center_02",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_center_02"
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "class": "water_edge_south_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_edge_south_01"
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "class": "water_edge_diag_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_edge_diag_01"
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "class": "water_edge_diag_02",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_edge_diag_02"
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "class": "water_edge_diag_03",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_edge_diag_03"
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "class": "water_lily_pond_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_lily_pond_01"
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "class": "water_cross_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_cross_01"
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "class": "water_beach_corner_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_beach_corner_01"
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "class": "water_channel_vertical_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_channel_vertical_01"
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "class": "water_channel_vertical_02",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_channel_vertical_02"
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "class": "water_rock_corner_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_rock_corner_01"
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "class": "water_rock_corner_02",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_rock_corner_02"
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "class": "water_shore_corner_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_shore_corner_01"
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "class": "water_shore_corner_02",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_shore_corner_02"
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "class": "water_shore_corner_03",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_shore_corner_03"
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "class": "path_dirt_horizontal",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_dirt_horizontal"
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "class": "path_stone_horizontal",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "path_stone_horizontal"
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "class": "water_edge_north_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_edge_north_01"
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "class": "water_edge_east_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_edge_east_01"
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "class": "water_edge_west_01",
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "water_edge_west_01"
+        }
+      ]
+    }
+  ]
+}

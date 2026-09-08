@@ -1,0 +1,1588 @@
+{
+  "name": "wedding-decor-v2",
+  "tilecount": 83,
+  "tilewidth": 402,
+  "tileheight": 242,
+  "type": "tileset",
+  "version": "1.10",
+  "tiledversion": "1.10.2",
+  "tiles": [
+    {
+      "id": 0,
+      "class": "entrance_gate_wood_flower_01",
+      "image": "entrance_gate_wood_flower_01.png",
+      "imagewidth": 321,
+      "imageheight": 242,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "entrance_gate_wood_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "class": "fence_end_flower_01",
+      "image": "fence_end_flower_01.png",
+      "imagewidth": 115,
+      "imageheight": 94,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_end_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "class": "fence_wood_horizontal_01",
+      "image": "fence_wood_horizontal_01.png",
+      "imagewidth": 203,
+      "imageheight": 92,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_wood_horizontal_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "class": "fence_post_01",
+      "image": "fence_post_01.png",
+      "imagewidth": 40,
+      "imageheight": 93,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_post_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "class": "fence_corner_01",
+      "image": "fence_corner_01.png",
+      "imagewidth": 144,
+      "imageheight": 109,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_corner_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "class": "fence_post_02",
+      "image": "fence_post_02.png",
+      "imagewidth": 41,
+      "imageheight": 93,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_post_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "class": "fence_wood_horizontal_02",
+      "image": "fence_wood_horizontal_02.png",
+      "imagewidth": 191,
+      "imageheight": 97,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_wood_horizontal_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "class": "fence_corner_02",
+      "image": "fence_corner_02.png",
+      "imagewidth": 74,
+      "imageheight": 117,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_corner_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "class": "fence_short_01",
+      "image": "fence_short_01.png",
+      "imagewidth": 87,
+      "imageheight": 90,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_short_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "class": "fence_gate_small_01",
+      "image": "fence_gate_small_01.png",
+      "imagewidth": 174,
+      "imageheight": 96,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_gate_small_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "class": "fence_gate_small_02",
+      "image": "fence_gate_small_02.png",
+      "imagewidth": 110,
+      "imageheight": 95,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_gate_small_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "class": "fence_wood_horizontal_03",
+      "image": "fence_wood_horizontal_03.png",
+      "imagewidth": 136,
+      "imageheight": 94,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_wood_horizontal_03"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "class": "fence_wood_horizontal_04",
+      "image": "fence_wood_horizontal_04.png",
+      "imagewidth": 183,
+      "imageheight": 96,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_wood_horizontal_04"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "class": "fence_wood_horizontal_05",
+      "image": "fence_wood_horizontal_05.png",
+      "imagewidth": 143,
+      "imageheight": 95,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_wood_horizontal_05"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "class": "fence_post_flower_01",
+      "image": "fence_post_flower_01.png",
+      "imagewidth": 46,
+      "imageheight": 90,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fence_post_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "class": "lamp_black_flower_01",
+      "image": "lamp_black_flower_01.png",
+      "imagewidth": 69,
+      "imageheight": 212,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "lamp_black_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "class": "lamp_black_flower_02",
+      "image": "lamp_black_flower_02.png",
+      "imagewidth": 75,
+      "imageheight": 211,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "lamp_black_flower_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "class": "lamp_black_double_01",
+      "image": "lamp_black_double_01.png",
+      "imagewidth": 79,
+      "imageheight": 208,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "lamp_black_double_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "class": "lamp_black_01",
+      "image": "lamp_black_01.png",
+      "imagewidth": 54,
+      "imageheight": 197,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "lamp_black_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "class": "drape_white_pink_01",
+      "image": "drape_white_pink_01.png",
+      "imagewidth": 402,
+      "imageheight": 104,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "drape_white_pink_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "class": "banner_white_01",
+      "image": "banner_white_01.png",
+      "imagewidth": 96,
+      "imageheight": 195,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "banner_white_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "class": "banner_pink_01",
+      "image": "banner_pink_01.png",
+      "imagewidth": 85,
+      "imageheight": 169,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "banner_pink_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "class": "lamp_hanging_vine_01",
+      "image": "lamp_hanging_vine_01.png",
+      "imagewidth": 67,
+      "imageheight": 181,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "lamp_hanging_vine_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "class": "bench_wood_flower_01",
+      "image": "bench_wood_flower_01.png",
+      "imagewidth": 198,
+      "imageheight": 105,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "bench_wood_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "class": "bench_wood_01",
+      "image": "bench_wood_01.png",
+      "imagewidth": 176,
+      "imageheight": 97,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "bench_wood_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "class": "bench_wood_02",
+      "image": "bench_wood_02.png",
+      "imagewidth": 156,
+      "imageheight": 97,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "bench_wood_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "class": "table_round_pink_01",
+      "image": "table_round_pink_01.png",
+      "imagewidth": 170,
+      "imageheight": 137,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "table_round_pink_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "class": "chair_white_01",
+      "image": "chair_white_01.png",
+      "imagewidth": 79,
+      "imageheight": 130,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "chair_white_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "class": "chair_white_bow_01",
+      "image": "chair_white_bow_01.png",
+      "imagewidth": 84,
+      "imageheight": 126,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "chair_white_bow_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "class": "table_round_white_01",
+      "image": "table_round_white_01.png",
+      "imagewidth": 163,
+      "imageheight": 132,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "table_round_white_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "class": "chair_wood_01",
+      "image": "chair_wood_01.png",
+      "imagewidth": 70,
+      "imageheight": 123,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "chair_wood_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "class": "chair_wood_flower_01",
+      "image": "chair_wood_flower_01.png",
+      "imagewidth": 71,
+      "imageheight": 123,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "chair_wood_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "class": "table_rect_pink_01",
+      "image": "table_rect_pink_01.png",
+      "imagewidth": 127,
+      "imageheight": 123,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "table_rect_pink_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "class": "chair_wood_planter_01",
+      "image": "chair_wood_planter_01.png",
+      "imagewidth": 78,
+      "imageheight": 123,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "chair_wood_planter_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "class": "table_rect_flower_01",
+      "image": "table_rect_flower_01.png",
+      "imagewidth": 281,
+      "imageheight": 121,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "table_rect_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "class": "carpet_pink_vertical_flower_01",
+      "image": "carpet_pink_vertical_flower_01.png",
+      "imagewidth": 80,
+      "imageheight": 168,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "carpet_pink_vertical_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "class": "carpet_pink_vertical_flower_02",
+      "image": "carpet_pink_vertical_flower_02.png",
+      "imagewidth": 99,
+      "imageheight": 169,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "carpet_pink_vertical_flower_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "class": "carpet_corner_flower_01",
+      "image": "carpet_corner_flower_01.png",
+      "imagewidth": 80,
+      "imageheight": 70,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "carpet_corner_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "class": "arch_column_flower_01",
+      "image": "arch_column_flower_01.png",
+      "imagewidth": 86,
+      "imageheight": 169,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "arch_column_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "class": "drape_arch_01",
+      "image": "drape_arch_01.png",
+      "imagewidth": 227,
+      "imageheight": 190,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "drape_arch_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "class": "carpet_cross_01",
+      "image": "carpet_cross_01.png",
+      "imagewidth": 232,
+      "imageheight": 185,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "carpet_cross_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "class": "arch_column_flower_02",
+      "image": "arch_column_flower_02.png",
+      "imagewidth": 81,
+      "imageheight": 170,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "arch_column_flower_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "class": "carpet_rect_flower_01",
+      "image": "carpet_rect_flower_01.png",
+      "imagewidth": 129,
+      "imageheight": 168,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "carpet_rect_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "class": "carpet_vertical_border_01",
+      "image": "carpet_vertical_border_01.png",
+      "imagewidth": 56,
+      "imageheight": 167,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "carpet_vertical_border_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "class": "carpet_vertical_plain_01",
+      "image": "carpet_vertical_plain_01.png",
+      "imagewidth": 52,
+      "imageheight": 164,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "carpet_vertical_plain_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "class": "carpet_vertical_plain_02",
+      "image": "carpet_vertical_plain_02.png",
+      "imagewidth": 51,
+      "imageheight": 164,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "carpet_vertical_plain_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "class": "carpet_square_01",
+      "image": "carpet_square_01.png",
+      "imagewidth": 69,
+      "imageheight": 66,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "carpet_square_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "class": "pedestal_flower_01",
+      "image": "pedestal_flower_01.png",
+      "imagewidth": 82,
+      "imageheight": 169,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "pedestal_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "class": "welcome_table_01",
+      "image": "welcome_table_01.png",
+      "imagewidth": 155,
+      "imageheight": 170,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "welcome_table_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "class": "gift_table_01",
+      "image": "gift_table_01.png",
+      "imagewidth": 183,
+      "imageheight": 159,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "gift_table_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 50,
+      "class": "guestbook_table_01",
+      "image": "guestbook_table_01.png",
+      "imagewidth": 208,
+      "imageheight": 154,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "guestbook_table_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "class": "podium_flower_01",
+      "image": "podium_flower_01.png",
+      "imagewidth": 96,
+      "imageheight": 160,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "podium_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "class": "counter_corner_01",
+      "image": "counter_corner_01.png",
+      "imagewidth": 168,
+      "imageheight": 152,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "counter_corner_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "class": "counter_corner_02",
+      "image": "counter_corner_02.png",
+      "imagewidth": 78,
+      "imageheight": 138,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "counter_corner_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 54,
+      "class": "guestbook_podium_01",
+      "image": "guestbook_podium_01.png",
+      "imagewidth": 88,
+      "imageheight": 148,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "guestbook_podium_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "class": "sideboard_flower_01",
+      "image": "sideboard_flower_01.png",
+      "imagewidth": 138,
+      "imageheight": 136,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "sideboard_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "class": "barrel_flower_01",
+      "image": "barrel_flower_01.png",
+      "imagewidth": 77,
+      "imageheight": 135,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "barrel_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "class": "directional_sign_01",
+      "image": "directional_sign_01.png",
+      "imagewidth": 99,
+      "imageheight": 160,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "directional_sign_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "class": "notice_board_01",
+      "image": "notice_board_01.png",
+      "imagewidth": 175,
+      "imageheight": 148,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "notice_board_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "class": "planter_barrel_01",
+      "image": "planter_barrel_01.png",
+      "imagewidth": 272,
+      "imageheight": 155,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "planter_barrel_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "class": "planter_group_01",
+      "image": "planter_group_01.png",
+      "imagewidth": 98,
+      "imageheight": 153,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "planter_group_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "class": "birdcage_flower_01",
+      "image": "birdcage_flower_01.png",
+      "imagewidth": 88,
+      "imageheight": 145,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "birdcage_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 62,
+      "class": "lantern_post_wood_01",
+      "image": "lantern_post_wood_01.png",
+      "imagewidth": 122,
+      "imageheight": 136,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "lantern_post_wood_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 63,
+      "class": "easel_blank_01",
+      "image": "easel_blank_01.png",
+      "imagewidth": 88,
+      "imageheight": 139,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "easel_blank_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 64,
+      "class": "flower_crate_01",
+      "image": "flower_crate_01.png",
+      "imagewidth": 118,
+      "imageheight": 131,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "flower_crate_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 65,
+      "class": "easel_flower_01",
+      "image": "easel_flower_01.png",
+      "imagewidth": 106,
+      "imageheight": 112,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "easel_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 66,
+      "class": "candle_table_01",
+      "image": "candle_table_01.png",
+      "imagewidth": 73,
+      "imageheight": 149,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "candle_table_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.42
+        }
+      ]
+    },
+    {
+      "id": 67,
+      "class": "topiary_cone_decor_01",
+      "image": "topiary_cone_decor_01.png",
+      "imagewidth": 103,
+      "imageheight": 96,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "topiary_cone_decor_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 68,
+      "class": "flower_crate_02",
+      "image": "flower_crate_02.png",
+      "imagewidth": 47,
+      "imageheight": 83,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "flower_crate_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 69,
+      "class": "lantern_black_small_01",
+      "image": "lantern_black_small_01.png",
+      "imagewidth": 128,
+      "imageheight": 140,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "lantern_black_small_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 70,
+      "class": "topiary_pair_01",
+      "image": "topiary_pair_01.png",
+      "imagewidth": 53,
+      "imageheight": 130,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "topiary_pair_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 71,
+      "class": "topiary_pedestal_01",
+      "image": "topiary_pedestal_01.png",
+      "imagewidth": 65,
+      "imageheight": 142,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "topiary_pedestal_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 72,
+      "class": "lantern_black_small_02",
+      "image": "lantern_black_small_02.png",
+      "imagewidth": 52,
+      "imageheight": 91,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "lantern_black_small_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 73,
+      "class": "candle_invitation_01",
+      "image": "candle_invitation_01.png",
+      "imagewidth": 106,
+      "imageheight": 148,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "candle_invitation_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 74,
+      "class": "flower_crate_03",
+      "image": "flower_crate_03.png",
+      "imagewidth": 113,
+      "imageheight": 99,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "flower_crate_03"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 75,
+      "class": "candle_flower_01",
+      "image": "candle_flower_01.png",
+      "imagewidth": 134,
+      "imageheight": 73,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "candle_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 76,
+      "class": "bush_whiteflowers_decor_01",
+      "image": "bush_whiteflowers_decor_01.png",
+      "imagewidth": 85,
+      "imageheight": 95,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "bush_whiteflowers_decor_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 77,
+      "class": "flower_crate_04",
+      "image": "flower_crate_04.png",
+      "imagewidth": 98,
+      "imageheight": 84,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "flower_crate_04"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 78,
+      "class": "flower_small_01",
+      "image": "flower_small_01.png",
+      "imagewidth": 88,
+      "imageheight": 61,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "flower_small_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 79,
+      "class": "lantern_candle_01",
+      "image": "lantern_candle_01.png",
+      "imagewidth": 74,
+      "imageheight": 94,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "lantern_candle_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 80,
+      "class": "flower_small_02",
+      "image": "flower_small_02.png",
+      "imagewidth": 81,
+      "imageheight": 69,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "flower_small_02"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 81,
+      "class": "petal_basket_01",
+      "image": "petal_basket_01.png",
+      "imagewidth": 68,
+      "imageheight": 63,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "petal_basket_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": 82,
+      "class": "petal_bowl_01",
+      "image": "petal_bowl_01.png",
+      "imagewidth": 81,
+      "imageheight": 49,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "petal_bowl_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.5
+        }
+      ]
+    }
+  ]
+}

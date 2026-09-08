@@ -1,14 +1,14 @@
 import { Scene } from "phaser";
 import { BRIDGE_EVENTS, EventBus } from "../bridge";
 import { parseWorldDefinition, type WorldDefinition } from "../world/loader";
-import { createPlayerAnims, LocalPlayer } from "../actors/player";
+import { createAvatarAnims, LocalPlayer } from "../actors/player";
 import { spawnNpcActors, type NpcActor } from "../actors/npc";
 import { keyboardToInput, readKeyboard } from "../input/keyboard";
 import { neutralInput } from "../input/types";
 import { TouchHud } from "../input/touch-hud";
 import { PRIORITY, selectTarget, type InteractionCandidate } from "../systems/interaction/select";
 import { dispatchSemanticAction } from "../systems/semantic-actions";
-import type { NpcBinding } from "@wedding-rpg/contracts";
+import type { AvatarDefinition, AvatarRegistry, NpcBinding, RuntimeEnvRegistry } from "@wedding-rpg/contracts";
 import { landmarkIdSchema } from "@wedding-rpg/contracts";
 import type { HudScene } from "./HudScene";
 import { MANIFEST_URL } from "./PreloadScene";
@@ -48,15 +48,19 @@ export class WeddingWorldScene extends Scene {
     const manifest = this.cache.json.get("world-manifest") as {
       templateKey: string;
       version: number;
+      placements?: string;
+      environment?: { base: string };
     };
     const mapJson = this.cache.json.get("world-map-json") as Parameters<
       typeof parseWorldDefinition
     >[2];
-    this.def = parseWorldDefinition(MANIFEST_URL, manifest, mapJson);
+    const placementsDoc = this.cache.json.get("world-placements");
+    this.def = parseWorldDefinition(MANIFEST_URL, manifest, mapJson, placementsDoc);
 
     const map = this.make.tilemap({ key: "world-map" });
-    const tileset = map.addTilesetImage("wedding-garden", "wedding-garden");
-    if (!tileset) throw new Error("tileset wedding-garden missing from world map");
+    const tilesetName = map.tilesets[0]?.name ?? "wedding-garden-terrain-v2";
+    const tileset = map.addTilesetImage(tilesetName, "terrain-tiles");
+    if (!tileset) throw new Error(`tileset ${tilesetName} missing from world map`);
 
     const layers: Record<string, Phaser.Tilemaps.TilemapLayer | Phaser.Tilemaps.TilemapGPULayer> = {};
     for (const name of TILE_LAYERS) {
@@ -76,9 +80,13 @@ export class WeddingWorldScene extends Scene {
     const worldH = map.heightInPixels;
     this.physics.world.setBounds(0, 0, worldW, worldH);
 
-    createPlayerAnims(this, "guest_01", this.cache.json.get("guest_01-meta"));
+    const avatarRegistry = this.registry.get("avatarRegistry") as AvatarRegistry | undefined;
+    const playerAvatarId = (this.registry.get("playerAvatarId") as string | undefined) ?? "guest_01";
+    const playerAvatar = avatarRegistry?.avatars[playerAvatarId];
+    if (!playerAvatar) throw new Error(`player avatar missing from registry: ${playerAvatarId}`);
+    createAvatarAnims(this, playerAvatar);
     const spawn = this.def.spawns["spawn.default"];
-    this.player = new LocalPlayer(this, spawn.x, spawn.y, "guest_01");
+    this.player = new LocalPlayer(this, spawn.x, spawn.y, playerAvatar);
     this.physics.add.collider(this.player.sprite, coll);
 
     const kb = this.input.keyboard;
@@ -91,7 +99,12 @@ export class WeddingWorldScene extends Scene {
     const stored = this.registry.get("npcBindingsParsed") as NpcBinding[] | undefined;
     const bindings = Array.isArray(stored) ? stored : [];
     try {
-      this.npcs = spawnNpcActors(this, this.def, bindings, this.cache.json.get("guest_01-meta"));
+      const avatarById = new Map<string, AvatarDefinition>(Object.entries(avatarRegistry.avatars));
+      for (const b of bindings) {
+        const a = avatarById.get(b.avatarId);
+        if (a) createAvatarAnims(this, a);
+      }
+      this.npcs = spawnNpcActors(this, this.def, bindings, avatarById);
     } catch (e) {
       console.error(e instanceof Error ? e.message : e);
       this.npcs = [];
@@ -99,6 +112,7 @@ export class WeddingWorldScene extends Scene {
     for (const npc of this.npcs) {
       this.physics.add.collider(this.player.sprite, npc.sprite);
     }
+    this.spawnPlacements();
     EventBus.on(BRIDGE_EVENTS.interactPressed, this.onInteractPressed, this);
     EventBus.on(BRIDGE_EVENTS.dialogueClosed, this.onDialogueClosed, this);
     EventBus.on(BRIDGE_EVENTS.dialogueAction, this.onDialogueAction, this);
@@ -125,6 +139,9 @@ export class WeddingWorldScene extends Scene {
         events: EventBus,
         targetId: () => this.getTargetId(),
         interactLabel: () => this.hud?.getInteractLabel() ?? "Aksi",
+        debugTeleport: (x: number, y: number) => {
+          this.player.sprite.body?.reset(x, y);
+        },
       };
     }
   }
@@ -232,6 +249,20 @@ export class WeddingWorldScene extends Scene {
     }
     const result = dispatchSemanticAction(type);
     if (!result.handled) console.warn(result.reason);
+  }
+
+  private spawnPlacements(): void {
+    const env = this.registry.get("environmentRegistry") as RuntimeEnvRegistry | undefined;
+    if (!env) throw new Error("environment registry missing from game registry");
+    for (const p of this.def.placements) {
+      const def = env.assets[p.asset];
+      if (!def) throw new Error(`placement references unknown environment asset: ${p.asset}`);
+      const img = this.add.image(p.x, p.y, `wedding-${def.atlas}`, def.frame);
+      img.setOrigin(def.origin.x, def.origin.y);
+      img.setScale(p.scale ?? def.displayScale);
+      if (p.flipX) img.setFlipX(true);
+      img.setDepth(p.ground ? 1 : p.layer === "above" ? 150 : p.y);
+    }
   }
 
   private unsubscribeBridge(): void {

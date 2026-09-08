@@ -194,8 +194,8 @@ async function main() {
     await page.screenshot({ path: join(ROOT, "docs/qa/m3-rsvp-390.png") });
     await page.keyboard.press("e");
     await page.waitForSelector('[data-testid="dialogue-panel"]', { state: "visible", timeout: 15000 });
-    const bimo = await page.textContent('[data-testid="dialogue-name"]');
-    if (bimo !== "Bimo") fail(`rsvp dialogue shows wrong NPC: ${bimo}`);
+    const nadia = await page.textContent('[data-testid="dialogue-name"]');
+    if (nadia !== "Nadia") fail(`rsvp dialogue shows wrong NPC: ${nadia}`);
     await page.click('[data-testid="dialogue-continue"]');
     await sleep(300);
     await page.click('[data-testid="dialogue-continue"]');

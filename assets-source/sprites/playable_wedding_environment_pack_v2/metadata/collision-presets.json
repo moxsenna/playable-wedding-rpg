@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "presets": {
+    "tree_trunk": {
+      "shape": "rect",
+      "anchor": "bottom-center",
+      "widthPct": 0.24,
+      "heightPct": 0.18
+    },
+    "bush": {
+      "shape": "rect",
+      "anchor": "bottom-center",
+      "widthPct": 0.75,
+      "heightPct": 0.25
+    },
+    "bench": {
+      "shape": "rect",
+      "anchor": "bottom-center",
+      "widthPct": 0.82,
+      "heightPct": 0.25
+    },
+    "table": {
+      "shape": "ellipse",
+      "anchor": "bottom-center",
+      "widthPct": 0.78,
+      "heightPct": 0.35
+    },
+    "fountain_round": {
+      "shape": "ellipse",
+      "anchor": "bottom-center",
+      "widthPct": 0.64,
+      "heightPct": 0.42
+    },
+    "gate_passage": {
+      "shape": "split-rects",
+      "note": "author left/right pillar collision manually in Tiled; keep center passage open"
+    },
+    "building_base": {
+      "shape": "rect",
+      "anchor": "bottom-center",
+      "widthPct": 0.84,
+      "heightPct": 0.24
+    }
+  }
+}

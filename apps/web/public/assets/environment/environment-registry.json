@@ -1,0 +1,3199 @@
+{
+  "schemaVersion": 1,
+  "pack": "playable_wedding_environment_pack_v2",
+  "terrain": {
+    "tileset": "terrain/terrain_tiles.tsj",
+    "image": "terrain/terrain_tiles.png",
+    "tileSize": 16,
+    "count": 48
+  },
+  "atlases": {
+    "foliage": {
+      "png": "foliage/foliage_atlas.png",
+      "json": "foliage/foliage_atlas.json",
+      "width": 2025,
+      "height": 838
+    },
+    "decor": {
+      "png": "decor/decor_atlas.png",
+      "json": "decor/decor_atlas.json",
+      "width": 2035,
+      "height": 866
+    },
+    "landmarks": {
+      "png": "landmarks/landmarks_atlas.png",
+      "json": "landmarks/landmarks_atlas.json",
+      "width": 1992,
+      "height": 823
+    }
+  },
+  "assets": {
+    "wishing_tree_01": {
+      "id": "wishing_tree_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "wishing_tree_01",
+      "width": 292,
+      "height": 414,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.38,
+        "yPct": 0.78,
+        "wPct": 0.24,
+        "hPct": 0.18
+      },
+      "defaultEligible": true
+    },
+    "tree_pink_blossom_01": {
+      "id": "tree_pink_blossom_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "tree_pink_blossom_01",
+      "width": 197,
+      "height": 238,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.38,
+        "yPct": 0.78,
+        "wPct": 0.24,
+        "hPct": 0.18
+      },
+      "defaultEligible": true
+    },
+    "tree_green_roses_01": {
+      "id": "tree_green_roses_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "tree_green_roses_01",
+      "width": 201,
+      "height": 235,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.38,
+        "yPct": 0.78,
+        "wPct": 0.24,
+        "hPct": 0.18
+      },
+      "defaultEligible": true
+    },
+    "tree_wisteria_01": {
+      "id": "tree_wisteria_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "tree_wisteria_01",
+      "width": 391,
+      "height": 235,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.38,
+        "yPct": 0.78,
+        "wPct": 0.24,
+        "hPct": 0.18
+      },
+      "defaultEligible": true
+    },
+    "tree_green_dense_01": {
+      "id": "tree_green_dense_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "tree_green_dense_01",
+      "width": 198,
+      "height": 231,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.38,
+        "yPct": 0.78,
+        "wPct": 0.24,
+        "hPct": 0.18
+      },
+      "defaultEligible": true
+    },
+    "tree_green_whiteflowers_01": {
+      "id": "tree_green_whiteflowers_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "tree_green_whiteflowers_01",
+      "width": 155,
+      "height": 181,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.38,
+        "yPct": 0.78,
+        "wPct": 0.24,
+        "hPct": 0.18
+      },
+      "defaultEligible": true
+    },
+    "tree_pink_blossom_small_01": {
+      "id": "tree_pink_blossom_small_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "tree_pink_blossom_small_01",
+      "width": 163,
+      "height": 178,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.38,
+        "yPct": 0.78,
+        "wPct": 0.24,
+        "hPct": 0.18
+      },
+      "defaultEligible": true
+    },
+    "tree_orange_blossom_01": {
+      "id": "tree_orange_blossom_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "tree_orange_blossom_01",
+      "width": 149,
+      "height": 177,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.38,
+        "yPct": 0.78,
+        "wPct": 0.24,
+        "hPct": 0.18
+      },
+      "defaultEligible": true
+    },
+    "tree_green_pinkflowers_01": {
+      "id": "tree_green_pinkflowers_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "tree_green_pinkflowers_01",
+      "width": 156,
+      "height": 176,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.38,
+        "yPct": 0.78,
+        "wPct": 0.24,
+        "hPct": 0.18
+      },
+      "defaultEligible": true
+    },
+    "tree_green_whiteflowers_small_01": {
+      "id": "tree_green_whiteflowers_small_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "tree_green_whiteflowers_small_01",
+      "width": 178,
+      "height": 177,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.38,
+        "yPct": 0.78,
+        "wPct": 0.24,
+        "hPct": 0.18
+      },
+      "defaultEligible": true
+    },
+    "tree_willow_01": {
+      "id": "tree_willow_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "tree_willow_01",
+      "width": 145,
+      "height": 176,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.38,
+        "yPct": 0.78,
+        "wPct": 0.24,
+        "hPct": 0.18
+      },
+      "defaultEligible": true
+    },
+    "hedge_vertical_short_01": {
+      "id": "hedge_vertical_short_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "hedge_vertical_short_01",
+      "width": 74,
+      "height": 135,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.08,
+        "yPct": 0.55,
+        "wPct": 0.84,
+        "hPct": 0.35
+      },
+      "defaultEligible": true
+    },
+    "hedge_arch_pink_01": {
+      "id": "hedge_arch_pink_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "hedge_arch_pink_01",
+      "width": 212,
+      "height": 281,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.08,
+        "yPct": 0.55,
+        "wPct": 0.84,
+        "hPct": 0.35
+      },
+      "defaultEligible": true
+    },
+    "hedge_corner_01": {
+      "id": "hedge_corner_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "hedge_corner_01",
+      "width": 224,
+      "height": 139,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.08,
+        "yPct": 0.55,
+        "wPct": 0.84,
+        "hPct": 0.35
+      },
+      "defaultEligible": true
+    },
+    "hedge_vertical_01": {
+      "id": "hedge_vertical_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "hedge_vertical_01",
+      "width": 65,
+      "height": 139,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.08,
+        "yPct": 0.55,
+        "wPct": 0.84,
+        "hPct": 0.35
+      },
+      "defaultEligible": true
+    },
+    "hedge_vertical_short_02": {
+      "id": "hedge_vertical_short_02",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "hedge_vertical_short_02",
+      "width": 73,
+      "height": 133,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.08,
+        "yPct": 0.55,
+        "wPct": 0.84,
+        "hPct": 0.35
+      },
+      "defaultEligible": true
+    },
+    "hedge_corner_02": {
+      "id": "hedge_corner_02",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "hedge_corner_02",
+      "width": 133,
+      "height": 138,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.08,
+        "yPct": 0.55,
+        "wPct": 0.84,
+        "hPct": 0.35
+      },
+      "defaultEligible": true
+    },
+    "hedge_arch_pink_02": {
+      "id": "hedge_arch_pink_02",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "hedge_arch_pink_02",
+      "width": 152,
+      "height": 153,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.08,
+        "yPct": 0.55,
+        "wPct": 0.84,
+        "hPct": 0.35
+      },
+      "defaultEligible": true
+    },
+    "topiary_round_01": {
+      "id": "topiary_round_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "topiary_round_01",
+      "width": 59,
+      "height": 142,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "topiary_spiral_01": {
+      "id": "topiary_spiral_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "topiary_spiral_01",
+      "width": 77,
+      "height": 139,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "bushes_mixed_01": {
+      "id": "bushes_mixed_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "bushes_mixed_01",
+      "width": 290,
+      "height": 110,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "topiary_cone_01": {
+      "id": "topiary_cone_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "topiary_cone_01",
+      "width": 66,
+      "height": 124,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "bushes_pink_white_01": {
+      "id": "bushes_pink_white_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "bushes_pink_white_01",
+      "width": 209,
+      "height": 107,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "bushes_white_pink_01": {
+      "id": "bushes_white_pink_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "bushes_white_pink_01",
+      "width": 187,
+      "height": 104,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "topiary_heart_01": {
+      "id": "topiary_heart_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "topiary_heart_01",
+      "width": 84,
+      "height": 112,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "flowerbed_white_01": {
+      "id": "flowerbed_white_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "flowerbed_white_01",
+      "width": 186,
+      "height": 94,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "flowerbed_pink_01": {
+      "id": "flowerbed_pink_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "flowerbed_pink_01",
+      "width": 215,
+      "height": 95,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "flowerbed_blue_pink_01": {
+      "id": "flowerbed_blue_pink_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "flowerbed_blue_pink_01",
+      "width": 235,
+      "height": 97,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "flowerbed_mixed_01": {
+      "id": "flowerbed_mixed_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "flowerbed_mixed_01",
+      "width": 214,
+      "height": 94,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "planter_pink_01": {
+      "id": "planter_pink_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "planter_pink_01",
+      "width": 101,
+      "height": 86,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "planter_white_01": {
+      "id": "planter_white_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "planter_white_01",
+      "width": 125,
+      "height": 84,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "vine_arch_01": {
+      "id": "vine_arch_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "vine_arch_01",
+      "width": 161,
+      "height": 242,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "planter_box_pink_01": {
+      "id": "planter_box_pink_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "planter_box_pink_01",
+      "width": 93,
+      "height": 128,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "shrub_pot_square_01": {
+      "id": "shrub_pot_square_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "shrub_pot_square_01",
+      "width": 89,
+      "height": 126,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "urn_whiteflowers_01": {
+      "id": "urn_whiteflowers_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "urn_whiteflowers_01",
+      "width": 95,
+      "height": 124,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "pot_green_01": {
+      "id": "pot_green_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "pot_green_01",
+      "width": 90,
+      "height": 122,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "urn_lavender_01": {
+      "id": "urn_lavender_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "urn_lavender_01",
+      "width": 84,
+      "height": 261,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "pot_pink_01": {
+      "id": "pot_pink_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "pot_pink_01",
+      "width": 91,
+      "height": 121,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "barrel_lavender_01": {
+      "id": "barrel_lavender_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "barrel_lavender_01",
+      "width": 78,
+      "height": 121,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "flowerbox_large_01": {
+      "id": "flowerbox_large_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "flowerbox_large_01",
+      "width": 135,
+      "height": 113,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "topiary_cone_pot_01": {
+      "id": "topiary_cone_pot_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "topiary_cone_pot_01",
+      "width": 57,
+      "height": 110,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "pot_pink_large_01": {
+      "id": "pot_pink_large_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "pot_pink_large_01",
+      "width": 98,
+      "height": 106,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "pot_green_large_01": {
+      "id": "pot_green_large_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "pot_green_large_01",
+      "width": 88,
+      "height": 105,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "vine_cluster_01": {
+      "id": "vine_cluster_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "vine_cluster_01",
+      "width": 92,
+      "height": 142,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "hanging_vine_01": {
+      "id": "hanging_vine_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "hanging_vine_01",
+      "width": 115,
+      "height": 132,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "bush_lavender_01": {
+      "id": "bush_lavender_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "bush_lavender_01",
+      "width": 109,
+      "height": 111,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "leafy_cluster_01": {
+      "id": "leafy_cluster_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "leafy_cluster_01",
+      "width": 91,
+      "height": 100,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "lantern_post_vine_01": {
+      "id": "lantern_post_vine_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "lantern_post_vine_01",
+      "width": 86,
+      "height": 203,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "plant_leafy_01": {
+      "id": "plant_leafy_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "plant_leafy_01",
+      "width": 83,
+      "height": 90,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "grass_tuft_object_01": {
+      "id": "grass_tuft_object_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "grass_tuft_object_01",
+      "width": 91,
+      "height": 97,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "leafy_plant_01": {
+      "id": "leafy_plant_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "leafy_plant_01",
+      "width": 80,
+      "height": 91,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "bush_leafy_01": {
+      "id": "bush_leafy_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "bush_leafy_01",
+      "width": 91,
+      "height": 98,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "bush_whiteflower_small_01": {
+      "id": "bush_whiteflower_small_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "bush_whiteflower_small_01",
+      "width": 91,
+      "height": 95,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fallen_log_flowers_01": {
+      "id": "fallen_log_flowers_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "fallen_log_flowers_01",
+      "width": 151,
+      "height": 120,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "rock_moss_01": {
+      "id": "rock_moss_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "rock_moss_01",
+      "width": 55,
+      "height": 47,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "stump_flowers_01": {
+      "id": "stump_flowers_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "stump_flowers_01",
+      "width": 127,
+      "height": 78,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "firefly_glow_01": {
+      "id": "firefly_glow_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "firefly_glow_01",
+      "width": 48,
+      "height": 48,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fireflies_cluster_01": {
+      "id": "fireflies_cluster_01",
+      "category": "foliage",
+      "atlas": "foliage",
+      "frame": "fireflies_cluster_01",
+      "width": 45,
+      "height": 42,
+      "origin": {
+        "x": 0.5,
+        "y": 0.9
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "entrance_gate_wood_flower_01": {
+      "id": "entrance_gate_wood_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "entrance_gate_wood_flower_01",
+      "width": 321,
+      "height": 242,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_end_flower_01": {
+      "id": "fence_end_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_end_flower_01",
+      "width": 115,
+      "height": 94,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_wood_horizontal_01": {
+      "id": "fence_wood_horizontal_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_wood_horizontal_01",
+      "width": 203,
+      "height": 92,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_post_01": {
+      "id": "fence_post_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_post_01",
+      "width": 40,
+      "height": 93,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_corner_01": {
+      "id": "fence_corner_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_corner_01",
+      "width": 144,
+      "height": 109,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_post_02": {
+      "id": "fence_post_02",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_post_02",
+      "width": 41,
+      "height": 93,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_wood_horizontal_02": {
+      "id": "fence_wood_horizontal_02",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_wood_horizontal_02",
+      "width": 191,
+      "height": 97,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_corner_02": {
+      "id": "fence_corner_02",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_corner_02",
+      "width": 74,
+      "height": 117,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_short_01": {
+      "id": "fence_short_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_short_01",
+      "width": 87,
+      "height": 90,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_gate_small_01": {
+      "id": "fence_gate_small_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_gate_small_01",
+      "width": 174,
+      "height": 96,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_gate_small_02": {
+      "id": "fence_gate_small_02",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_gate_small_02",
+      "width": 110,
+      "height": 95,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_wood_horizontal_03": {
+      "id": "fence_wood_horizontal_03",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_wood_horizontal_03",
+      "width": 136,
+      "height": 94,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_wood_horizontal_04": {
+      "id": "fence_wood_horizontal_04",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_wood_horizontal_04",
+      "width": 183,
+      "height": 96,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_wood_horizontal_05": {
+      "id": "fence_wood_horizontal_05",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_wood_horizontal_05",
+      "width": 143,
+      "height": 95,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "fence_post_flower_01": {
+      "id": "fence_post_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "fence_post_flower_01",
+      "width": 46,
+      "height": 90,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "lamp_black_flower_01": {
+      "id": "lamp_black_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "lamp_black_flower_01",
+      "width": 69,
+      "height": 212,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "lamp_black_flower_02": {
+      "id": "lamp_black_flower_02",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "lamp_black_flower_02",
+      "width": 75,
+      "height": 211,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "lamp_black_double_01": {
+      "id": "lamp_black_double_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "lamp_black_double_01",
+      "width": 79,
+      "height": 208,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "lamp_black_01": {
+      "id": "lamp_black_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "lamp_black_01",
+      "width": 54,
+      "height": 197,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "drape_white_pink_01": {
+      "id": "drape_white_pink_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "drape_white_pink_01",
+      "width": 402,
+      "height": 104,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "banner_white_01": {
+      "id": "banner_white_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "banner_white_01",
+      "width": 96,
+      "height": 195,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "banner_pink_01": {
+      "id": "banner_pink_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "banner_pink_01",
+      "width": 85,
+      "height": 169,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "lamp_hanging_vine_01": {
+      "id": "lamp_hanging_vine_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "lamp_hanging_vine_01",
+      "width": 67,
+      "height": 181,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "bench_wood_flower_01": {
+      "id": "bench_wood_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "bench_wood_flower_01",
+      "width": 198,
+      "height": 105,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "bench_wood_01": {
+      "id": "bench_wood_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "bench_wood_01",
+      "width": 176,
+      "height": 97,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "bench_wood_02": {
+      "id": "bench_wood_02",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "bench_wood_02",
+      "width": 156,
+      "height": 97,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "table_round_pink_01": {
+      "id": "table_round_pink_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "table_round_pink_01",
+      "width": 170,
+      "height": 137,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "chair_white_01": {
+      "id": "chair_white_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "chair_white_01",
+      "width": 79,
+      "height": 130,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "chair_white_bow_01": {
+      "id": "chair_white_bow_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "chair_white_bow_01",
+      "width": 84,
+      "height": 126,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "table_round_white_01": {
+      "id": "table_round_white_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "table_round_white_01",
+      "width": 163,
+      "height": 132,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "chair_wood_01": {
+      "id": "chair_wood_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "chair_wood_01",
+      "width": 70,
+      "height": 123,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "chair_wood_flower_01": {
+      "id": "chair_wood_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "chair_wood_flower_01",
+      "width": 71,
+      "height": 123,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "table_rect_pink_01": {
+      "id": "table_rect_pink_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "table_rect_pink_01",
+      "width": 127,
+      "height": 123,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "chair_wood_planter_01": {
+      "id": "chair_wood_planter_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "chair_wood_planter_01",
+      "width": 78,
+      "height": 123,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "table_rect_flower_01": {
+      "id": "table_rect_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "table_rect_flower_01",
+      "width": 281,
+      "height": 121,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "carpet_pink_vertical_flower_01": {
+      "id": "carpet_pink_vertical_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "carpet_pink_vertical_flower_01",
+      "width": 80,
+      "height": 168,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "carpet_pink_vertical_flower_02": {
+      "id": "carpet_pink_vertical_flower_02",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "carpet_pink_vertical_flower_02",
+      "width": 99,
+      "height": 169,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "carpet_corner_flower_01": {
+      "id": "carpet_corner_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "carpet_corner_flower_01",
+      "width": 80,
+      "height": 70,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "arch_column_flower_01": {
+      "id": "arch_column_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "arch_column_flower_01",
+      "width": 86,
+      "height": 169,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "drape_arch_01": {
+      "id": "drape_arch_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "drape_arch_01",
+      "width": 227,
+      "height": 190,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "carpet_cross_01": {
+      "id": "carpet_cross_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "carpet_cross_01",
+      "width": 232,
+      "height": 185,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "arch_column_flower_02": {
+      "id": "arch_column_flower_02",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "arch_column_flower_02",
+      "width": 81,
+      "height": 170,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "carpet_rect_flower_01": {
+      "id": "carpet_rect_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "carpet_rect_flower_01",
+      "width": 129,
+      "height": 168,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "carpet_vertical_border_01": {
+      "id": "carpet_vertical_border_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "carpet_vertical_border_01",
+      "width": 56,
+      "height": 167,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "carpet_vertical_plain_01": {
+      "id": "carpet_vertical_plain_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "carpet_vertical_plain_01",
+      "width": 52,
+      "height": 164,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "carpet_vertical_plain_02": {
+      "id": "carpet_vertical_plain_02",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "carpet_vertical_plain_02",
+      "width": 51,
+      "height": 164,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "carpet_square_01": {
+      "id": "carpet_square_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "carpet_square_01",
+      "width": 69,
+      "height": 66,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "pedestal_flower_01": {
+      "id": "pedestal_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "pedestal_flower_01",
+      "width": 82,
+      "height": 169,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "welcome_table_01": {
+      "id": "welcome_table_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "welcome_table_01",
+      "width": 155,
+      "height": 170,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "gift_table_01": {
+      "id": "gift_table_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "gift_table_01",
+      "width": 183,
+      "height": 159,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "guestbook_table_01": {
+      "id": "guestbook_table_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "guestbook_table_01",
+      "width": 208,
+      "height": 154,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "podium_flower_01": {
+      "id": "podium_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "podium_flower_01",
+      "width": 96,
+      "height": 160,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "counter_corner_01": {
+      "id": "counter_corner_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "counter_corner_01",
+      "width": 168,
+      "height": 152,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "counter_corner_02": {
+      "id": "counter_corner_02",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "counter_corner_02",
+      "width": 78,
+      "height": 138,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "guestbook_podium_01": {
+      "id": "guestbook_podium_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "guestbook_podium_01",
+      "width": 88,
+      "height": 148,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "sideboard_flower_01": {
+      "id": "sideboard_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "sideboard_flower_01",
+      "width": 138,
+      "height": 136,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "barrel_flower_01": {
+      "id": "barrel_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "barrel_flower_01",
+      "width": 77,
+      "height": 135,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "directional_sign_01": {
+      "id": "directional_sign_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "directional_sign_01",
+      "width": 99,
+      "height": 160,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "notice_board_01": {
+      "id": "notice_board_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "notice_board_01",
+      "width": 175,
+      "height": 148,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "planter_barrel_01": {
+      "id": "planter_barrel_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "planter_barrel_01",
+      "width": 272,
+      "height": 155,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "planter_group_01": {
+      "id": "planter_group_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "planter_group_01",
+      "width": 98,
+      "height": 153,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "birdcage_flower_01": {
+      "id": "birdcage_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "birdcage_flower_01",
+      "width": 88,
+      "height": 145,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "lantern_post_wood_01": {
+      "id": "lantern_post_wood_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "lantern_post_wood_01",
+      "width": 122,
+      "height": 136,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "easel_blank_01": {
+      "id": "easel_blank_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "easel_blank_01",
+      "width": 88,
+      "height": 139,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "flower_crate_01": {
+      "id": "flower_crate_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "flower_crate_01",
+      "width": 118,
+      "height": 131,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "easel_flower_01": {
+      "id": "easel_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "easel_flower_01",
+      "width": 106,
+      "height": 112,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "candle_table_01": {
+      "id": "candle_table_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "candle_table_01",
+      "width": 73,
+      "height": 149,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.27999999999999997,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "topiary_cone_decor_01": {
+      "id": "topiary_cone_decor_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "topiary_cone_decor_01",
+      "width": 103,
+      "height": 96,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "flower_crate_02": {
+      "id": "flower_crate_02",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "flower_crate_02",
+      "width": 47,
+      "height": 83,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "lantern_black_small_01": {
+      "id": "lantern_black_small_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "lantern_black_small_01",
+      "width": 128,
+      "height": 140,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "topiary_pair_01": {
+      "id": "topiary_pair_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "topiary_pair_01",
+      "width": 53,
+      "height": 130,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "topiary_pedestal_01": {
+      "id": "topiary_pedestal_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "topiary_pedestal_01",
+      "width": 65,
+      "height": 142,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "lantern_black_small_02": {
+      "id": "lantern_black_small_02",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "lantern_black_small_02",
+      "width": 52,
+      "height": 91,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "candle_invitation_01": {
+      "id": "candle_invitation_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "candle_invitation_01",
+      "width": 106,
+      "height": 148,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "flower_crate_03": {
+      "id": "flower_crate_03",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "flower_crate_03",
+      "width": 113,
+      "height": 99,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "candle_flower_01": {
+      "id": "candle_flower_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "candle_flower_01",
+      "width": 134,
+      "height": 73,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "bush_whiteflowers_decor_01": {
+      "id": "bush_whiteflowers_decor_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "bush_whiteflowers_decor_01",
+      "width": 85,
+      "height": 95,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "flower_crate_04": {
+      "id": "flower_crate_04",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "flower_crate_04",
+      "width": 98,
+      "height": 84,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "flower_small_01": {
+      "id": "flower_small_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "flower_small_01",
+      "width": 88,
+      "height": 61,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "lantern_candle_01": {
+      "id": "lantern_candle_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "lantern_candle_01",
+      "width": 74,
+      "height": 94,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "flower_small_02": {
+      "id": "flower_small_02",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "flower_small_02",
+      "width": 81,
+      "height": 69,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "petal_basket_01": {
+      "id": "petal_basket_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "petal_basket_01",
+      "width": 68,
+      "height": 63,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "petal_bowl_01": {
+      "id": "petal_bowl_01",
+      "category": "decor",
+      "atlas": "decor",
+      "frame": "petal_bowl_01",
+      "width": 81,
+      "height": 49,
+      "origin": {
+        "x": 0.5,
+        "y": 0.92
+      },
+      "displayScale": 0.3333333333333333,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.1,
+        "yPct": 0.65,
+        "wPct": 0.8,
+        "hPct": 0.28
+      },
+      "defaultEligible": true
+    },
+    "rsvp_pavilion_01": {
+      "id": "rsvp_pavilion_01",
+      "category": "landmarks",
+      "atlas": "landmarks",
+      "frame": "rsvp_pavilion_01",
+      "width": 321,
+      "height": 384,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.08,
+        "yPct": 0.7,
+        "wPct": 0.84,
+        "hPct": 0.24
+      },
+      "defaultEligible": true
+    },
+    "fountain_main_plaza_01": {
+      "id": "fountain_main_plaza_01",
+      "category": "landmarks",
+      "atlas": "landmarks",
+      "frame": "fountain_main_plaza_01",
+      "width": 452,
+      "height": 424,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": null,
+      "defaultEligible": true
+    },
+    "entrance_gate_flower_01": {
+      "id": "entrance_gate_flower_01",
+      "category": "landmarks",
+      "atlas": "landmarks",
+      "frame": "entrance_gate_flower_01",
+      "width": 412,
+      "height": 277,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0,
+        "yPct": 0.62,
+        "wPct": 1,
+        "hPct": 0.24,
+        "note": "split passage collision in Tiled"
+      },
+      "defaultEligible": true
+    },
+    "wedding_arch_01": {
+      "id": "wedding_arch_01",
+      "category": "landmarks",
+      "atlas": "landmarks",
+      "frame": "wedding_arch_01",
+      "width": 362,
+      "height": 387,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0,
+        "yPct": 0.62,
+        "wPct": 1,
+        "hPct": 0.24,
+        "note": "split passage collision in Tiled"
+      },
+      "defaultEligible": true
+    },
+    "photo_terrace_01": {
+      "id": "photo_terrace_01",
+      "category": "landmarks",
+      "atlas": "landmarks",
+      "frame": "photo_terrace_01",
+      "width": 433,
+      "height": 315,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.08,
+        "yPct": 0.7,
+        "wPct": 0.84,
+        "hPct": 0.24
+      },
+      "defaultEligible": true
+    },
+    "couple_garden_table_01": {
+      "id": "couple_garden_table_01",
+      "category": "landmarks",
+      "atlas": "landmarks",
+      "frame": "couple_garden_table_01",
+      "width": 332,
+      "height": 317,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.08,
+        "yPct": 0.7,
+        "wPct": 0.84,
+        "hPct": 0.24
+      },
+      "defaultEligible": true
+    },
+    "couple_garden_topiary_01": {
+      "id": "couple_garden_topiary_01",
+      "category": "landmarks",
+      "atlas": "landmarks",
+      "frame": "couple_garden_topiary_01",
+      "width": 100,
+      "height": 256,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.08,
+        "yPct": 0.7,
+        "wPct": 0.84,
+        "hPct": 0.24
+      },
+      "defaultEligible": true
+    },
+    "event_pavilion_01": {
+      "id": "event_pavilion_01",
+      "category": "landmarks",
+      "atlas": "landmarks",
+      "frame": "event_pavilion_01",
+      "width": 440,
+      "height": 389,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.08,
+        "yPct": 0.7,
+        "wPct": 0.84,
+        "hPct": 0.24
+      },
+      "defaultEligible": true
+    },
+    "wishing_tree_landmark_01": {
+      "id": "wishing_tree_landmark_01",
+      "category": "landmarks",
+      "atlas": "landmarks",
+      "frame": "wishing_tree_landmark_01",
+      "width": 388,
+      "height": 416,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.39,
+        "yPct": 0.65,
+        "wPct": 0.22,
+        "hPct": 0.25
+      },
+      "defaultEligible": true
+    },
+    "wedding_hall_chapel_01": {
+      "id": "wedding_hall_chapel_01",
+      "category": "landmarks",
+      "atlas": "landmarks",
+      "frame": "wedding_hall_chapel_01",
+      "width": 436,
+      "height": 408,
+      "origin": {
+        "x": 0.5,
+        "y": 0.94
+      },
+      "displayScale": 0.31999999999999995,
+      "collision": {
+        "shape": "rect",
+        "xPct": 0.08,
+        "yPct": 0.7,
+        "wPct": 0.84,
+        "hPct": 0.24
+      },
+      "defaultEligible": false
+    }
+  }
+}

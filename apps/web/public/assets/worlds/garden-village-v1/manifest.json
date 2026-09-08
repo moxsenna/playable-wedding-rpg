@@ -3,22 +3,32 @@
   "version": 1,
   "compatibilityVersion": 1,
   "tilemap": "map.json",
+  "placements": "placements.json",
   "files": [
     "map.json",
-    "tileset.png",
     "manifest.json",
-    "sprites/guest_01.png",
-    "sprites/guest_01.json",
-    "sprites/avatars.json",
-    "sprites/avatars/greeter.png",
-    "sprites/avatars/rsvp.png",
-    "sprites/avatars/story.png",
-    "sprites/avatars/photo.png",
-    "sprites/avatars/travel.png",
-    "sprites/avatars/event.png",
-    "sprites/avatars/venue.png",
-    "sprites/avatars/proposal.png",
-    "sprites/avatars/partner_a.png",
-    "sprites/avatars/partner_b.png"
-  ]
+    "placements.json",
+    "sprites/guest_01.png"
+  ],
+  "environment": {
+    "pack": "playable_wedding_environment_pack_v2",
+    "version": 2,
+    "base": "assets/environment/",
+    "registry": "environment-registry.json",
+    "terrainImage": "terrain/terrain_tiles.png",
+    "atlases": {
+      "foliage": {
+        "png": "foliage/foliage_atlas.png",
+        "json": "foliage/foliage_atlas.json"
+      },
+      "decor": {
+        "png": "decor/decor_atlas.png",
+        "json": "decor/decor_atlas.json"
+      },
+      "landmarks": {
+        "png": "landmarks/landmarks_atlas.png",
+        "json": "landmarks/landmarks_atlas.json"
+      }
+    }
+  }
 }

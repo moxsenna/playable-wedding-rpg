@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "checks": {
+    "terrain/terrain_tiles.png": true,
+    "terrain/terrain_tiles.tsj": true,
+    "atlases/foliage_atlas.png": true,
+    "atlases/foliage_atlas.json": true,
+    "atlases/decor_atlas.png": true,
+    "atlases/decor_atlas.json": true,
+    "atlases/landmarks_atlas.png": true,
+    "atlases/landmarks_atlas.json": true,
+    "metadata/environment-registry.json": true
+  },
+  "counts": {
+    "terrainTiles": 48,
+    "foliageAssets": 58,
+    "decorAssets": 83,
+    "landmarkAssets": 10
+  },
+  "atlas": {
+    "foliage": {
+      "png": "atlases/foliage_atlas.png",
+      "json": "atlases/foliage_atlas.json",
+      "width": 2025,
+      "height": 838,
+      "count": 58
+    },
+    "decor": {
+      "png": "atlases/decor_atlas.png",
+      "json": "atlases/decor_atlas.json",
+      "width": 2035,
+      "height": 866,
+      "count": 83
+    },
+    "landmarks": {
+      "png": "atlases/landmarks_atlas.png",
+      "json": "atlases/landmarks_atlas.json",
+      "width": 1992,
+      "height": 823,
+      "count": 10
+    }
+  },
+  "defaultHall": "wedding_hall_garden_01",
+  "muslimHall": "wedding_hall_muslim_01",
+  "excludedByDefault": [
+    "wedding_hall_chapel_01"
+  ],
+  "notes": [
+    "All named object assets have individual PNGs and Phaser atlas entries.",
+    "Terrain tiles are uniform 16x16 and have a Tiled TSJ.",
+    "Collision metadata is heuristic and must be authored/validated in Tiled.",
+    "Terrain repetition/seam quality should be visually reviewed on the real map."
+  ],
+  "allStructuralChecksPass": true
+}

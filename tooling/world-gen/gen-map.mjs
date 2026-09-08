@@ -1,11 +1,12 @@
-// Garden Village v1 map authoring script.
-// Builds a real Tiled .tmj (56x80, 16px, orthogonal) with the 15 reserved
-// layers, 10 NPC slots, 4 spawns, 8 landmarks, interaction zones, and a
-// collision model. Output is Tiled-editable; the checked-in .tmj is the
-// source of truth, this script is the reproducible author.
+// Garden Village v1 map authoring (M4.6): logical layout + pack-terrain paint.
 // Layout reference: WORLD_DESIGN.md (north = Wedding Hall, south = spawn).
-import { T } from "./gen-tileset.mjs";
+// The .tmj keeps the 15 reserved layers and all semantic object IDs; tile
+// art comes from the production terrain TSJ, structures/decor/landmarks from
+// V2 atlas placements (gen-decor). planLayout() is pure placement-agnostic
+// geography; buildMap() paints tiles and merges placement collision.
 import { rng } from "./png-writer.mjs";
+import { loadTerrain, terrainGid, routePiece, waterPiece, DIRT, STONE, GRASS_SEQUENCE, MEADOW_PICK, TUFT_PICK } from "./terrain-v2.mjs";
+import { footprintTiles, WALKABLE_NO_COLLISION } from "./gen-decor.mjs";
 
 export const MAP_W = 56;
 export const MAP_H = 80;
@@ -57,214 +58,167 @@ export const INTERACTIONS = [
 ];
 
 const key = (x, y) => `${x},${y}`;
+const inRect = (x, y, x0, y0, w, h) => x >= x0 && y >= y0 && x < x0 + w && y < y0 + h;
 
-export function buildMap() {
+/** Pure logical geography: paths, pond, slots, structure cells for avoidance. */
+export function planLayout() {
   const W = MAP_W;
   const H = MAP_H;
   const r = rng(20260907);
   const inB = (x, y) => x >= 0 && y >= 0 && x < W && y < H;
 
-  // ---- path set: north-south spine + east-west branch ----
   const path = new Set();
   for (let y = 10; y <= 74; y++) for (let x = 26; x <= 28; x++) path.add(key(x, y));
   for (let x = 6; x <= 49; x++) for (let y = 34; y <= 36; y++) path.add(key(x, y));
+
+  const pond = new Set();
+  for (let y = 26; y <= 32; y++)
+    for (let x = 4; x <= 14; x++) {
+      const dx = (x - 9) / 4, dy = (y - 29) / 2;
+      if (dx * dx + dy * dy <= 1) pond.add(key(x, y));
+    }
+
+  const px = (tx, ty) => ({ x: tx * TILE + TILE / 2, y: ty * TILE + TILE / 2 });
+  const npcSlots = Object.fromEntries(NPC_SLOTS.map(([n, x, y]) => [n, { ...px(x, y) }]));
+  const spawns = Object.fromEntries(SPAWNS.map(([n, x, y]) => [n, { ...px(x, y) }]));
+  const landmarks = Object.fromEntries(
+    LANDMARKS.map(([n, x, y, w, h]) => [n, { x: x * TILE, y: y * TILE, w: w * TILE, h: h * TILE }])
+  );
+
+  // structure cells (trunk avoidance): landmark footprints, floors, hedge/fence/bed lines
+  const struct = new Set();
+  const structRect = (x0, y0, w, h) => {
+    for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) struct.add(key(x, y));
+  };
+  structRect(20, 1, 16, 10); // hall mass
+  structRect(29, 53, 9, 5); // rsvp stall zone
+  structRect(40, 28, 13, 5); // event pavilion zone
+  structRect(21, 30, 6, 5); // fountain zone
+  structRect(23, 63, 9, 3); // entrance arch zone
+  structRect(18, 30, 20, 11); // plaza floor
+  structRect(20, 10, 16, 4); // hall terrace
+  structRect(20, 43, 16, 7); // photo deck
+  for (let hx = 18; hx <= 37; hx++) struct.add(key(hx, 21)); // hedge row
+  for (const fy of [26, 41]) for (let fx = 3; fx <= 16; fx++) struct.add(key(fx, fy)); // fences
+  for (const [bx, by] of [[21, 13], [32, 13], [5, 36], [44, 36], [18, 16]])
+    structRect(bx, by, 3, 2); // beds
+  for (const [lx, ly] of [[25, 16], [29, 24], [25, 48], [29, 40], [25, 60], [29, 68], [19, 31], [36, 39]])
+    struct.add(key(lx, ly)); // lanterns
+
+  // tree spots: seeded, clear of paths/pond/structures/slots (margin 2)
+  const reserved = new Set([...path, ...pond, ...struct]);
+  for (const [, sx, sy] of [...NPC_SLOTS, ...SPAWNS]) {
+    for (let dy = -2; dy <= 2; dy++)
+      for (let dx = -2; dx <= 2; dx++) reserved.add(key(sx + dx, sy + dy));
+  }
+  const treeSpots = [];
+  let guard = 0;
+  while (treeSpots.length < 14 && guard++ < 4000) {
+    const x = 2 + Math.floor(r() * 52);
+    const y = 11 + Math.floor(r() * 64);
+    if (!inB(x, y) || reserved.has(key(x, y))) continue;
+    treeSpots.push([x, y]);
+    reserved.add(key(x, y));
+  }
+
+  return { W, H, path, pond, npcSlots, spawns, landmarks, treeSpots, rng: r };
+}
+
+/** Paint the TMJ from layout + placements + pack terrain. */
+export function buildMap(layout, decor, terrain) {
+  const { W, H, path, pond, npcSlots, spawns, landmarks } = layout;
+  const r = rng(20260907 + 1);
+  const inB = (x, y) => x >= 0 && y >= 0 && x < W && y < H;
   const isPath = (x, y) => path.has(key(x, y));
 
-  // ---- collision set (tile coords) ----
   const solid = new Set();
   const block = (x, y) => { if (inB(x, y)) solid.add(key(x, y)); };
-  const blockRect = (x0, y0, w, h) => {
-    for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) block(x, y);
-  };
-  // map border ring
   for (let x = 0; x < W; x++) { block(x, 0); block(x, H - 1); }
   for (let y = 0; y < H; y++) { block(0, y); block(W - 1, y); }
+  for (const k of pond) {
+    const [x, y] = k.split(",").map(Number);
+    block(x, y);
+  }
+  // placement footprints (registry fractions) + explicit door/gate tiles
+  for (const p of decor.placements) {
+    if (WALKABLE_NO_COLLISION.has(p.asset)) continue;
+    const entry = decor.registry.assets[p.asset];
+    if (!entry) throw new Error(`placement references unknown asset: ${p.asset}`);
+    for (const [x, y] of footprintTiles(entry, p.x, p.y, p.scale)) block(x, y);
+  }
+  for (const [x, y] of decor.extraCollision) block(x, y);
 
-  // ---- tile layers ----
   const grid = () => new Array(W * H).fill(0);
   const G = {
     ground: grid(), detail: grid(), paths: grid(), water: grid(),
     base: grid(), decor: grid(), coll: grid(), above: grid(), roof: grid(),
   };
   const set = (g, x, y, gid) => { if (inB(x, y)) g[y * W + x] = gid; };
+  const gid = (name) => {
+    const v = terrain.byName.get(name);
+    if (v === undefined) throw new Error(`unknown terrain tile: ${name}`);
+    return v;
+  };
 
-  // 00 ground: grass-a + noise patches of b/c
+  // 00 ground: restrained pack-grass variation (no single-tile repetition)
   for (let y = 0; y < H; y++)
     for (let x = 0; x < W; x++) {
-      const n = r();
-      set(G.ground, x, y, n < 0.72 ? T.GRASS_A : n < 0.88 ? T.GRASS_B : T.GRASS_C);
+      set(G.ground, x, y, gid(GRASS_SEQUENCE[(x * 7 + y * 13) % GRASS_SEQUENCE.length]));
     }
 
-  // 01 detail: meadow clusters + tufts + petals
-  const inRect = (x, y, x0, y0, w, h) => x >= x0 && y >= y0 && x < x0 + w && y < y0 + h;
+  // 01 detail: meadow + tufts, never on paths
   for (let y = 0; y < H; y++)
     for (let x = 0; x < W; x++) {
       if (isPath(x, y)) continue;
       const v = r();
       if (inRect(x, y, 3, 27, 13, 14) || inRect(x, y, 19, 12, 18, 9)) {
-        if (v < 0.22) set(G.detail, x, y, T.MEADOW);
-        else if (v < 0.34) set(G.detail, x, y, T.TUFTS);
+        if (v < 0.24) set(G.detail, x, y, gid(MEADOW_PICK[Math.floor(r() * MEADOW_PICK.length)]));
       } else if (inRect(x, y, 18, 10, 20, 5) || inRect(x, y, 16, 28, 24, 14)) {
-        if (v < 0.10) set(G.detail, x, y, T.PETALS);
-        else if (v < 0.20) set(G.detail, x, y, T.TUFTS);
-      } else if (v < 0.06) {
-        set(G.detail, x, y, T.TUFTS);
+        if (v < 0.10) set(G.detail, x, y, gid("grass_flowers_sparse_01"));
+        else if (v < 0.2) set(G.detail, x, y, gid(TUFT_PICK[Math.floor(r() * TUFT_PICK.length)]));
+      } else if (v < 0.05) {
+        set(G.detail, x, y, gid(TUFT_PICK[Math.floor(r() * TUFT_PICK.length)]));
       }
     }
 
-  // 02 paths with auto edge ring data (edges painted into decor layer later)
+  // 02 paths: dirt everywhere, stone on the formal hall approach (spine y10-21)
+  const at = (x, y) => (isPath(x, y) ? 1 : 0);
   for (const k of path) {
     const [x, y] = k.split(",").map(Number);
-    set(G.paths, x, y, T.PATH);
+    const formal = x >= 26 && x <= 28 && y >= 10 && y <= 21;
+    const setName = formal ? STONE : DIRT;
+    set(G.paths, x, y, gid(routePiece(setName, at(x, y - 1), at(x, y + 1), at(x + 1, y), at(x - 1, y))));
   }
-  // edge variant selection for border path cells
-  const edgeFor = (x, y) => {
-    const n = !isPath(x, y - 1), s = !isPath(x, y + 1);
-    const w = !isPath(x - 1, y), e = !isPath(x + 1, y);
-    if (n && w) return T.CORNER_NW;
-    if (n && e) return T.CORNER_NE;
-    if (s && w) return T.CORNER_SW;
-    if (s && e) return T.CORNER_SE;
-    if (n) return T.EDGE_N;
-    if (s) return T.EDGE_S;
-    if (w) return T.EDGE_W;
-    if (e) return T.EDGE_E;
-    return T.PATH;
-  };
 
-  // 03 water: memory-garden pond ellipse
-  const pond = new Set();
-  for (let y = 26; y <= 32; y++)
-    for (let x = 4; x <= 14; x++) {
-      const dx = (x - 9) / 4, dy = (y - 29) / 2;
-      const d = dx * dx + dy * dy;
-      if (d <= 1) {
-        pond.add(key(x, y));
-        set(G.water, x, y, d <= 0.4 ? T.WATER_DEEP : T.WATER);
-        block(x, y);
-      }
-    }
+  // 03 water: pond with edged shoreline + lily accents
+  for (const k of pond) {
+    const [x, y] = k.split(",").map(Number);
+    const inPond = (ax, ay) => pond.has(key(ax, ay)) ? 1 : 0;
+    set(G.water, x, y, gid(waterPiece(inPond(x, y - 1), inPond(x, y + 1), inPond(x + 1, y), inPond(x - 1, y))));
+  }
+  set(G.water, 8, 29, gid("water_lily_pond_01"));
+  set(G.water, 10, 30, gid("water_center_02"));
 
-  // helper: paint rect of tiles, optionally skipping path cells
-  const paintRect = (g, x0, y0, w, h, gidFn, skipPath = false) => {
+  // 04 floors in stone (skip path cells): plaza, pavilion, terrace, deck
+  const stone = (x, y) => gid((x + y) % 2 === 0 ? "path_stone_center_01" : "path_stone_center_02");
+  const paintFloor = (x0, y0, w, h) => {
     for (let y = y0; y < y0 + h; y++)
-      for (let x = x0; x < x0 + w; x++) {
-        if (skipPath && isPath(x, y)) continue;
-        const gid = typeof gidFn === "function" ? gidFn(x, y) : gidFn;
-        set(g, x, y, gid);
-      }
+      for (let x = x0; x < x0 + w; x++) if (!isPath(x, y)) set(G.base, x, y, stone(x, y));
   };
-  const checker = (a, b) => (x, y) => ((x + y) % 2 === 0 ? a : b);
+  paintFloor(18, 30, 20, 11);
+  paintFloor(41, 30, 11, 10);
+  paintFloor(20, 10, 16, 4);
+  paintFloor(20, 43, 16, 7);
 
-  // 04 building base: floors (skip path cells so the spine stays continuous)
-  paintRect(G.base, 18, 30, 20, 11, checker(T.PLAZA, T.PLAZA_ALT), true); // plaza
-  paintRect(G.base, 41, 30, 11, 10, checker(T.PLAZA, T.PLAZA_ALT), true); // pavilion floor
-  paintRect(G.base, 20, 43, 16, 7, T.STAGE, true); // photo deck
-  paintRect(G.base, 20, 10, 16, 4, checker(T.PLAZA, T.PLAZA_ALT), true); // hall terrace
-
-  // wedding hall mass: north wall with windows, front row with gate
-  for (let x = 20; x <= 35; x++) {
-    const win = x === 22 || x === 23 || x === 31 || x === 32;
-    set(G.base, x, 7, win ? T.WINDOW : T.WALL); block(x, 7);
-    set(G.base, x, 8, T.WALL); block(x, 8);
-  }
-  for (let x = 20; x <= 35; x++) {
-    if (x === 27) { set(G.base, x, 9, T.GATE); block(x, 9); } // locked finale gate
-    else { set(G.base, x, 9, T.WALL); block(x, 9); }
-  }
-  block(20, 9); block(35, 9);
-
-  // RSVP stall: counter + posts (east of spine, spine stays open)
-  paintRect(G.base, 30, 56, 7, 1, T.COUNTER);
-  blockRect(30, 56, 7, 1);
-  for (const [px, py] of [[30, 55], [36, 55], [30, 57], [36, 57]]) {
-    set(G.decor, px, py, T.PILLAR); block(px, py);
-  }
-
-  // event pavilion corner pillars
-  for (const [px, py] of [[41, 30], [51, 30], [41, 39], [51, 39]]) {
-    set(G.base, px, py, T.PILLAR); block(px, py);
-  }
-
-  // entrance arch pillars (gap x25-30 keeps the spine open)
-  for (const px of [24, 31]) { set(G.decor, px, 64, T.PILLAR); block(px, 64); }
-
-  // 05 decor below: path edges, carpet, fountain, flower beds, fences, lanterns
-  for (const k of path) {
-    const [x, y] = k.split(",").map(Number);
-    const e = edgeFor(x, y);
-    if (e !== T.PATH) set(G.paths, x, y, e);
-  }
-  paintRect(G.decor, 26, 10, 3, 4, T.CARPET); // wedding carpet to the gate
-  // fountain (west of spine so the spine stays straight)
-  paintRect(G.decor, 24, 32, 2, 2, T.FOUNTAIN);
-  blockRect(24, 32, 2, 2);
-  // flower beds (walkable decoration)
-  for (const [bx, by] of [[21, 13], [32, 13], [5, 36], [44, 36]])
-    paintRect(G.decor, bx, by, 3, 2, T.ROSES);
-  // memory-garden fences with north/south entry gaps
-  for (const fy of [26, 41])
-    for (const fx of [3, 4, 5, 6, 7, 11, 12, 13, 14, 15, 16]) {
-      if (pond.has(key(fx, fy))) continue;
-      set(G.decor, fx, fy, T.FENCE); block(fx, fy);
-    }
-  // couple-garden hedge with a wide spine gap
-  for (let hx = 18; hx <= 37; hx++) {
-    if (hx >= 25 && hx <= 29) continue;
-    set(G.decor, hx, 21, T.BUSH); block(hx, 21);
-  }
-  // lanterns (small: no collision)
-  for (const [lx, ly] of [[25, 16], [29, 24], [25, 48], [29, 40], [25, 60], [29, 68], [19, 31], [36, 39]])
-    set(G.decor, lx, ly, T.LANTERN);
-  // border bushes (selected decoration: collide)
-  for (const [bx, by] of [[2, 5], [2, 15], [2, 25], [2, 45], [2, 55], [2, 65], [53, 10], [53, 20], [53, 30], [53, 50], [53, 60], [53, 70], [10, 77], [20, 77], [30, 77], [40, 77], [50, 77]]) {
-    set(G.decor, bx, by, T.BUSH); block(bx, by);
-  }
-
-  // trees: seeded rejection sampling, clear of paths/structures/slots/spawns
-  const reserved = new Set([...path, ...pond, ...solid]);
-  for (const [id, sx, sy] of [...NPC_SLOTS, ...SPAWNS]) {
-    for (let dy = -2; dy <= 2; dy++)
-      for (let dx = -2; dx <= 2; dx++) reserved.add(key(sx + dx, sy + dy));
-  }
-  const treeSpots = [];
-  let guard = 0;
-  while (treeSpots.length < 14 && guard++ < 2000) {
-    const x = 2 + Math.floor(r() * 52);
-    const y = 11 + Math.floor(r() * 64);
-    if (reserved.has(key(x, y)) || reserved.has(key(x, y - 1))) continue;
-    // keep off floors/beds/hedge row
-    if (inRect(x, y, 16, 28, 24, 14) || inRect(x, y, 39, 28, 16, 14) ||
-        inRect(x, y, 18, 10, 20, 5) || inRect(x, y, 18, 43, 20, 8) || y === 21) continue;
-    treeSpots.push([x, y]);
-    reserved.add(key(x, y)); reserved.add(key(x, y - 1));
-  }
-  for (const [tx, ty] of treeSpots) {
-    set(G.decor, tx, ty, T.TRUNK); block(tx, ty);
-    set(G.above, tx, ty - 1, T.CANOPY);
-  }
-  // wishing tree (hero tree, couple garden)
-  set(G.decor, 30, 16, T.TRUNK); block(30, 16);
-  set(G.above, 30, 15, T.CANOPY);
-
-  // 11 above: entrance arch top
-  paintRect(G.above, 24, 63, 8, 1, T.BLOOMS);
-
-  // 12 roof: hall + stall + pavilion
-  paintRect(G.roof, 20, 1, 16, 1, T.RIDGE);
-  paintRect(G.roof, 20, 2, 16, 4, T.ROOF);
-  paintRect(G.roof, 20, 6, 16, 1, T.ROOF_SHADOW);
-  paintRect(G.roof, 29, 53, 9, 2, T.STALL_ROOF);
-  paintRect(G.roof, 41, 29, 11, 1, T.RIDGE);
-  paintRect(G.roof, 41, 30, 11, 1, T.ROOF_SHADOW);
-
-  // collision layer mirrors the solid set
+  // 05/11/12 stay empty: decor now arrives as atlas placements (below/above).
+  // 06 collision mirrors the solid set through a terrain tile (invisible).
+  const collGid = gid("grass_plain_01");
   for (const k of solid) {
     const [x, y] = k.split(",").map(Number);
-    set(G.coll, x, y, T.COLLISION);
+    set(G.coll, x, y, collGid);
   }
 
-  // ---- object layers ----
+  // ---- object layers (semantic IDs unchanged) ----
   let oid = 1;
   const pt = (name, type, tx, ty, extra = {}) => ({
     height: 0, id: oid++, name, point: true, rotation: 0, type,
@@ -275,13 +229,13 @@ export function buildMap() {
     visible: true, width: w * TILE, x: tx * TILE, y: ty * TILE, ...extra,
   });
   const interactions = INTERACTIONS.map(([n, x, y, w, h]) => rc(n, "interaction", x, y, w, h));
-  const npcSlots = NPC_SLOTS.map(([n, x, y]) => pt(n, "npc_slot", x, y));
-  const spawns = SPAWNS.map(([n, x, y]) => pt(n, "spawn", x, y));
-  const landmarks = LANDMARKS.map(([n, x, y, w, h]) => rc(n, "landmark", x, y, w, h));
+  const npcSlotObjs = NPC_SLOTS.map(([n, x, y]) => pt(n, "npc_slot", x, y));
+  const spawnObjs = SPAWNS.map(([n, x, y]) => pt(n, "spawn", x, y));
+  const landmarkObjs = LANDMARKS.map(([n, x, y, w, h]) => rc(n, "landmark", x, y, w, h));
   const ambient = [
     rc("ambient.fountain", "ambient", 24, 32, 2, 2,
       { properties: [{ name: "fx", type: "string", value: "sparkle" }] }),
-    rc("ambient.wishing_tree", "ambient", 29, 15, 3, 3,
+    rc("ambient.wishing_tree", "ambient", 20, 12, 3, 3,
       { properties: [{ name: "fx", type: "string", value: "petals" }] }),
     rc("ambient.pond", "ambient", 7, 28, 4, 3,
       { properties: [{ name: "fx", type: "string", value: "ripple" }] }),
@@ -316,9 +270,9 @@ export function buildMap() {
       tileLayer(6, "05_Decoration_Below", G.decor),
       tileLayer(7, "06_Collision", G.coll, false),
       objLayer(8, "07_Interaction_Zones", interactions),
-      objLayer(9, "08_NPC_Slots", npcSlots),
-      objLayer(10, "09_Spawn_Points", spawns),
-      objLayer(11, "10_Landmark_Zones", landmarks),
+      objLayer(9, "08_NPC_Slots", npcSlotObjs),
+      objLayer(10, "09_Spawn_Points", spawnObjs),
+      objLayer(11, "10_Landmark_Zones", landmarkObjs),
       tileLayer(12, "11_Decoration_Above", G.above),
       tileLayer(13, "12_Roof_Above", G.roof),
       objLayer(14, "13_Ambient_FX", ambient),
@@ -327,10 +281,10 @@ export function buildMap() {
     nextlayerid: 16, nextobjectid: oid,
     orientation: "orthogonal", renderorder: "right-down",
     tiledversion: "1.10", tileheight: TILE, tilesets: [
-      { firstgid: 1, source: "../../tilesets/wedding-garden.tsj" },
+      { firstgid: 1, source: "../../sprites/playable_wedding_environment_pack_v2/terrain/terrain_tiles.tsj" },
     ],
     tilewidth: TILE, type: "map", version: "1.10", width: W,
   };
 
-  return { tmj, solid, path, treeSpots };
+  return { tmj, solid, path, treeSpots: layout.treeSpots };
 }

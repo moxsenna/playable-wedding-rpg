@@ -6,6 +6,8 @@ import { z } from "zod";
 
 export * from "./npc";
 export * from "./publication";
+export * from "./avatar";
+export * from "./environment";
 
 export const PROTOCOL_VERSION = 1 as const;
 

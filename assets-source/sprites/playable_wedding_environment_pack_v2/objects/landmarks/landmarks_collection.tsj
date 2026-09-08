@@ -1,0 +1,201 @@
+{
+  "name": "wedding-landmarks-v2",
+  "tilecount": 10,
+  "tilewidth": 452,
+  "tileheight": 424,
+  "type": "tileset",
+  "version": "1.10",
+  "tiledversion": "1.10.2",
+  "tiles": [
+    {
+      "id": 0,
+      "class": "rsvp_pavilion_01",
+      "image": "rsvp_pavilion_01.png",
+      "imagewidth": 321,
+      "imageheight": 384,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "rsvp_pavilion_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "class": "fountain_main_plaza_01",
+      "image": "fountain_main_plaza_01.png",
+      "imagewidth": 452,
+      "imageheight": 424,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "fountain_main_plaza_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "class": "entrance_gate_flower_01",
+      "image": "entrance_gate_flower_01.png",
+      "imagewidth": 412,
+      "imageheight": 277,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "entrance_gate_flower_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "class": "wedding_arch_01",
+      "image": "wedding_arch_01.png",
+      "imagewidth": 362,
+      "imageheight": 387,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "wedding_arch_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "class": "photo_terrace_01",
+      "image": "photo_terrace_01.png",
+      "imagewidth": 433,
+      "imageheight": 315,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "photo_terrace_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "class": "couple_garden_table_01",
+      "image": "couple_garden_table_01.png",
+      "imagewidth": 332,
+      "imageheight": 317,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "couple_garden_table_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "class": "couple_garden_topiary_01",
+      "image": "couple_garden_topiary_01.png",
+      "imagewidth": 100,
+      "imageheight": 256,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "couple_garden_topiary_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "class": "event_pavilion_01",
+      "image": "event_pavilion_01.png",
+      "imagewidth": 440,
+      "imageheight": 389,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "event_pavilion_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "class": "wishing_tree_landmark_01",
+      "image": "wishing_tree_landmark_01.png",
+      "imagewidth": 388,
+      "imageheight": 416,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "wishing_tree_landmark_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "class": "wedding_hall_chapel_01",
+      "image": "wedding_hall_chapel_01.png",
+      "imagewidth": 436,
+      "imageheight": 408,
+      "properties": [
+        {
+          "name": "assetId",
+          "type": "string",
+          "value": "wedding_hall_chapel_01"
+        },
+        {
+          "name": "recommendedScale",
+          "type": "float",
+          "value": 0.48
+        }
+      ]
+    }
+  ]
+}
