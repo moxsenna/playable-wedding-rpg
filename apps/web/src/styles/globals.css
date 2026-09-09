@@ -53,27 +53,36 @@ body {
     max-height: 42dvh;
     overflow-y: auto;
     z-index: 30;
-    background: rgba(16, 22, 38, 0.96);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 14px;
-    padding: 14px 16px 16px;
+    background: linear-gradient(180deg, rgba(22, 30, 52, 0.98), rgba(16, 22, 38, 0.96));
+    border: 1px solid rgba(255, 217, 138, 0.3);
+    border-radius: 18px;
+    padding: 16px 18px 18px;
     box-sizing: border-box;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
 }
 
 .dialogue-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 14px;
     font-weight: 700;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: #ffd98a;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+}
+
+.dialogue-name::before {
+    content: "❀";
+    font-size: 13px;
 }
 
 .dialogue-text {
     font-size: 16px;
-    line-height: 1.5;
+    line-height: 1.6;
     color: #f2f4f8;
-    margin: 0 0 12px;
+    margin: 0 0 14px;
 }
 
 .dialogue-continue {
@@ -83,9 +92,10 @@ body {
     font-size: 16px;
     font-weight: 700;
     color: #1a2233;
-    background: #ffd98a;
+    background: linear-gradient(180deg, #ffe3a3, #ffd98a);
     border: none;
-    border-radius: 10px;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     cursor: pointer;
 }
 
@@ -98,7 +108,8 @@ body {
     outline-offset: 2px;
 }
 
-/* Wedding Book: top-right safe control + full overlay sheet, compact sections. */
+/* Undangan: top-right safe control + full overlay sheet, compact sections.
+   Wedding-paper theme: deep navy, gold accents, serif display type. */
 .book-open-btn {
     position: fixed;
     top: calc(12px + env(safe-area-inset-top, 0px));
@@ -106,13 +117,14 @@ body {
     z-index: 40;
     min-width: 64px;
     min-height: 44px;
-    padding: 0 14px;
+    padding: 0 16px;
     font-size: 15px;
     font-weight: 700;
     color: #1a2233;
-    background: #ffd98a;
-    border: none;
-    border-radius: 12px;
+    background: linear-gradient(180deg, #ffe3a3, #ffd98a);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
     cursor: pointer;
 }
 
@@ -123,7 +135,7 @@ body {
     width: 100%;
     max-width: 430px;
     margin: 0 auto;
-    background: #101626;
+    background: linear-gradient(180deg, #141b30 0%, #101626 30%);
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
@@ -135,20 +147,30 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    gap: 12px;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid rgba(255, 217, 138, 0.25);
     font-size: 17px;
+}
+
+.book-header strong {
+    font-family: Georgia, serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #ffd98a;
 }
 
 .book-close {
     min-height: 44px;
-    padding: 0 16px;
+    padding: 0 18px;
     font-size: 15px;
     font-weight: 700;
     color: #1a2233;
-    background: #ffd98a;
+    background: linear-gradient(180deg, #ffe3a3, #ffd98a);
     border: none;
-    border-radius: 10px;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     cursor: pointer;
 }
 
@@ -156,17 +178,22 @@ body {
     display: flex;
     gap: 8px;
     overflow-x: auto;
-    padding: 10px 16px;
+    padding: 12px 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    scrollbar-width: none;
+}
+
+.book-nav::-webkit-scrollbar {
+    display: none;
 }
 
 .book-nav button {
     flex: 0 0 auto;
     min-height: 40px;
-    padding: 0 14px;
+    padding: 0 16px;
     font-size: 14px;
     color: rgba(255, 255, 255, 0.75);
-    background: transparent;
+    background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 999px;
     cursor: pointer;
@@ -174,9 +201,10 @@ body {
 
 .book-nav-active {
     color: #1a2233 !important;
-    background: #ffd98a !important;
-    border-color: #ffd98a !important;
+    background: linear-gradient(180deg, #ffe3a3, #ffd98a) !important;
+    border-color: transparent !important;
     font-weight: 700;
+    box-shadow: 0 2px 8px rgba(255, 217, 138, 0.25);
 }
 
 .book-body {
@@ -186,8 +214,11 @@ body {
 }
 
 .book-body h2 {
-    font-size: 20px;
-    margin: 0 0 10px;
+    font-family: Georgia, serif;
+    font-size: 24px;
+    letter-spacing: 0.02em;
+    color: #ffd98a;
+    margin: 4px 0 12px;
 }
 
 .book-body h3 {
@@ -197,13 +228,17 @@ body {
 
 .book-body p {
     font-size: 15px;
-    line-height: 1.55;
+    line-height: 1.6;
     margin: 0 0 10px;
+    color: rgba(242, 244, 248, 0.92);
 }
 
 .book-event, .book-venue, .book-story {
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 14px;
+    margin: 0 0 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
 }
 
 .book-venue button {
@@ -251,7 +286,8 @@ body {
 .book-rsvp-form label {
     display: block;
     font-size: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    color: rgba(242, 244, 248, 0.9);
 }
 
 .book-rsvp-form input[type="text"], .book-rsvp-form input:not([type]) {
@@ -260,37 +296,55 @@ body {
     box-sizing: border-box;
     min-height: 48px;
     margin-top: 6px;
-    padding: 0 12px;
+    padding: 0 14px;
     font-size: 16px;
     color: #f2f4f8;
-    background: #1a2233;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 10px;
+    background: rgba(26, 34, 51, 0.9);
+    border: 1px solid rgba(255, 217, 138, 0.35);
+    border-radius: 12px;
 }
 
-.book-rsvp-form input[type="radio"] {
-    width: 20px;
-    height: 20px;
-    margin-right: 8px;
-    vertical-align: middle;
+.book-rsvp-form textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 110px;
+    margin-top: 6px;
+    padding: 12px 14px;
+    font-size: 16px;
+    font-family: inherit;
+    line-height: 1.5;
+    color: #f2f4f8;
+    background: rgba(26, 34, 51, 0.9);
+    border: 1px solid rgba(255, 217, 138, 0.35);
+    border-radius: 12px;
+    resize: vertical;
+}
+
+.book-rsvp-form input:focus-visible, .book-rsvp-form textarea:focus-visible {
+    outline: 2px solid #ffd98a;
+    outline-offset: 1px;
+    border-color: #ffd98a;
 }
 
 .book-rsvp-form button {
     min-height: 48px;
-    padding: 0 20px;
+    padding: 0 24px;
     margin-top: 6px;
     font-size: 16px;
     font-weight: 700;
     color: #1a2233;
-    background: #ffd98a;
+    background: linear-gradient(180deg, #ffe3a3, #ffd98a);
     border: none;
-    border-radius: 10px;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     cursor: pointer;
 }
 
 .book-rsvp-form button:disabled {
     opacity: 0.45;
     cursor: not-allowed;
+    box-shadow: none;
 }
 
 .book-gift p {
@@ -514,4 +568,267 @@ body {
 
 .admin-page a {
     color: #9fd8ef;
+}
+
+/* Loading shimmer: animated boot status while Phaser preloads. */
+.loading-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: #1a2233;
+    color: #f2f4f8;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.loading-rings {
+    display: flex;
+    gap: 10px;
+}
+
+.loading-rings span {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ffd98a;
+    animation: loading-bounce 1.1s infinite ease-in-out;
+}
+
+.loading-rings span:nth-child(2) {
+    animation-delay: 0.18s;
+}
+
+.loading-rings span:nth-child(3) {
+    animation-delay: 0.36s;
+}
+
+@keyframes loading-bounce {
+    0%, 100% { transform: translateY(0); opacity: 0.55; }
+    50% { transform: translateY(-12px); opacity: 1; }
+}
+
+.loading-title {
+    font-family: Georgia, serif;
+    font-size: 24px;
+    color: #ffd98a;
+    letter-spacing: 0.04em;
+}
+
+.loading-bar {
+    width: min(280px, 72vw);
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    overflow: hidden;
+}
+
+.loading-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ffd98a, #f2c46a);
+    transition: width 0.25s ease-out;
+}
+
+.loading-status {
+    font-size: 15px;
+    color: rgba(242, 244, 248, 0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .loading-rings span {
+        animation: none;
+        opacity: 0.9;
+    }
+    .loading-fill {
+        transition: none;
+    }
+}
+
+/* Onboarding: first-visit name + character picker, full-screen sheet. */
+.onboarding-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 95;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding: calc(28px + env(safe-area-inset-top, 0px)) 22px calc(28px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(180deg, #1c2440 0%, #101626 60%);
+    color: #f2f4f8;
+}
+
+.onboarding-title {
+    font-family: Georgia, serif;
+    font-size: 30px;
+    letter-spacing: 0.03em;
+    color: #ffd98a;
+    margin: 0 0 6px;
+}
+
+.onboarding-sub {
+    font-size: 15px;
+    line-height: 1.55;
+    color: rgba(242, 244, 248, 0.85);
+    margin: 0 0 20px;
+}
+
+.onboarding-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #ffd98a;
+    margin: 16px 0 8px;
+}
+
+.onboarding-input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 52px;
+    margin-top: 8px;
+    padding: 0 16px;
+    font-size: 17px;
+    color: #f2f4f8;
+    background: rgba(26, 34, 51, 0.9);
+    border: 1px solid rgba(255, 217, 138, 0.4);
+    border-radius: 14px;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.onboarding-input:focus-visible {
+    outline: 2px solid #ffd98a;
+    outline-offset: 1px;
+}
+
+.onboarding-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.onboarding-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 4px;
+    min-height: 44px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.14);
+    border-radius: 14px;
+    color: #f2f4f8;
+    cursor: pointer;
+}
+
+.onboarding-avatar-active {
+    border-color: #ffd98a;
+    background: rgba(255, 217, 138, 0.12);
+    box-shadow: 0 0 0 1px #ffd98a, 0 4px 14px rgba(255, 217, 138, 0.2);
+}
+
+.onboarding-sprite {
+    display: block;
+    width: 48px;
+    height: 48px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: rgba(26, 34, 51, 0.9);
+}
+
+.onboarding-sprite img {
+    width: 288px;
+    height: 192px;
+    max-width: none;
+    image-rendering: pixelated;
+}
+
+.onboarding-avatar-name {
+    font-size: 11px;
+    line-height: 1.3;
+    text-align: center;
+    color: rgba(242, 244, 248, 0.85);
+}
+
+.onboarding-error {
+    font-size: 14px;
+    color: #f2a3a3;
+    margin: 12px 0 0;
+}
+
+.onboarding-submit {
+    display: block;
+    width: 100%;
+    min-height: 52px;
+    margin-top: 20px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a2233;
+    background: linear-gradient(180deg, #ffe3a3, #ffd98a);
+    border: none;
+    border-radius: 999px;
+    box-shadow: 0 4px 16px rgba(255, 217, 138, 0.3);
+    cursor: pointer;
+}
+
+.onboarding-submit:active {
+    background: #f2c46a;
+}
+
+/* Emote menu: emoji picker overlay above the world. */
+.emote-menu {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+    z-index: 45;
+    background: rgba(16, 22, 38, 0.97);
+    border: 1px solid rgba(255, 217, 138, 0.35);
+    border-radius: 18px;
+    padding: 12px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+.emote-grid {
+    display: flex;
+    gap: 6px;
+}
+
+.emote-pick {
+    width: 52px;
+    height: 52px;
+    font-size: 26px;
+    line-height: 1;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid transparent;
+    border-radius: 14px;
+    cursor: pointer;
+}
+
+.emote-pick:active {
+    background: rgba(255, 217, 138, 0.2);
+    border-color: #ffd98a;
+}
+
+.emote-close {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    margin-top: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a2233;
+    background: #ffd98a;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
 }

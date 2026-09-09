@@ -131,7 +131,7 @@ try {
   // --- labels ---
   const L = select.labelForActions;
   ok(L([]) === "Bicara", "default label");
-  ok(L([{ type: "OPEN_RSVP" }]) === "RSVP", "rsvp label");
+  ok(L([{ type: "OPEN_RSVP" }]) === "Pesan", "rsvp label");
   ok(L([{ type: "OPEN_GALLERY" }]) === "Lihat Foto", "gallery label");
   ok(L([{ type: "OPEN_WEDDING_BOOK_SECTION", section: "events" }]) === "Lihat Acara", "events label");
   ok(L([{ type: "OPEN_WEDDING_BOOK_SECTION", section: "venue" }]) === "Lihat Lokasi", "venue label");

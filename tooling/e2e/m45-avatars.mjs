@@ -111,6 +111,9 @@ async function main() {
     await prepPage(page);
     const pageLogs = [];
     page.on("pageerror", (e) => pageLogs.push(`[pageerror] ${e && e.message}`));
+    await page.addInitScript(() => {
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+    });
     await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForFunction(
       () => !!window.__wedding?.player && !!window.__wedding?.input, null, { timeout: 60000 });
@@ -299,6 +302,9 @@ async function main() {
     for (const [w, h, name] of [[320, 568, "m45-spawn-320.png"], [360, 740, "m45-spawn-360.png"], [430, 932, "m45-spawn-430.png"]]) {
       const c2 = await browser2.newContext({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true });
       const p2 = await c2.newPage();
+      await p2.addInitScript(() => {
+        window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+      });
       await p2.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
       await p2.waitForFunction(() => !!window.__wedding?.player && !!window.__wedding?.input, null, { timeout: 60000 });
       await sleep(2500);

@@ -114,6 +114,9 @@ async function main() {
     const page = await ctx.newPage();
     const pageLogs = [];
     page.on("pageerror", (e) => pageLogs.push(`[pageerror] ${e && e.message}`));
+    await page.addInitScript(() => {
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+    });
     await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForFunction(
       () => !!window.__wedding?.player && !!window.__wedding?.input, null, { timeout: 60000 });
@@ -197,7 +200,7 @@ async function main() {
     // --- M3-B: keyboard to RSVP keeper, RSVP dispatch ---
     await seek(page, 456, 904, 30000, 25);
     await waitTarget(page, "npc.rsvp_keeper");
-    if ((await interactLabel(page)) !== "RSVP") fail("rsvp keeper label must be RSVP");
+    if ((await interactLabel(page)) !== "Pesan") fail("rsvp keeper label must be Pesan");
     await page.screenshot({ path: join(ROOT, "docs/qa/m3-rsvp-390.png") });
     await page.keyboard.press("e");
     await page.waitForSelector('[data-testid="dialogue-panel"]', { state: "visible", timeout: 15000 });
@@ -244,6 +247,9 @@ async function main() {
     for (const [w, h, name] of [[360, 740, "m3-spawn-360.png"], [430, 932, "m3-spawn-430.png"]]) {
       const c2 = await browser2.newContext({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true });
       const p2 = await c2.newPage();
+      await p2.addInitScript(() => {
+        window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+      });
       await p2.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
       await p2.waitForFunction(() => !!window.__wedding?.player && !!window.__wedding?.input, null, { timeout: 60000 });
       await sleep(2500);

@@ -87,6 +87,10 @@ export class WeddingWorldScene extends Scene {
   private gateApplied = false;
   private insideGatePrev = false;
   private unlockMarker: Phaser.GameObjects.Text | null = null;
+  private metGreeter = false;
+  private entryApplied = false;
+  private insideEntryPrev = false;
+  private entryHedges: Phaser.GameObjects.Image[] = [];
   private net: NetClient | null = null;
   private remotes = new RemotePlayerStore();
   private remoteViews = new Map<
@@ -95,6 +99,8 @@ export class WeddingWorldScene extends Scene {
   >();
   private netSelfId: string | null = null;
   private netWasMoving = false;
+  private localBubble: Phaser.GameObjects.Text | null = null;
+  private localBubbleUntil = 0;
 
   constructor() {
     super("WeddingWorld");
@@ -119,6 +125,10 @@ export class WeddingWorldScene extends Scene {
     this.quest = createQuestState(this.questDef);
     this.gateApplied = false;
     this.insideGatePrev = false;
+    this.metGreeter = false;
+    this.entryApplied = false;
+    this.insideEntryPrev = false;
+    this.entryHedges = [];
 
     const map = this.make.tilemap({ key: "world-map" });
     const tilesetName = map.tilesets[0]?.name ?? "wedding-garden-terrain-v2";
@@ -177,6 +187,7 @@ export class WeddingWorldScene extends Scene {
       this.physics.add.collider(this.player.sprite, npc.sprite);
     }
     this.spawnPlacements();
+    this.spawnEntryHedges();
     EventBus.on(BRIDGE_EVENTS.interactPressed, this.onInteractPressed, this);
     EventBus.on(BRIDGE_EVENTS.emoteSelected, this.onEmoteSelected, this);
     EventBus.on(BRIDGE_EVENTS.dialogueClosed, this.onDialogueClosed, this);
@@ -184,6 +195,7 @@ export class WeddingWorldScene extends Scene {
     EventBus.on(BRIDGE_EVENTS.navigateToLandmark, this.onNavigateToLandmark, this);
     kb.on("keydown-E", this.onInteractPressed, this);
     kb.on("keydown-SPACE", this.onInteractPressed, this);
+    kb.on("keydown-Q", this.onEmoteMenuKey, this);
     this.sys.events.once("shutdown", this.unsubscribeBridge, this);
 
     const cam = this.cameras.main;
@@ -205,6 +217,7 @@ export class WeddingWorldScene extends Scene {
         events: EventBus,
         targetId: () => this.getTargetId(),
         questState: () => ({ ...this.quest }),
+        localEmote: () => (this.localBubble?.visible ? this.localBubble.text : null),
         net: () => ({
           state: this.net?.getState() ?? "idle",
           selfId: this.netSelfId,
@@ -320,9 +333,56 @@ export class WeddingWorldScene extends Scene {
     });
   }
 
-  private onDialogueClosed(): void {
+  private onDialogueClosed(payload: { npcId?: string }): void {
     this.dialogueOpen = false;
     this.hud?.resume("dialogue");
+    const binding = this.npcs.map((n) => n.binding).find((b) => b.npcId === payload?.npcId);
+    if (binding?.role === "greeter") this.unlockEntryGate();
+  }
+
+  private entryGate(): { zoneTiles: { x: number; y: number; w: number; h: number }; lockedTiles: { x: number; y: number }[] } | null {
+    const gate = this.def.gates.find((g) => g.id === "gate.entry");
+    return gate ?? null;
+  }
+
+  private unlockEntryGate(): void {
+    if (this.metGreeter) return;
+    this.metGreeter = true;
+    const gate = this.entryGate();
+    if (gate && !this.entryApplied) {
+      this.entryApplied = true;
+      const removable = this.collLayer as unknown as {
+        removeTileAt?: (x: number, y: number) => void;
+      } | null;
+      for (const tile of gate.lockedTiles) removable?.removeTileAt?.(tile.x, tile.y);
+      for (const hedge of this.entryHedges) hedge.destroy();
+      this.entryHedges = [];
+      EventBus.emit(BRIDGE_EVENTS.entryGateOpened);
+    }
+  }
+
+  private checkEntryGate(): void {
+    const gate = this.entryGate();
+    if (!gate || this.metGreeter) {
+      this.insideEntryPrev = false;
+      return;
+    }
+    const t = this.def.tileSize;
+    const px = this.player.sprite.x;
+    const py = this.player.sprite.y;
+    const inside =
+      px >= gate.zoneTiles.x * t &&
+      px < (gate.zoneTiles.x + gate.zoneTiles.w) * t &&
+      py >= gate.zoneTiles.y * t &&
+      py < (gate.zoneTiles.y + gate.zoneTiles.h) * t;
+    if (!inside) {
+      this.insideEntryPrev = false;
+      return;
+    }
+    if (!this.insideEntryPrev) {
+      EventBus.emit(BRIDGE_EVENTS.entryGateBlocked);
+    }
+    this.insideEntryPrev = true;
   }
 
   private onDialogueAction(payload: { action?: { type?: string }; npcId?: string }): void {
@@ -439,6 +499,27 @@ export class WeddingWorldScene extends Scene {
       img.setScale(p.scale ?? def.displayScale);
       if (p.flipX) img.setFlipX(true);
       img.setDepth(p.ground ? 1 : p.layer === "above" ? 150 : p.y);
+    }
+  }
+
+  private spawnEntryHedges(): void {
+    const gate = this.entryGate();
+    if (!gate) return;
+    const env = this.registry.get("environmentRegistry") as RuntimeEnvRegistry | undefined;
+    const def = env?.assets["bush_leafy_01"];
+    if (!def) return;
+    const t = this.def.tileSize;
+    for (const tile of gate.lockedTiles) {
+      const img = this.add.image(
+        tile.x * t + t / 2,
+        tile.y * t + t / 2,
+        `wedding-${def.atlas}`,
+        def.frame
+      );
+      img.setOrigin(def.origin.x, def.origin.y);
+      img.setScale(def.displayScale);
+      img.setDepth(tile.y * t);
+      this.entryHedges.push(img);
     }
   }
 
@@ -586,13 +667,33 @@ export class WeddingWorldScene extends Scene {
     }
   }
 
+  private onEmoteMenuKey(): void {
+    if (this.dialogueOpen) return;
+    EventBus.emit(BRIDGE_EVENTS.emoteMenuRequested);
+  }
+
   private onEmoteSelected(payload: { emote?: string }): void {
-    if (!this.net || this.net.getState() !== "joined") return;
     const emote = payload?.emote;
     if (emote !== "wave" && emote !== "heart" && emote !== "celebrate" && emote !== "laugh" && emote !== "blessing") {
       return;
     }
-    this.net.sendEmote({ emote });
+    this.showLocalEmote(emote);
+    if (this.net && this.net.getState() === "joined") {
+      this.net.sendEmote({ emote });
+    }
+  }
+
+  private showLocalEmote(emote: string): void {
+    if (!this.localBubble) {
+      this.localBubble = this.add
+        .text(this.player.sprite.x, this.player.sprite.y - 40, "", { fontSize: "16px" })
+        .setOrigin(0.5)
+        .setDepth(150)
+        .setVisible(false);
+    }
+    this.localBubble.setText(EMOTE_GLYPHS[emote] ?? "!");
+    this.localBubbleUntil = Date.now() + 2500;
+    this.localBubble.setVisible(true);
   }
 
   private unsubscribeBridge(): void {
@@ -619,8 +720,16 @@ export class WeddingWorldScene extends Scene {
     }
     this.refreshTarget();
     this.checkFinaleGate();
+    this.checkEntryGate();
     this.publishNet();
     this.renderRemotes();
+    if (this.localBubble?.visible) {
+      if (Date.now() >= this.localBubbleUntil) {
+        this.localBubble.setVisible(false);
+      } else {
+        this.localBubble.setPosition(this.player.sprite.x, this.player.sprite.y - 40);
+      }
+    }
     if (this.navZoneId) {
       const z = this.def.landmarks[this.navZoneId];
       const px = this.player.sprite.x;

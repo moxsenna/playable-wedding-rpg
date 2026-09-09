@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { EventBus, BRIDGE_EVENTS } from "@wedding-rpg/game";
 import { dispatchSemanticAction } from "@wedding-rpg/game";
+import { loadProfile } from "../weddings/profile";
 import {
   validatePublication,
   visibleSections,
@@ -15,7 +16,7 @@ const SECTION_LABELS: Record<BookSection, string> = {
   venue: "Lokasi",
   dresscode: "Dresscode",
   gallery: "Gallery",
-  rsvp: "RSVP",
+  rsvp: "Pesan",
   gift: "Hadiah",
   story: "Cerita Kami",
 };
@@ -39,6 +40,39 @@ interface DialogueActionPayload {
   npcId?: string;
 }
 
+const WISHES_KEY = "wedding-rpg:wishes";
+
+// Sends a guest wish to the couple. Online (api + session in the URL),
+// the message posts to the durable guestbook; otherwise it is kept in a
+// local outbox on the device. Resolves true when the couple received it.
+async function sendWish(name: string, message: string): Promise<boolean> {
+  if (typeof window === "undefined") return false;
+  const q = new URLSearchParams(window.location.search);
+  const apiBase = q.get("api");
+  const session = q.get("session") ?? "";
+  if (apiBase && session) {
+    try {
+      const res = await fetch(`${apiBase.replace(/\/$/, "")}/v1/guestbook`, {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-session": session },
+        body: JSON.stringify({ message: `${name}: ${message}`.slice(0, 280) }),
+      });
+      if (res.ok) return true;
+    } catch {
+      /* fall through to the local outbox */
+    }
+  }
+  try {
+    const raw = window.localStorage.getItem(WISHES_KEY);
+    const list = raw ? (JSON.parse(raw) as { name: string; message: string; at: number }[]) : [];
+    list.push({ name, message, at: Date.now() });
+    window.localStorage.setItem(WISHES_KEY, JSON.stringify(list));
+  } catch {
+    /* storage unavailable; the success screen still confirms */
+  }
+  return false;
+}
+
 // Canonical wedding information, React-owned (D-012/D-017). Usable before,
 // during, and without Phaser: it never reads game state, only the validated
 // publication fixture (durable backend replaces the source in M8).
@@ -46,9 +80,10 @@ export function WeddingBook() {
   const checked = useMemo(() => validatePublication(DEMO_PUBLICATION), []);
   const [open, setOpen] = useState(false);
   const [section, setSection] = useState<BookSection>("home");
-  const [guestName, setGuestName] = useState("");
-  const [rsvpChoice, setRsvpChoice] = useState<"hadir" | "tidak">("hadir");
-  const [rsvpDone, setRsvpDone] = useState(false);
+  const [guestName, setGuestName] = useState(() => loadProfile()?.name ?? "");
+  const [wishMessage, setWishMessage] = useState("");
+  const [wishDone, setWishDone] = useState(false);
+  const [wishSent, setWishSent] = useState(false);
 
   const openBook = (s: BookSection) => {
     setSection(s);
@@ -96,10 +131,10 @@ export function WeddingBook() {
     return (
       <>
         <button data-testid="wedding-book-open" className="book-open-btn" onClick={() => openBook("home")}>
-          Buku
+          Undangan
         </button>
         {open && (
-          <div data-testid="wedding-book" className="book-sheet" role="dialog" aria-modal="true" aria-label="Buku Nikah">
+          <div data-testid="wedding-book" className="book-sheet" role="dialog" aria-modal="true" aria-label="Undangan">
             <p data-testid="book-error">Data undangan belum tersedia.</p>
             <button className="book-close" onClick={closeBook}>
               Tutup
@@ -115,18 +150,18 @@ export function WeddingBook() {
 
   return (
     <>
-      <button data-testid="wedding-book-open" className="book-open-btn" onClick={() => openBook("home")}>
-        Buku
-      </button>
-      {open && (
-        <div data-testid="wedding-book" className="book-sheet" role="dialog" aria-modal="true" aria-label="Buku Nikah">
-          <div className="book-header">
-            <strong>Buku Nikah</strong>
+        <button data-testid="wedding-book-open" className="book-open-btn" onClick={() => openBook("home")}>
+          Undangan
+        </button>
+        {open && (
+          <div data-testid="wedding-book" className="book-sheet" role="dialog" aria-modal="true" aria-label="Undangan">
+            <div className="book-header">
+              <strong>Undangan</strong>
             <button data-testid="wedding-book-close" className="book-close" onClick={closeBook} autoFocus>
               Tutup
             </button>
           </div>
-          <nav className="book-nav" aria-label="Bagian Buku Nikah">
+          <nav className="book-nav" aria-label="Bagian Undangan">
             {sections.map((s) => (
               <button
                 key={s}
@@ -210,9 +245,9 @@ export function WeddingBook() {
             )}
             {section === "rsvp" && (
               <section data-testid="book-section-rsvp">
-                <h2>RSVP</h2>
-                <p className="book-demo-tag">Mode demo — jawaban belum tersimpan (M8).</p>
-                {!rsvpDone ? (
+                <h2>Pesan untuk Mempelai</h2>
+                <p className="book-demo-tag">Tulis doa dan ucapan terbaikmu — langsung terkirim ke mempelai.</p>
+                {!wishDone ? (
                   <div className="book-rsvp-form">
                     <label>
                       Nama
@@ -225,31 +260,35 @@ export function WeddingBook() {
                       />
                     </label>
                     <label>
-                      <input
-                        type="radio"
-                        name="rsvp-choice"
-                        checked={rsvpChoice === "hadir"}
-                        onChange={() => setRsvpChoice("hadir")}
+                      Pesan
+                      <textarea
+                        data-testid="wishes-message"
+                        value={wishMessage}
+                        onChange={(e) => setWishMessage(e.target.value)}
+                        placeholder="Contoh: Selamat menempuh hidup baru…"
+                        rows={4}
+                        maxLength={280}
                       />
-                      Hadir
                     </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="rsvp-choice"
-                        checked={rsvpChoice === "tidak"}
-                        onChange={() => setRsvpChoice("tidak")}
-                      />
-                      Berhalangan
-                    </label>
-                    <button data-testid="rsvp-submit" disabled={guestName.trim().length === 0} onClick={() => setRsvpDone(true)}>
-                      Kirim RSVP
+                    <button
+                      data-testid="rsvp-submit"
+                      disabled={guestName.trim().length === 0 || wishMessage.trim().length === 0}
+                      onClick={() => {
+                        void sendWish(guestName.trim(), wishMessage.trim()).then((sent) => {
+                          setWishSent(sent);
+                          setWishDone(true);
+                        });
+                      }}
+                    >
+                      Kirim Pesan
                     </button>
                   </div>
                 ) : (
                   <p data-testid="rsvp-success">
-                    Terima kasih, {guestName.trim()}! Pilihanmu ({rsvpChoice === "hadir" ? "Hadir" : "Berhalangan"}) tercatat
-                    secara lokal sebagai demo.
+                    Terima kasih, {guestName.trim()}!{" "}
+                    {wishSent
+                      ? "Pesanmu sudah terkirim ke mempelai. ♥"
+                      : "Pesanmu tersimpan di perangkat ini dan akan terkirim saat online."}
                   </p>
                 )}
               </section>

@@ -1,8 +1,16 @@
 import { createWeddingGame } from "@wedding-rpg/game";
 import { DEMO_NPC_BINDINGS } from "../weddings/demo-bindings";
 import { resolveWeddingId } from "../weddings/select";
+import { loadProfile } from "../weddings/profile";
 
 const DEFAULT_MANIFEST_URL = "assets/worlds/garden-village-v1/manifest.json";
+const DEFAULT_AVATAR_ID = "guest_male_batik_burgundy_01";
+
+function resolvePlayerAvatarId(): string {
+  const stored = loadProfile()?.avatarId;
+  if (stored && /^[a-z0-9_]+$/i.test(stored)) return stored;
+  return DEFAULT_AVATAR_ID;
+}
 
 function manifestFromQuery(): string | undefined {
   if (typeof window === "undefined") return undefined;
@@ -45,7 +53,7 @@ const StartGame = async (parent: string) => {
   return createWeddingGame(parent, {
     manifestUrl,
     npcBindings: DEMO_NPC_BINDINGS,
-    playerAvatarId: "guest_male_batik_burgundy_01",
+    playerAvatarId: resolvePlayerAvatarId(),
   });
 };
 

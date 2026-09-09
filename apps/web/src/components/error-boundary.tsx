@@ -25,7 +25,7 @@ export class PhaserErrorBoundary extends Component<Props, { failed: boolean }> {
       return (
         <div data-testid="game-fallback" className="game-fallback">
           <p>Dunia game tidak dapat dimuat di perangkat ini.</p>
-          <p>Semua info acara tetap tersedia di Buku Nikah.</p>
+          <p>Semua info acara tetap tersedia di Undangan.</p>
         </div>
       );
     }

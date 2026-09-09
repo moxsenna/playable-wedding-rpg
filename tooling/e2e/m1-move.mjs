@@ -99,6 +99,9 @@ async function main() {
     const pageLogs = [];
     page.on("console", (m) => pageLogs.push(`[${m.type()}] ${m.text()}`));
     page.on("pageerror", (e) => pageLogs.push(`[pageerror] ${e && e.message}`));
+    await page.addInitScript(() => {
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+    });
     try {
       await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
       try {

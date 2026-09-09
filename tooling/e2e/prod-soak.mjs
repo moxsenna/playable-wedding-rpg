@@ -73,6 +73,9 @@ async function main() {
         const page = await ctx.newPage();
         errs = [];
         page.on("pageerror", (e) => errs.push(e.message));
+        await page.addInitScript(() => {
+          window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+        });
         await page.goto(`${WEB}/?wedding=demo-ayu-bima&api=${encodeURIComponent(API)}`, {
           waitUntil: "domcontentloaded", timeout: 60000,
         });

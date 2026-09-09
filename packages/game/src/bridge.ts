@@ -17,6 +17,8 @@ export const BRIDGE_EVENTS = {
   interactPressed: "INTERACT_PRESSED",
   /** Touch Emote button tapped; payload { emote }. */
   emoteSelected: "EMOTE_SELECTED",
+  /** Touch Emote button tapped: React should open the emoji picker menu. */
+  emoteMenuRequested: "EMOTE_MENU_REQUESTED",
   /** Phaser->React: dialogue should open; payload { npcId, displayName, dialogue }. */
   dialogueOpened: "DIALOGUE_OPENED",
   /** React->Phaser: semantic action from a dialogue line; payload { action, npcId }. */
@@ -31,6 +33,10 @@ export const BRIDGE_EVENTS = {
   memoryToast: "MEMORY_TOAST",
   /** Phaser->React: player bumped the locked finale gate; payload { collected, required }. */
   finaleGateBlocked: "FINALE_GATE_BLOCKED",
+  /** Phaser->React: player reached the wedding door before greeting Sari; no payload. */
+  entryGateBlocked: "ENTRY_GATE_BLOCKED",
+  /** Phaser->React: Sari greeted, the door approach opens; no payload. */
+  entryGateOpened: "ENTRY_GATE_OPENED",
   /** Phaser->React: fourth heart completed, gate opening; payload { questId }. */
   finaleUnlocked: "FINALE_UNLOCKED",
   /** Phaser->React: couple finale accepted; payload { questId }. */

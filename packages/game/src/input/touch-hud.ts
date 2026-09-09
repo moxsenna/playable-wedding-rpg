@@ -1,17 +1,15 @@
 import { Scene } from "phaser";
 import { BRIDGE_EVENTS, EventBus } from "../bridge";
-import { emoteSchema, type Emote } from "@wedding-rpg/contracts";
 import { neutralInput, type MovementInput } from "./types";
 import { VirtualJoystick } from "./virtual-joystick";
 
-const EMOTES = emoteSchema.options;
 const STICK_RADIUS = 56;
 
 /**
  * Touch HUD: analog stick (bottom-left) + contextual Interact (bottom-right)
- * + compact Emote cycler above it. All Phaser-canvas, camera-fixed, shown
- * only on touch-capable devices. M3 drives the Interact label; M10 sends
- * the selected emote to the room.
+ * + Emote button above it (opens the React emoji picker). All Phaser-canvas,
+ * camera-fixed, shown only on touch-capable devices. M3 drives the Interact
+ * label; M10 sends the selected emote to the room.
  */
 export class TouchHud {
   readonly touchCapable: boolean;
@@ -21,7 +19,6 @@ export class TouchHud {
   private interactLabel: Phaser.GameObjects.Text | null = null;
   private emoteVisual: Phaser.GameObjects.Arc | null = null;
   private emoteLabel: Phaser.GameObjects.Text | null = null;
-  private emoteIndex = 0;
   private suspended = false;
   private suspendReasons = new Set<string>();
   private ix = 0;
@@ -84,10 +81,6 @@ export class TouchHud {
     this.interactLabel?.setText(text);
   }
 
-  currentEmote(): Emote {
-    return EMOTES[this.emoteIndex];
-  }
-
   private stickX(): number {
     return 96;
   }
@@ -136,7 +129,7 @@ export class TouchHud {
         .setDepth(200);
       this.emoteVisual.setStrokeStyle(2, 0xffffff, 0.35);
       this.emoteLabel = this.scene.add
-        .text(ex, ey, EMOTES[this.emoteIndex], { fontSize: "11px", color: "#ffffff" })
+        .text(ex, ey, "☺", { fontSize: "18px", color: "#ffffff" })
         .setOrigin(0.5)
         .setScrollFactor(0)
         .setDepth(201);
@@ -165,9 +158,7 @@ export class TouchHud {
 
   private onEmoteDown(): void {
     if (this.suspended || !this.touchCapable) return;
-    this.emoteIndex = (this.emoteIndex + 1) % EMOTES.length;
-    this.emoteLabel?.setText(EMOTES[this.emoteIndex]);
-    EventBus.emit(BRIDGE_EVENTS.emoteSelected, { emote: EMOTES[this.emoteIndex] });
+    EventBus.emit(BRIDGE_EVENTS.emoteMenuRequested);
   }
 
   suspend(reason: string): void {

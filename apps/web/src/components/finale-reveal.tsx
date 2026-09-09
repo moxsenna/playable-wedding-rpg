@@ -17,6 +17,8 @@ interface BlockedPayload {
 export function FinaleReveal() {
   const [toast, setToast] = useState<string | null>(null);
   const [blocked, setBlocked] = useState<string | null>(null);
+  const [entryBlocked, setEntryBlocked] = useState(false);
+  const [entryOpened, setEntryOpened] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const timers = useRef<number[]>([]);
@@ -34,6 +36,14 @@ export function FinaleReveal() {
       setBlocked(`Aula terkunci — hati ${found}/4 ♥ ♥ ♡ ♡`);
       later(2200, () => setBlocked(null));
     };
+    const onEntryBlocked = () => {
+      setEntryBlocked(true);
+      later(2200, () => setEntryBlocked(false));
+    };
+    const onEntryOpened = () => {
+      setEntryOpened(true);
+      later(6000, () => setEntryOpened(false));
+    };
     const onUnlocked = () => {
       setUnlocked(true);
       later(3500, () => setUnlocked(false));
@@ -41,11 +51,15 @@ export function FinaleReveal() {
     const onStarted = () => setRevealed(true);
     EventBus.on(BRIDGE_EVENTS.memoryToast, onToast);
     EventBus.on(BRIDGE_EVENTS.finaleGateBlocked, onBlocked);
+    EventBus.on(BRIDGE_EVENTS.entryGateBlocked, onEntryBlocked);
+    EventBus.on(BRIDGE_EVENTS.entryGateOpened, onEntryOpened);
     EventBus.on(BRIDGE_EVENTS.finaleUnlocked, onUnlocked);
     EventBus.on(BRIDGE_EVENTS.finaleStarted, onStarted);
     return () => {
       EventBus.off(BRIDGE_EVENTS.memoryToast, onToast);
       EventBus.off(BRIDGE_EVENTS.finaleGateBlocked, onBlocked);
+      EventBus.off(BRIDGE_EVENTS.entryGateBlocked, onEntryBlocked);
+      EventBus.off(BRIDGE_EVENTS.entryGateOpened, onEntryOpened);
       EventBus.off(BRIDGE_EVENTS.finaleUnlocked, onUnlocked);
       EventBus.off(BRIDGE_EVENTS.finaleStarted, onStarted);
       timers.current.forEach((t) => window.clearTimeout(t));
@@ -64,6 +78,16 @@ export function FinaleReveal() {
       {blocked && (
         <div data-testid="gate-locked" className="quest-toast quest-blocked" role="status">
           {blocked}
+        </div>
+      )}
+      {entryBlocked && (
+        <div data-testid="entry-locked" className="quest-toast quest-blocked" role="status">
+          Sapa Sari dulu yuk — penerima tamu kita!
+        </div>
+      )}
+      {entryOpened && (
+        <div data-testid="entry-opened" className="quest-toast quest-unlocked" role="status">
+          Sari mengizinkanmu masuk. Selamat menikmati taman!
         </div>
       )}
       {unlocked && (

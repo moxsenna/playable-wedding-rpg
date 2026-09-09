@@ -22,6 +22,25 @@ export const FINALE_GATE = {
   lockedTiles: [[27, 9]],
 };
 
+// Entry gate: the door approach stays shut until the guest greets Sari.
+// Flank wall (row y=9, minus the door) is permanent hedge/tree collision so
+// the wedding grounds admit entry only through the gate.
+export const ENTRY_GATE = {
+  id: "gate.entry",
+  zoneTiles: { x: 25, y: 10, w: 5, h: 2 },
+  tiles: [[26, 10], [27, 10], [28, 10]],
+  lockedTiles: [[26, 10], [27, 10], [28, 10]],
+};
+
+export function entryWallTiles() {
+  const out = [];
+  for (let x = 1; x <= 54; x++) {
+    if (x === 27) continue;
+    out.push([x, 9]);
+  }
+  return out;
+}
+
 const WALKABLE_NO_COLLISION = new Set([  "photo_terrace_01",
   "entrance_gate_flower_01",
   "wedding_arch_01",
@@ -142,6 +161,17 @@ export function planDecor(layout, registry) {
     put("bush_leafy_01", hx, 21, "below");
   }
 
+  // ---- wedding-grounds north wall (gap at the gate door): hedge every two
+  // tiles plus backing trees, so entry is only possible through the gate.
+  // Collision for the full row comes from extraCollision below.
+  for (let hx = 2; hx <= 54; hx += 2) {
+    if (hx >= 26 && hx <= 28) continue;
+    put("bush_leafy_01", hx, 9, "below");
+  }
+  for (const [tx, ty] of [[8, 8], [16, 8], [36, 8], [44, 8], [50, 8]]) {
+    put("tree_green_dense_01", tx, ty, "below");
+  }
+
   // ---- lamps along the spine (registry collision: single base tile) ----
   const lamps = [[25, 16], [29, 24], [25, 48], [29, 40], [25, 60], [29, 68], [19, 31], [36, 39]];
   lamps.forEach(([lx, ly], i) => {
@@ -222,6 +252,8 @@ export function planDecor(layout, registry) {
   const extraCollision = [
     [24, 64], [25, 64], [30, 64], [31, 64], // entrance gate posts
     ...FINALE_GATE.tiles, // wedding arch posts + locked finale center (M5 unlocks)
+    ...ENTRY_GATE.lockedTiles, // door approach (Sari greeting unlocks)
+    ...entryWallTiles(), // permanent wedding-grounds flank wall
   ];
   return { placements: resolved, extraCollision, registry };
 }

@@ -7,7 +7,8 @@
 //     INTERACT_PRESSED with the stick still engaged (multitouch)
 //   - MODAL_OPENED suspends input (zero velocity despite held drag);
 //     MODAL_CLOSED resumes cleanly
-//   - Emote tap emits EMOTE_SELECTED with an allowlisted emote
+//   - Emote tap opens the picker menu (no early dispatch); picking fires
+//     EMOTE_SELECTED and shows the glyph bubble above the player head
 // Saves 390px + 320px screenshots, then cleans up.
 // Prints M2 TOUCH VERIFIED only when every assertion passes.
 import { spawn, execSync } from "node:child_process";
@@ -85,6 +86,9 @@ async function main() {
     // --- desktop (no touch): HUD must stay hidden ---
     const desktop = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const dp = await desktop.newPage();
+    await dp.addInitScript(() => {
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+    });
     await dp.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
     await dp.waitForFunction(() => !!window.__wedding?.player && !!window.__wedding?.input, null, { timeout: 60000 });
     const desktopGeom = await hook(dp, () => window.__wedding.input.geometry());
@@ -98,6 +102,9 @@ async function main() {
     const page = await ctx.newPage();
     const pageLogs = [];
     page.on("pageerror", (e) => pageLogs.push(`[pageerror] ${e && e.message}`));
+    await page.addInitScript(() => {
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+    });
       await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
       await page.waitForFunction(() => !!window.__wedding?.player && !!window.__wedding?.input, null, { timeout: 60000 });
     await sleep(800);
@@ -175,14 +182,20 @@ async function main() {
     await page.mouse.up();
     if (!(r0.x - r1.x > 20)) fail(`no movement after modal close: ${(r0.x - r1.x).toFixed(1)}px`);
 
-    // --- emote tap emits an allowlisted emote ---
+    // --- emote tap opens the picker menu (no immediate dispatch) ---
     const emotesBefore = await hook(page, () => window.__fired.filter((f) => f.t === "emote").length);
     await page.touchscreen.tap(geom.emote.x, geom.emote.y);
+    await page.waitForSelector('[data-testid="emote-menu"]', { state: "visible", timeout: 15000 });
+    const emotesAfterMenu = await hook(page, () => window.__fired.filter((f) => f.t === "emote").length);
+    if (emotesAfterMenu !== emotesBefore) fail("emote menu opened but an emote fired early");
+    await page.click('[data-testid="emote-pick-heart"]');
     await sleep(300);
     const emotes = await hook(page, () => window.__fired.filter((f) => f.t === "emote"));
-    if (emotes.length <= emotesBefore) fail("emote tap did not fire EMOTE_SELECTED");
+    if (emotes.length <= emotesBefore) fail("emote pick did not fire EMOTE_SELECTED");
     const lastEmote = emotes[emotes.length - 1].emote;
-    if (!EMOTES.includes(lastEmote)) fail(`emote outside allowlist: ${lastEmote}`);
+    if (lastEmote !== "heart") fail(`expected picked heart emote, saw ${lastEmote}`);
+    const bubble = await hook(page, () => window.__wedding.localEmote());
+    if (bubble !== "♥") fail(`expected head bubble ♥, saw ${bubble}`);
 
     if (pageLogs.length > 0) fail(`page errors during touch test: ${pageLogs.join(" | ").slice(0, 400)}`);
     // Steady-state shot after all interactions: HUD resumed, stick IDLE.
@@ -196,6 +209,9 @@ async function main() {
       viewport: { width: 320, height: 568 }, hasTouch: true, isMobile: true,
     });
     const p320 = await ctx2.newPage();
+    await p320.addInitScript(() => {
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+    });
     await p320.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
     await p320.waitForFunction(() => !!window.__wedding?.player, null, { timeout: 60000 });
     await sleep(2500);

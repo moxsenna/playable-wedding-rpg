@@ -21,7 +21,7 @@ const PUB_GALLERY = join(ROOT, "apps", "web", "public", "assets", "gallery");
 const { buildTileset, tilesetTsj } = await import("./gen-tileset.mjs");
 const { buildGuestSheet, buildGalleryImages } = await import("./gen-sprites.mjs");
 const { planLayout, buildMap, INTERACTIONS } = await import("./gen-map.mjs");
-const { planDecor, FINALE_GATE } = await import("./gen-decor.mjs");
+const { planDecor, FINALE_GATE, ENTRY_GATE } = await import("./gen-decor.mjs");
 const { buildRegistry } = await import("../assets/build-avatar-registry.mjs");
 const { buildEnvironment } = await import("../assets/build-environment.mjs");
 const { loadTerrain } = await import("./terrain-v2.mjs");
@@ -102,6 +102,12 @@ const gatesDoc = {
       zoneTiles: { x: gateZone[1], y: gateZone[2], w: gateZone[3], h: gateZone[4] },
       tiles: FINALE_GATE.tiles.map(([x, y]) => ({ x, y })),
       lockedTiles: FINALE_GATE.lockedTiles.map(([x, y]) => ({ x, y })),
+    },
+    {
+      id: ENTRY_GATE.id,
+      zoneTiles: { ...ENTRY_GATE.zoneTiles },
+      tiles: ENTRY_GATE.tiles.map(([x, y]) => ({ x, y })),
+      lockedTiles: ENTRY_GATE.lockedTiles.map(([x, y]) => ({ x, y })),
     },
   ],
 };

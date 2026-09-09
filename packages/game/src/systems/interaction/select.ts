@@ -63,16 +63,16 @@ interface ActionRef {
 /** Contextual label for the single stable Interact control. */
 export function labelForActions(actions: readonly ActionRef[]): string {
   const types = actions.map((a) => a.type);
-  if (types.includes("OPEN_RSVP")) return "RSVP";
+  if (types.includes("OPEN_RSVP")) return "Pesan";
   if (types.includes("OPEN_GALLERY")) return "Lihat Foto";
   const sectioned = actions.find((a) => a.type === "OPEN_WEDDING_BOOK_SECTION");
   if (sectioned) {
     if (sectioned.section === "events") return "Lihat Acara";
     if (sectioned.section === "venue") return "Lihat Lokasi";
     if (sectioned.section === "gallery") return "Lihat Foto";
-    if (sectioned.section === "rsvp") return "RSVP";
+    if (sectioned.section === "rsvp") return "Pesan";
   }
   if (types.includes("OPEN_MAPS")) return "Lihat Lokasi";
-  if (types.includes("OPEN_WEDDING_BOOK")) return "Buku";
+  if (types.includes("OPEN_WEDDING_BOOK")) return "Undangan";
   return "Bicara";
 }

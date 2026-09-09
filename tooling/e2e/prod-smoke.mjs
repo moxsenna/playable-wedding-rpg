@@ -137,6 +137,9 @@ async function main() {
   const logs = [];
   const consoleErrs = [];
   page.on("pageerror", (e) => logs.push(`[pageerror] ${e && e.message}`));
+  await page.addInitScript(() => {
+    window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+  });
   page.on("console", (m) => {
     if (m.type() === "error" || m.type() === "warning") consoleErrs.push(`[${m.type()}] ${m.text().slice(0, 200)}`);
   });

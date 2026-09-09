@@ -148,6 +148,9 @@ async function main() {
     await prepPage(page);
     const pageLogs = [];
     page.on("pageerror", (e) => pageLogs.push(`[pageerror] ${e && e.message}`));
+    await page.addInitScript(() => {
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+    });
     await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForFunction(
       () => !!window.__wedding?.player && !!window.__wedding?.input, null, { timeout: 60000 });
@@ -235,7 +238,7 @@ async function main() {
     await page.waitForSelector('[data-testid="book-section-events"]', { state: "visible", timeout: 15000 });
     await page.click('[data-testid="wedding-book-close"]');
 
-    // --- M4-C: RSVP keeper dialogue deep-links into RSVP; mock submit ---
+    // --- M4-C: RSVP keeper dialogue deep-links into wishes; message submit ---
     await seek(page, 456, 904, 30000, 25);
     await waitTarget(page, "npc.rsvp_keeper");
     await page.keyboard.press("e");
@@ -245,10 +248,11 @@ async function main() {
     await page.click('[data-testid="dialogue-continue"]');
     await page.waitForSelector('[data-testid="book-section-rsvp"]', { state: "visible", timeout: 15000 });
     await page.fill('[data-testid="rsvp-name"]', "Dinda");
+    await page.fill('[data-testid="wishes-message"]', "Selamat menempuh hidup baru!");
     await page.click('[data-testid="rsvp-submit"]');
     await page.waitForSelector('[data-testid="rsvp-success"]', { state: "visible", timeout: 15000 });
     const ok = await page.textContent('[data-testid="rsvp-success"]');
-    if (!ok.includes("Dinda")) fail(`rsvp success wrong: ${ok}`);
+    if (!ok.includes("Dinda")) fail(`wishes success wrong: ${ok}`);
     await page.screenshot({ path: join(ROOT, "docs/qa/book-rsvp-390.png") });
     await page.click('[data-testid="wedding-book-close"]');
 
@@ -262,6 +266,9 @@ async function main() {
     await ctx2.route("**/assets/worlds/**", (route) => route.abort());
     const p2 = await ctx2.newPage();
     await prepPage(p2);
+    await p2.addInitScript(() => {
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+    });
     const p2errors = [];
     p2.on("pageerror", (e) => p2errors.push(String((e && e.message) || e).slice(0, 200)));
     await p2.goto(URL, { waitUntil: "networkidle", timeout: 900000 });
@@ -292,6 +299,9 @@ async function main() {
       const c3 = await browser3.newContext({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true });
       const p3 = await c3.newPage();
       await prepPage(p3);
+      await p3.addInitScript(() => {
+        window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+      });
       await p3.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
       await p3.waitForFunction(() => !!window.__wedding?.player && !!window.__wedding?.input, null, { timeout: 60000 });
       await sleep(1500);

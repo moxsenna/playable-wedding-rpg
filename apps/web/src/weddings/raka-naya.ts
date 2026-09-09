@@ -85,7 +85,7 @@ export const RAKA_NAYA_BINDINGS: NpcBinding[] = [
       { id: "gerak", text: "Geser joystick kiri untuk jalan. Dekati kami, lalu tekan Aksi.", next: "buku" },
       {
         id: "buku",
-        text: "Semua info acara ada di Buku Nikah — bisa dibuka kapan saja.",
+        text: "Semua info acara ada di Undangan — bisa dibuka kapan saja.",
         action: { type: "OPEN_WEDDING_BOOK" },
         next: "misi",
       },
@@ -104,10 +104,10 @@ export const RAKA_NAYA_BINDINGS: NpcBinding[] = [
     displayName: "Galih",
     avatarId: "npc_mc_muslim_male_01",
     dialogue: [
-      { id: "sapa", text: "Hai! Sudah isi RSVP belum?", next: "tanya" },
+      { id: "sapa", text: "Hai! Sudah kirim pesan buat mempelai belum?", next: "tanya" },
       {
         id: "tanya",
-        text: "Buka formulirnya di sini, cuma sebentar.",
+        text: "Tulis doa terbaikmu di sini, langsung sampai ke mereka.",
         action: { type: "OPEN_RSVP" },
       },
     ],
@@ -190,7 +190,7 @@ export const RAKA_NAYA_BINDINGS: NpcBinding[] = [
       { id: "sapa", text: "Rundown hari-H aman bersamaku!", next: "acara" },
       {
         id: "acara",
-        text: "Akad pagi, resepsi sore. Detailnya ada di Buku Nikah.",
+        text: "Akad pagi, resepsi sore. Detailnya ada di Undangan.",
         action: { type: "OPEN_WEDDING_BOOK_SECTION", section: "events" },
       },
     ],
@@ -206,7 +206,7 @@ export const RAKA_NAYA_BINDINGS: NpcBinding[] = [
       { id: "sapa", text: "Butuh arah? Aku hafal tiap sudut taman.", next: "lokasi" },
       {
         id: "lokasi",
-        text: "Denah dan rute ada di Buku Nikah.",
+        text: "Denah dan rute ada di Undangan.",
         action: { type: "OPEN_WEDDING_BOOK_SECTION", section: "venue" },
       },
     ],

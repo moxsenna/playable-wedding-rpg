@@ -76,6 +76,9 @@ async function main() {
     const p1 = await ctx.newPage();
     const logs1 = [];
     p1.on("pageerror", (e) => logs1.push(`[pageerror] ${e && e.message}`));
+    await p1.addInitScript(() => {
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+    });
     await p1.goto(`http://localhost:${WEB_PORT}/`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await p1.waitForFunction(() => !!window.__wedding?.player, null, { timeout: 60000 });
     await sleep(800);
@@ -93,6 +96,9 @@ async function main() {
     const p2 = await ctx.newPage();
     const logs2 = [];
     p2.on("pageerror", (e) => logs2.push(`[pageerror] ${e && e.message}`));
+    await p2.addInitScript(() => {
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+    });
     const pinned = `http://localhost:${WEB_PORT}/assets/worlds/garden-village-v1/manifest.json`;
     await p2.goto(`http://localhost:${WEB_PORT}/?manifest=${encodeURIComponent(pinned)}`, {
       waitUntil: "domcontentloaded", timeout: 60000,
@@ -108,6 +114,9 @@ async function main() {
 
     // invalid manifest falls back to local dev (world always boots)
     const p3 = await ctx.newPage();
+    await p3.addInitScript(() => {
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+    });
     await p3.goto(`http://localhost:${WEB_PORT}/?manifest=${encodeURIComponent("javascript:alert(1)")}`, {
       waitUntil: "domcontentloaded", timeout: 60000,
     });

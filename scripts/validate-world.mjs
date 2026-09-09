@@ -114,7 +114,16 @@ function validateDir(dir) {
     else for (let i = 0; i < data.length; i++) if (data[i] !== 0) solid.add(i);
   }
   const tileOf = (x, y) => y * W + x;
-  const blocked = (x, y) => x < 0 || y < 0 || x >= W || y >= H || solid.has(tileOf(x, y));
+  // Quest-locked tiles open during play; reachability treats them as
+  // traversable so locked gates don't read as unreachable zones.
+  const locked = new Set();
+  try {
+    const gatesDoc = loadJson(join(dir, "gates.json"));
+    for (const g of gatesDoc.gates ?? []) {
+      for (const t of g.lockedTiles ?? []) locked.add(tileOf(t.x, t.y));
+    }
+  } catch { fail("unparseable gates.json"); }
+  const blocked = (x, y) => x < 0 || y < 0 || x >= W || y >= H || (solid.has(tileOf(x, y)) && !locked.has(tileOf(x, y)));
   const objTile = (o) => [Math.floor(o.x / 16), Math.floor(o.y / 16)];
 
   // spawn.default must not sit inside collision

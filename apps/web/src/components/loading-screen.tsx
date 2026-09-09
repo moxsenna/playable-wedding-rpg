@@ -1,0 +1,54 @@
+import { useEffect, useState } from "react";
+import { EventBus, BRIDGE_EVENTS } from "@wedding-rpg/game";
+
+const TIPS = [
+  "Menyiapkan taman…",
+  "Menyambut tamu…",
+  "Merangkai bunga…",
+  "Menata aula…",
+];
+
+// Animated boot status while Phaser preloads. Visible from React mount
+// until the world scene reports ready; the static _document splash covers
+// the pre-hydration gap and is removed on mount.
+export function LoadingScreen() {
+  const [progress, setProgress] = useState(0);
+  const [ready, setReady] = useState(false);
+  const [tip, setTip] = useState(0);
+
+  useEffect(() => {
+    const onProgress = (p: number) => {
+      if (typeof p === "number" && Number.isFinite(p)) {
+        setProgress(Math.max(0, Math.min(1, p)));
+      }
+    };
+    const onReady = () => setReady(true);
+    EventBus.on(BRIDGE_EVENTS.gameLoadingProgress, onProgress);
+    EventBus.on(BRIDGE_EVENTS.currentSceneReady, onReady);
+    const tipTimer = window.setInterval(() => setTip((t) => (t + 1) % TIPS.length), 1800);
+    return () => {
+      EventBus.off(BRIDGE_EVENTS.gameLoadingProgress, onProgress);
+      EventBus.off(BRIDGE_EVENTS.currentSceneReady, onReady);
+      window.clearInterval(tipTimer);
+    };
+  }, []);
+
+  if (ready) return null;
+  const pct = Math.round(progress * 100);
+  return (
+    <div data-testid="loading-screen" className="loading-screen" role="status" aria-label="Memuat taman">
+      <div className="loading-rings" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="loading-title">Taman Kebahagiaan</div>
+      <div className="loading-bar" aria-hidden="true">
+        <div className="loading-fill" style={{ width: `${pct}%` }} />
+      </div>
+      <div data-testid="loading-status" className="loading-status">
+        {TIPS[tip]} {pct}%
+      </div>
+    </div>
+  );
+}

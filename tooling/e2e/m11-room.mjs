@@ -142,6 +142,9 @@ async function main() {
       await prepPage(page);
       const logs = [];
       page.on("pageerror", (e) => logs.push(`[pageerror] ${e && e.message}`));
+      await page.addInitScript((guestName) => {
+        window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: guestName, avatarId: "guest_01" }));
+      }, name);
       const netUrl = encodeURIComponent(`ws://localhost:${RT_PORT}/room?room=demo-ayu-bima`);
       const session = await mintSession("demo-ayu-bima", name);
       await page.goto(`http://localhost:${WEB_PORT}/?net=${netUrl}&session=${encodeURIComponent(session)}`, {

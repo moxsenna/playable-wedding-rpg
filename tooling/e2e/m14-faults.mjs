@@ -243,6 +243,9 @@ async function main() {
     };
     const logs = [];
     page.on("pageerror", (e) => logs.push(`[pageerror] ${e && e.message}`));
+    await page.addInitScript(() => {
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+    });
     const deadUrl = encodeURIComponent("ws://localhost:9/?name=Offline");
     await page.goto(`http://localhost:${WEB_PORT}/?net=${deadUrl}`, {
       waitUntil: "domcontentloaded", timeout: 60000,

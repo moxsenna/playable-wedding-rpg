@@ -154,6 +154,9 @@ async function main() {
       await prepPage(page);
       const pageLogs = [];
       page.on("pageerror", (e) => pageLogs.push(`[pageerror] ${e && e.message}`));
+      await page.addInitScript(() => {
+        window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+      });
       await page.goto(`${URL}?wedding=${w.id}`, { waitUntil: "domcontentloaded", timeout: 60000 });
       await page.waitForFunction(
         () => !!window.__wedding?.player && !!window.__wedding?.input && !!window.__wedding?.questState,
