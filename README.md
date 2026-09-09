@@ -1,5 +1,7 @@
 # Playable Wedding RPG — Locked Specification Pack
 
+> **Live in production** (verified 2026-09-09): web https://wedding-rpg-bli.pages.dev, API + realtime workers, R2 template v6, Neon. Guest/operator walkthrough: [walkthrough.md](walkthrough.md). Build log: [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
+
 This specification defines the greenfield replacement for the old `playable-wedding-pixel-quest` scene-based renderer.
 
 ## Local folder layout
