@@ -839,6 +839,9 @@ body {
 .admin-page section{border-top:1px solid rgba(255,255,255,.1);padding:6px 0 10px}
 .admin-page label{display:block;font-size:14px;margin:8px 0}
 .admin-page input,.admin-page select,.admin-page textarea{width:100%;box-sizing:border-box;min-height:44px;margin-top:4px;padding:10px 12px;font-size:15px;color:#f2f4f8;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:12px}
+.admin-page select{color-scheme:dark;background-color:#232c44}
+.admin-page select option{background-color:#232c44;color:#f2f4f8}
+.admin-page select option:checked{background-color:#3a4a6e;color:#ffd98a}
 .admin-page button{min-height:44px;padding:10px 14px;margin:6px 6px 0 0;font-size:15px;font-weight:600;color:#1a2233;background:#ffd98a;border:none;border-radius:999px;cursor:pointer}
 .admin-page button:disabled{opacity:.45;cursor:not-allowed}
 .admin-page button:focus-visible,.admin-page input:focus-visible,.admin-page select:focus-visible,.admin-page textarea:focus-visible{outline:2px solid #ffd98a;outline-offset:2px}
