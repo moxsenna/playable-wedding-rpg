@@ -30,7 +30,7 @@ const dry = run(["tooling/publish/publish.mjs", "garden-village-v1", "--out", OU
 const lines = dry.split("\n");
 ok(/^DRY-RUN garden-village-v1 v1 files=\d+ deps=environment@[0-9a-f]{12}:\d+,avatars@[0-9a-f]{12}:\d+$/.test(lines[0]), "dry-run header pins both dep hashes");
 const keys = lines.slice(1).filter((l) => l.startsWith("  "));
-ok(keys.some((k) => k.includes("wedding-templates/garden-village-v1/v1/map.json")), "version files listed");
+  ok(keys.some((k) => k.includes("garden-village-v1/v1/map.json")), "version files listed");
 const envKeys = keys.filter((k) => k.includes("assets/environment/"));
 const avatarKeys = keys.filter((k) => k.includes("assets/avatars/"));
 ok(envKeys.length >= 9, `environment dep files listed (${envKeys.length})`);

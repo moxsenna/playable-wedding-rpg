@@ -1,10 +1,12 @@
 // Live seed (idempotent): wedding projects + world template/version +
 // per-project world configs + a starter guest per project. Uses pg directly
 // (no ORM runtime dependency). DATABASE_URL via env only — never logged.
+// The template version row pins the latest locally published R2 version
+// (out/prod index); re-running after a new publish advances the pin.
 // Prints SEED OK with row counts.
 import pg from "pg";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -49,16 +51,39 @@ try {
     "utf8"
   );
   const contentHash = createHash("sha256").update(manifestRaw).digest("hex");
-  const manifestRef = "wedding-templates/garden-village-v1/v1/manifest.json";
+  // Pin the newest locally published R2 version (falls back to v1 when no
+  // local publish index exists yet).
+  let publishedVersion = 1;
+  let publishedHash = contentHash;
+  const prodIndex = join(ROOT, "out/prod/garden-village-v1/index.json");
+  if (existsSync(prodIndex)) {
+    try {
+      const idx = JSON.parse(readFileSync(prodIndex, "utf8"));
+      const latest = (idx.versions ?? []).reduce(
+        (best, v) => (v.version > (best?.version ?? 0) ? v : best),
+        null
+      );
+      if (latest) {
+        publishedVersion = latest.version;
+        const localManifest = join(ROOT, `out/prod/garden-village-v1/v${latest.version}/manifest.json`);
+        if (existsSync(localManifest)) {
+          publishedHash = JSON.parse(readFileSync(localManifest, "utf8")).contentHash ?? contentHash;
+        }
+      }
+    } catch {
+      /* keep v1 fallback */
+    }
+  }
+  const manifestRef = `garden-village-v1/v${publishedVersion}/manifest.json`;
   await client.query(
     `INSERT INTO world_templates (id, key, name, status) VALUES ('garden-village-v1', 'garden-village-v1', 'Garden Village', 'live')
      ON CONFLICT (id) DO NOTHING`
   );
   const ver = await client.query(
     `INSERT INTO world_template_versions (id, template_id, version, manifest_ref, content_hash, compatibility_version, published_at)
-     VALUES ('garden-village-v1', 'garden-village-v1', 1, $1, $2, 1, NOW())
-     ON CONFLICT (id) DO NOTHING RETURNING id`,
-    [manifestRef, contentHash]
+     VALUES ('garden-village-v1', 'garden-village-v1', $3, $1, $2, 1, NOW())
+     ON CONFLICT (id) DO UPDATE SET version = EXCLUDED.version, manifest_ref = EXCLUDED.manifest_ref, content_hash = EXCLUDED.content_hash RETURNING id`,
+    [manifestRef, publishedHash, publishedVersion]
   );
   void ver;
 

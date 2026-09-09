@@ -14,6 +14,10 @@ import {
   type RsvpChoice,
 } from "@wedding-rpg/contracts";
 
+interface R2BucketLike {
+  get(key: string): Promise<{ body: unknown; httpMetadata?: { contentType?: string } } | null>;
+}
+
 interface Env {
   DATABASE_URL?: string;
   ROOM_SECRET?: string;
@@ -21,7 +25,14 @@ interface Env {
   DEV_MEMORY_STORE?: string;
   PROJECT_AVATARS_JSON?: string;
   ALLOW_DEV_TOKENS?: string;
+  ASSETS?: R2BucketLike;
 }
+
+const ASSET_CONTENT_TYPES: Record<string, string> = {
+  ".json": "application/json",
+  ".png": "image/png",
+  ".tsj": "application/json",
+};
 
 const MEMORY = new Map<string, WeddingStore>();
 
@@ -44,10 +55,19 @@ async function storeFor(env: Env): Promise<WeddingStore> {
   throw new Error("DATABASE_URL missing and DEV_MEMORY_STORE not set");
 }
 
+// Public wedding API: reads are open, writes are session- or admin-gated.
+// CORS is permissive so any deployed wedding domain can call it.
+const CORS: Record<string, string> = {
+  "access-control-allow-origin": "*",
+  "access-control-allow-methods": "GET, POST, OPTIONS",
+  "access-control-allow-headers": "content-type, x-session, x-admin-key",
+  "access-control-max-age": "86400",
+};
+
 function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json", ...CORS },
   });
 }
 
@@ -74,6 +94,9 @@ function avatarsFor(env: Env, projectId: string): string[] {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: CORS });
+    }
     if (url.pathname === "/health") return json({ ok: true });
 
     let store: WeddingStore;
@@ -232,6 +255,51 @@ export default {
       if (!project) return json({ error: "project required" }, 400);
       const manifestRef = await store.findWorldManifestRef(project);
       return json({ project, manifestRef });
+    }
+
+    // Immutable asset proxy: serves versioned world/dependency files from
+    // the R2 bucket through the API origin (same CORS policy). Paths are
+    // constrained to the published layout so no arbitrary bucket reads.
+    // The version manifest is rewritten with absolute asset bases so Phaser
+    // resolves pinned deps against this origin however the page was served.
+    if (url.pathname.startsWith("/v1/assets/") && request.method === "GET") {
+      if (!env.ASSETS) return json({ error: "assets not bound" }, 500);
+      const key = url.pathname.slice("/v1/assets/".length);
+      if (
+        !key ||
+        key.includes("..") ||
+        key.startsWith("/") ||
+        !/^(garden-village-v1\/v\d+\/|assets\/(environment|avatars)\/[0-9a-f]{12}\/)[A-Za-z0-9._/-]+$/.test(key)
+      ) {
+        return json({ error: "bad asset key" }, 400);
+      }
+      const obj = await env.ASSETS.get(key);
+      if (!obj) return json({ error: "not found" }, 404);
+      const origin = new URL(request.url).origin;
+      const ext = key.slice(key.lastIndexOf(".")).toLowerCase();
+      if (key.endsWith("/manifest.json")) {
+        const manifest = (await new Response(obj.body as BodyInit).json()) as {
+          environment?: { base?: string };
+          avatars?: { prefix?: string };
+        };
+        const abs = (p: string) => (/^https?:\/\//i.test(p) ? p : `${origin}/v1/assets/${p.replace(/^\//, "")}`);
+        if (manifest.environment && typeof manifest.environment.base === "string") {
+          manifest.environment.base = abs(manifest.environment.base);
+        }
+        if (manifest.avatars && typeof manifest.avatars.prefix === "string") {
+          manifest.avatars.prefix = abs(manifest.avatars.prefix);
+        }
+        return new Response(JSON.stringify(manifest), {
+          status: 200,
+          headers: { "content-type": "application/json", ...CORS, "cache-control": "public, max-age=31536000, immutable" },
+        });
+      }
+      const contentType =
+        obj.httpMetadata?.contentType ?? ASSET_CONTENT_TYPES[ext] ?? "application/octet-stream";
+      return new Response(obj.body as BodyInit, {
+        status: 200,
+        headers: { "content-type": contentType, ...CORS, "cache-control": "public, max-age=31536000, immutable" },
+      });
     }
 
     if (url.pathname.startsWith("/v1/admin/")) {

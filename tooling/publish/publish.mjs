@@ -5,7 +5,7 @@
 // Environment V3 can never visually mutate a pinned wedding. The game reads
 // the pinned prefixes from the version manifest (falls back to the legacy
 // shared paths when absent). Usage:
-//   node tooling/publish/publish.mjs <templateKey> [--out <dir>] [--driver local|r2] [--dry-run]
+//   node tooling/publish/publish.mjs <templateKey> [--out <dir>] [--driver local|r2] [--bucket <name>] [--dry-run]
 // Local driver writes versions/<key>/v<N>/ + assets/<name>/<sha12>/ +
 // index.json. The r2 driver uploads EVERY file (version + deps), and fails
 // loudly without Cloudflare login. --dry-run lists the upload plan
@@ -24,6 +24,7 @@ import {
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
+import { resolveWranglerJs } from "../resolve-wrangler.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const fail = (msg) => { console.error(`publish FAILED: ${msg}`); process.exit(1); };
@@ -32,10 +33,13 @@ const args = process.argv.slice(2);
 const key = args.find((a) => !a.startsWith("--"));
 const outArg = args[args.indexOf("--out") + 1];
 const driverArg = args[args.indexOf("--driver") + 1];
+const bucketArg = args[args.indexOf("--bucket") + 1];
 const DRY_RUN = args.includes("--dry-run");
-if (!key) fail("usage: node tooling/publish/publish.mjs <templateKey> [--out <dir>] [--driver local|r2] [--dry-run]");
+if (!key) fail("usage: node tooling/publish/publish.mjs <templateKey> [--out <dir>] [--driver local|r2] [--bucket <name>] [--dry-run]");
 const OUT = outArg ? join(ROOT, outArg) : join(ROOT, "out", "templates");
 const DRIVER = driverArg ?? "local";
+const BUCKET = bucketArg ?? process.env.R2_BUCKET ?? "";
+if (DRIVER === "r2" && !BUCKET) fail("r2 driver needs --bucket <name> (or R2_BUCKET env)");
 
 const SRC = join(ROOT, "apps/web/public/assets/worlds", key);
 if (!existsSync(SRC)) fail(`built world missing: ${SRC} (run build-world first)`);
@@ -119,7 +123,8 @@ const versionManifest = {
   avatars: { prefix: avatarDep.prefix },
 };
 const depKeys = deps.flatMap((d) => d.files.map((f) => ({ dep: d, file: f })));
-const uploadKeys = [...new Set([...files.map((f) => `wedding-templates/${key}/v${version}/${f}`), `wedding-templates/${key}/v${version}/manifest.json`, ...depKeys.map(({ dep, file }) => `${dep.prefix}${file}`)])];
+// Full object keys as stored in the bucket (no bucket prefix inside).
+const uploadKeys = [...new Set([...files.map((f) => `${key}/v${version}/${f}`), `${key}/v${version}/manifest.json`, ...depKeys.map(({ dep, file }) => `${dep.prefix}${file}`)])];
 
 if (DRY_RUN) {
   console.log(`DRY-RUN ${key} v${version} files=${uploadKeys.length} deps=${deps.map((d) => `${d.name}@${sha12(d.digest)}:${d.files.length}`).join(",")}`);
@@ -148,24 +153,58 @@ index.versions.push({ version, contentHash, publishedAt: versionManifest.publish
 writeFileSync(indexPath, JSON.stringify(index, null, 2) + "\n");
 
 if (DRIVER === "r2") {
-  let uploaded = 0;
-  const put = (r2key, localFile) => {
-    execFileSync("wrangler", ["r2", "object", "put", r2key, "--file", localFile], {
-      cwd: ROOT, stdio: "pipe", timeout: 300000,
-    });
-    uploaded += 1;
-  };
+  let WRANGLER_JS;
   try {
-    for (const f of [...files, "manifest.json"]) {
-      put(`wedding-templates/${key}/v${version}/${f}`, join(versionDir, f));
-    }
-    for (const { dep, file } of depKeys) {
-      put(`${dep.prefix}${file}`, join(OUT, dep.prefix, file));
-    }
-  } catch (e) {
-    fail(`r2 upload ${uploaded}/${uploadKeys.length} then FAILED: r2 upload needs Cloudflare login: ${((e.stdout || "") + (e.stderr || e.message || "")).toString().slice(0, 200)}`);
+    WRANGLER_JS = resolveWranglerJs();
+  } catch {
+    fail("r2 upload needs wrangler on PATH or workspace-local (run pnpm install)");
   }
-  console.log(`UPLOADED ${uploaded}/${uploadKeys.length}`);
+  const sleepSync = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+  let uploaded = 0;
+  let skipped = 0;
+  // wrangler takes {bucket}/{key}: the bucket comes from --bucket, the key
+  // from uploadKeys (no bucket prefix inside the key itself). --remote is
+  // mandatory: without it wrangler writes to local dev storage and reports
+  // success while the real bucket stays empty. Transient API failures get 3
+  // attempts with backoff; objects already present are skipped so a re-run
+  // resumes instead of restarting.
+  const existsRemote = (r2key) => {
+    try {
+      execFileSync(process.execPath, [WRANGLER_JS, "r2", "object", "get", `${BUCKET}/${r2key}`, "--remote", "--pipe"], {
+        cwd: ROOT, stdio: "pipe", timeout: 120000,
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  const put = (r2key, localFile) => {
+    if (existsRemote(r2key)) {
+      skipped += 1;
+      return;
+    }
+    let lastErr = "";
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        execFileSync(process.execPath, [WRANGLER_JS, "r2", "object", "put", `${BUCKET}/${r2key}`, "--file", localFile, "--remote"], {
+          cwd: ROOT, stdio: "pipe", timeout: 300000,
+        });
+        uploaded += 1;
+        return;
+      } catch (e) {
+        lastErr = ((e.stdout || "") + (e.stderr || e.message || "")).toString().slice(0, 300);
+        sleepSync(attempt * 5000);
+      }
+    }
+    fail(`r2 upload ${uploaded}/${uploadKeys.length} then FAILED on ${r2key} after 3 attempts: ${lastErr}`);
+  };
+  for (const f of new Set([...files, "manifest.json"])) {
+    put(`${key}/v${version}/${f}`, join(versionDir, f));
+  }
+  for (const { dep, file } of depKeys) {
+    put(`${dep.prefix}${file}`, join(OUT, dep.prefix, file));
+  }
+  console.log(`UPLOADED ${uploaded}/${uploadKeys.length} (skipped ${skipped} already present)`);
 }
 
 console.log(`PUBLISHED ${key} v${version} ${contentHash.slice(0, 12)}`);

@@ -18,16 +18,19 @@ async function pinnedManifestUrl(): Promise<string | undefined> {
   const apiBase = q.get("api");
   if (!apiBase) return undefined;
   try {
+    const api = apiBase.replace(/\/$/, "");
     const res = await fetch(
-      `${apiBase.replace(/\/$/, "")}/v1/world-config?project=${encodeURIComponent(resolveWeddingId())}`
+      `${api}/v1/world-config?project=${encodeURIComponent(resolveWeddingId())}`
     );
     if (!res.ok) return undefined;
     const body = (await res.json()) as { manifestRef?: string | null };
     if (!body.manifestRef) return undefined;
     const r2Base = q.get("r2");
     if (/^https?:\/\//i.test(body.manifestRef)) return body.manifestRef;
-    if (r2Base) return `${r2Base.replace(/\/$/, "")}/${body.manifestRef}`;
-    return undefined;
+    // No r2 override: serve the pinned files through the API origin itself
+    // (same CORS policy, no extra public bucket URL needed).
+    const base = r2Base ? r2Base.replace(/\/$/, "") : `${api}/v1/assets`;
+    return `${base}/${body.manifestRef}`;
   } catch {
     return undefined;
   }

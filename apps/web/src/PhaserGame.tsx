@@ -61,6 +61,7 @@ export const PhaserGame = forwardRef<IRefPhaserGame, IProps>(function PhaserGame
     {
         EventBus.on('current-scene-ready', (scene_instance: Phaser.Scene) =>
         {
+            document.getElementById("game-container")?.setAttribute("data-scene-ready", "wedding-world");
             if (currentActiveScene && typeof currentActiveScene === 'function')
             {
 

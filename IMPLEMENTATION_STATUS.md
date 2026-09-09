@@ -494,14 +494,20 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   put` via `--driver r2`.
 - Next: M13 Deployment (BLOCKED, same login).
 
-## M13 — Deployment (BLOCKED 2026-09-08)
+## M13 � Deployment (VERIFIED 2026-09-09)
 
-- Status: blocked on Cloudflare authentication (`wrangler whoami`
-  fails). Config ready: realtime Worker dry-run proven (M11 G1), web
-  static export green in every build gate.
-- Unblock: `wrangler login`, then `wrangler deploy` in apps/realtime +
-  official Next.js deploy for apps/web.
-- Next: M14 Hardening (local proof).
+- Status: live in production (VERIFIED 2026-09-09). API + realtime
+  Workers deployed, web on Pages, R2 template v6 published, Neon migrated
+  + seeded.
+- Evidence (probed 2026-09-09, no secrets): api /health 200 {"ok":true};
+  world-config pin garden-village-v1/v6/manifest.json; R2 v6 manifest via
+  API proxy with pinned env base assets/environment/3ced0e5caac7/;
+  realtime /health 200 "ok"; Pages 200, boots to scene-ready, quest HUD
+  "OUR STORY ♡ ♡ ♡ ♡", zero page errors (docs/qa/prod-smoke-390.png).
+- Remaining credential-gated work: full prod-smoke with real guest session
+  (needs DATABASE_URL + wrangler-capable token in-session); production soak
+  traffic.
+- Next: M14 production soak.
 
 ## M14 — Hardening (VERIFIED LOCAL 2026-09-08)
 
@@ -632,3 +638,5 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   first so CI never needs a global install.
 - Next: Cloudflare login → R2 publish --driver r2 → set secrets → deploy
   API + realtime + web → production E2E → soak → GO.
+
+
