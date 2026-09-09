@@ -83,6 +83,8 @@ async function main() {
     await page.goto(`http://localhost:${PORT}/g/gt_invalidtoken123`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForSelector('[data-testid="guest-invalid"]', { state: "visible", timeout: 30000 });
     await sleep(3000);
+    const splash = await page.evaluate(() => document.querySelectorAll("#boot-splash").length);
+    if (splash !== 0) fail("boot splash still covers the guest standby state");
     if (bootstrapCalls !== 1) fail(`expected exactly one bootstrap call, saw ${bootstrapCalls}`);
     const url = new URL(page.url());
     if (url.searchParams.has("session") || url.searchParams.has("net")) {

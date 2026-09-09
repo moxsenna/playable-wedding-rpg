@@ -86,6 +86,8 @@ async function main() {
     await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForSelector('[data-testid="admin-page"]', { state: "visible", timeout: 30000 });
     await sleep(800);
+    const splash = await page.evaluate(() => document.querySelectorAll("#boot-splash").length);
+    if (splash !== 0) fail("boot splash still covers /admin");
     const heading = await page.textContent('[aria-label="Publikasi"] h2');
     if (!heading.includes("(dry-run)")) fail(`keyless admin must label the dry-run mode: ${heading}`);
     const valid0 = await page.textContent('[data-testid="admin-validation"]');
