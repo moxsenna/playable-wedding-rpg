@@ -511,10 +511,12 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
 - Remaining: production soak traffic.
 - Next: M14 production soak.
 
-## M14 — Hardening (VERIFIED LOCAL 2026-09-08)
+## M14 — Hardening (VERIFIED LOCAL 2026-09-08; PROD SOAK 12/12 2026-09-09)
 
 - Status: complete locally. leaf-m14 G0/G1 PASS; production soak needs
-  M13.
+  M13. Soak done 2026-09-09: `node tooling/e2e/prod-soak.mjs` 12/12
+  cycles boot+HUD ok, zero page errors (1 transient retry on cycle 8);
+  boot times 26–86s via R2/API proxy path.
 - Files changed: `tooling/e2e/m14-faults.mjs`,
   `.unlazy/wedding-rpg-v1/**`.
 - Commands run: `node tooling/e2e/m14-faults.mjs` (M14 HARDENED:
