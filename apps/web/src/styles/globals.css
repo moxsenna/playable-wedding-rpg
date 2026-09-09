@@ -832,3 +832,19 @@ body {
     border-radius: 999px;
     cursor: pointer;
 }
+
+.admin-page{max-width:720px;margin:0 auto;padding:16px 14px 48px;color:#f2f4f8;background:#1a2233;min-height:100dvh;box-sizing:border-box}
+.admin-page h1{font-size:22px;margin:8px 0 12px}
+.admin-page h2{font-size:16px;margin:18px 0 8px;color:#ffd98a}
+.admin-page section{border-top:1px solid rgba(255,255,255,.1);padding:6px 0 10px}
+.admin-page label{display:block;font-size:14px;margin:8px 0}
+.admin-page input,.admin-page select,.admin-page textarea{width:100%;box-sizing:border-box;min-height:44px;margin-top:4px;padding:10px 12px;font-size:15px;color:#f2f4f8;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:12px}
+.admin-page button{min-height:44px;padding:10px 14px;margin:6px 6px 0 0;font-size:15px;font-weight:600;color:#1a2233;background:#ffd98a;border:none;border-radius:999px;cursor:pointer}
+.admin-page button:disabled{opacity:.45;cursor:not-allowed}
+.admin-page button:focus-visible,.admin-page input:focus-visible,.admin-page select:focus-visible,.admin-page textarea:focus-visible{outline:2px solid #ffd98a;outline-offset:2px}
+.admin-pick-active{box-shadow:0 0 0 2px #fff inset}
+.admin-valid{color:#9fe8a9;font-weight:700}
+.admin-invalid{color:#f2a3a3;font-weight:700}
+.guest-entry{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:24px;text-align:center;color:#f2f4f8;background:#1a2233}
+.guest-notice{padding:10px 14px;font-size:14px;background:rgba(255,217,138,.12);border:1px solid rgba(255,217,138,.4);border-radius:12px}
+

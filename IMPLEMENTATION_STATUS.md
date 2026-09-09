@@ -643,4 +643,56 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
 - Next: Cloudflare login → R2 publish --driver r2 → set secrets → deploy
   API + realtime + web → production E2E → soak → GO.
 
+## M16 — Production Wedding Operations & Runtime Data Binding (DELIVERED 2026-09-10)
+
+- Status: complete. `.unlazy/m16/GATES.md` G0..G5 PASS with recorded
+  evidence (logic, build, guest browser, admin browser, CI subset).
+- Schema (drizzle `0002_m16_operations`, additive, non-destructive):
+  `wedding_projects` + slug/created_at/updated_at,
+  `guests` + phone/email/group_name/notes,
+  new `analytics_events` + `preview_tokens` (project-scoped indexes).
+- Contracts (`packages/contracts/src/m16.ts`): project create/update +
+  slugify, guest import rows, analytics allowlist (movement ticks rejected),
+  bootstrap response shape.
+- Core (`packages/wedding-core`): `csv.ts` parser (BOM, header aliases,
+  quoted commas, blank rows, intra-file dupe skip, missing-name reject),
+  `tokens.ts` crypto-random `gt_` + `pv_` mints, `analytics.ts`
+  validation + summary, `projects.ts` slug + archived→live guard.
+  `NeonStore`/`MemoryStore` extended: projects, guests, import,
+  analytics, preview tokens. All SQL parameterized.
+- API (`apps/api/src/api.ts`): `GET /v1/guest/:token` bootstrap
+  (guest/project/publication/world/realtime, 404/410, analytics-safe),
+  `GET /v1/preview/:token`, `POST /v1/analytics` (server resolves
+  project from session/token, never client input),
+  `/v1/admin/projects` list/create/PATCH (slug-taken 409,
+  archived→live 400), `/v1/admin/guests` list/create/PATCH/DELETE,
+  `/v1/admin/guests/import` (csv or rows, created/skipped/rejected),
+  `/v1/admin/guest-links`, `/v1/admin/versions`, `/v1/admin/preview`,
+  `/v1/admin/analytics` summary. Existing draft/publish/activate,
+  atomic activation, and session/RSVP/guestbook routes untouched.
+- Web: `src/weddings/runtime.ts` bootstrap hook + api-base resolver,
+  `src/game/main.ts` fetches bindings/publication from bootstrap
+  (fixture fallback) and auto-mints session + `?net=` unless `?rt=0`,
+  `wedding-book.tsx` reads runtime publication (fixture only as fallback),
+  `src/pages/g/[token].tsx` clean guest URL with invalid/archived/
+  no-publication states and no technical leaks,
+  `src/pages/admin.tsx` keeps the M9 fixture editor green and adds
+  server sections (key, projects, guests + filter, CSV import with
+  preview counts, links export, analytics).
+- Tests: `scripts/verify-m16-logic.mjs` (417 assertions: CSV incl.
+  50-guest, 200 unique tokens, analytics negatives, slug/transitions),
+  `scripts/verify-m16-build.mjs` (4x tsc + web build),
+  `tooling/e2e/m16-guest.mjs` (invalid token UX, no leaks, home boots),
+  `tooling/e2e/m16-admin.mjs` (server sections + M9 lifecycle v1 active,
+  no horizontal overflow). `scripts/verify-ci.mjs` 22/22 green.
+- Operator workflow: Admin Key → Muat Weddings → pilih wedding →
+  Tambah/Import tamu → edit config → Simpan Draft → Publish → Aktifkan →
+  Export Links → bagikan `/g/:token`.
+  Guest workflow: buka `/g/:token` → session → onboarding → taman →
+  cerita → finale → Undangan → wish.
+- Non-blocking: live Neon/R2 deploy + 50-guest golden against production
+  still need operator credentials (dev-memory + local probes green);
+  preview tokens need a cleanup cron eventually; analytics is minimal
+  counts (no funnels yet).
+
 

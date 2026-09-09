@@ -23,7 +23,10 @@ export const projectStatus = pgEnum("project_status", ["draft", "live", "archive
 export const weddingProjects = pgTable("wedding_projects", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
+  slug: text("slug").notNull().default(""),
   status: projectStatus("status").notNull(),
+  createdAt: bigint("created_at", { mode: "number" }).notNull().default(0),
+  updatedAt: bigint("updated_at", { mode: "number" }).notNull().default(0),
 });
 
 export const guests = pgTable(
@@ -36,6 +39,10 @@ export const guests = pgTable(
     name: text("name").notNull(),
     token: text("token").notNull().unique(),
     createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    phone: text("phone"),
+    email: text("email"),
+    groupName: text("group_name"),
+    notes: text("notes"),
   },
   (t) => [index("guests_project_idx").on(t.projectId)]
 );
@@ -136,4 +143,31 @@ export const weddingWorldConfigs = pgTable(
     realtimeConfig: jsonb("realtime_config"),
   },
   (t) => [index("worldconfig_project_idx").on(t.projectId)]
+);
+
+export const analyticsEvents = pgTable(
+  "analytics_events",
+  {
+    id: text("id").primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => weddingProjects.id),
+    guestId: text("guest_id"),
+    type: text("type").notNull(),
+    at: bigint("at", { mode: "number" }).notNull(),
+  },
+  (t) => [index("analytics_project_idx").on(t.projectId, t.at)]
+);
+
+export const previewTokens = pgTable(
+  "preview_tokens",
+  {
+    token: text("token").primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => weddingProjects.id),
+    versionId: text("version_id").notNull(),
+    exp: bigint("exp", { mode: "number" }).notNull(),
+  },
+  (t) => [index("preview_project_idx").on(t.projectId)]
 );

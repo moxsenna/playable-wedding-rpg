@@ -15,6 +15,13 @@
       "when": 1788883239280,
       "tag": "0001_brave_masked_marvel",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788980985232,
+      "tag": "0002_m16_operations",
+      "breakpoints": true
     }
   ]
 }

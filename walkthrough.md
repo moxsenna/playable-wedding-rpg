@@ -12,13 +12,35 @@ Live stack (verified 2026-09-09):
 
 ## 1. Guest flow (HP)
 
-1. Buka link undangan, mis. `https://wedding-rpg-bli.pages.dev/?wedding=demo-ayu-bima&api=https://wedding-rpg-api.moxsenna.workers.dev`.
+1. Buka link undangan bersih, mis. `https://wedding-rpg-bli.pages.dev/g/gt_AbC123XyZ9qQ`
+   (tanpa `?wedding=&api=&session=&net=` — semua di-resolve server).
+   Token salah → “Tautan tidak valid”; wedding diarsip → info arsip;
+   belum ada publikasi aktif → info menyusul, bukan crash.
 2. Game boot dari manifest R2 yang di-pin (`garden-village-v1/v6`); HUD `OUR STORY ♡ ♡ ♡ ♡` muncul.
 3. Jalan dengan joystick, dekati NPC (Sari), tekan Aksi, ikuti dialog untuk mengumpulkan 4 hati (urutan bebas).
 4. HUD penuh → gerbang aula terbuka → masuk Wedding Hall → finale Ayu & Bima.
-5. Dengan `&net=wss://…&session=…`, guest lain terlihat sebagai remote player + emote real-time.
+5. Realtime tersambung otomatis dari bootstrap (`?rt=0` untuk opt-out);
+   guest lain terlihat sebagai remote player + emote real-time.
 
-## 2. Operator: undang guest baru
+## 1b. Operator flow (M16, tanpa SQL / tanpa edit source)
+
+1. Buka `/admin`, isi Admin Key (operator, sessionStorage perangkat saja),
+   klik Muat Weddings, pilih wedding aktif.
+2. Tamu: Tambah satu per satu, atau tempel CSV (`name,phone,email,group,notes`)
+   → Preview & Import → ringkasan dibuat/dilewati/ditolak.
+3. Konfigurasi: edit mempelai/acara/NPC seperti biasa (validasi Zod memblokir
+   draft rusak) → Simpan Draft → Publish → Aktifkan.
+4. Export Links → `guest-links-<wedding>.csv` berisi `name,link` (`/g/:token`,
+   tanpa session secret) → bagikan.
+5. Analitik: Muat Analitik (total, dibuka, mulai, hati, finale, wishes, RSVP).
+6. CSV contoh:
+```csv
+name,phone,group
+Budi,0812,Keluarga
+"Sari, M.Pd",,Teman
+```
+
+## 2. Operator: undang guest baru (legacy, tetap didukung)
 
 Token guest deterministik: `gt_live_<id>` (lihat `tooling/db/seed.mjs`). Untuk guest baru:
 

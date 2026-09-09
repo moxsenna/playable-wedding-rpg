@@ -7,14 +7,19 @@ import { createGuestStore, findGuestByToken, listGuests, type GuestStore } from 
 import { createRsvpStore, type RsvpStore } from "./rsvp";
 import { createVersionStore, type VersionStore } from "./publishing";
 import type {
+  AnalyticsRow,
   Guest,
   GuestbookEntry,
   PublicationVersion,
   RsvpRecord,
+  WeddingProjectRow,
   WeddingStore,
 } from "./store";
 
 export class MemoryStore implements WeddingStore {
+  private projects: WeddingProjectRow[] = [];
+  private analytics: AnalyticsRow[] = [];
+  private previews: { token: string; projectId: string; versionId: string; exp: number }[] = [];
   constructor(
     private readonly guests: GuestStore = createGuestStore(),
     private readonly rsvps: RsvpStore = createRsvpStore(),
@@ -111,5 +116,77 @@ export class MemoryStore implements WeddingStore {
 
   async recordAudit(): Promise<void> {
     return undefined;
+  }
+
+  async listProjects(): Promise<WeddingProjectRow[]> {
+    return [...this.projects].sort((a, b) => a.createdAt - b.createdAt);
+  }
+
+  async getProject(id: string): Promise<WeddingProjectRow | null> {
+    return this.projects.find((p) => p.id === id) ?? null;
+  }
+
+  async createProject(row: WeddingProjectRow): Promise<void> {
+    if (this.projects.some((p) => p.id === row.id || p.slug === row.slug)) {
+      throw new Error("project exists");
+    }
+    this.projects.push({ ...row });
+  }
+
+  async updateProject(
+    id: string,
+    patch: { name?: string; status?: "draft" | "live" | "archived" },
+    now: number
+  ): Promise<WeddingProjectRow | null> {
+    const p = this.projects.find((x) => x.id === id);
+    if (!p) return null;
+    if (patch.name !== undefined) p.name = patch.name;
+    if (patch.status !== undefined) p.status = patch.status;
+    p.updatedAt = now;
+    return { ...p };
+  }
+
+  async insertGuest(row: Guest): Promise<void> {
+    if (this.guests.guests.some((g) => g.token === row.token)) throw new Error("duplicate token");
+    this.guests.guests.push({ ...row });
+  }
+
+  async updateGuest(projectId: string, id: string, patch: { name?: string }): Promise<Guest | null> {
+    const g = this.guests.guests.find((x) => x.id === id && x.projectId === projectId) ?? null;
+    if (!g) return null;
+    if (patch.name !== undefined) {
+      const name = patch.name.trim();
+      if (!name || name.length > 80) throw new Error("bad guest name");
+      g.name = name;
+    }
+    return { ...g };
+  }
+
+  async deleteGuest(projectId: string, id: string): Promise<boolean> {
+    const i = this.guests.guests.findIndex((x) => x.id === id && x.projectId === projectId);
+    if (i < 0) return false;
+    this.guests.guests.splice(i, 1);
+    return true;
+  }
+
+  async recordAnalyticsEvent(row: AnalyticsRow): Promise<void> {
+    this.analytics.push({ ...row });
+  }
+
+  async listAnalyticsEvents(projectId: string): Promise<AnalyticsRow[]> {
+    return this.analytics.filter((r) => r.projectId === projectId);
+  }
+
+  async createPreviewToken(token: string, projectId: string, versionId: string, exp: number): Promise<void> {
+    this.previews.push({ token, projectId, versionId, exp });
+  }
+
+  async resolvePreviewToken(
+    token: string,
+    now: number
+  ): Promise<{ projectId: string; versionId: string } | null> {
+    const p = this.previews.find((x) => x.token === token) ?? null;
+    if (!p || p.exp <= now) return null;
+    return { projectId: p.projectId, versionId: p.versionId };
   }
 }

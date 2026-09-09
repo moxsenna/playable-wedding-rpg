@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { EventBus, BRIDGE_EVENTS } from "@wedding-rpg/game";
 import { dispatchSemanticAction } from "@wedding-rpg/game";
 import { loadProfile } from "../weddings/profile";
+import { useRuntimeWedding } from "../weddings/runtime";
 import {
   validatePublication,
   visibleSections,
   type BookSection,
   type Publication,
 } from "@wedding-rpg/contracts";
-import { DEMO_PUBLICATION } from "../weddings/demo-publication";
 
 const SECTION_LABELS: Record<BookSection, string> = {
   home: "Home",
@@ -77,7 +77,8 @@ async function sendWish(name: string, message: string): Promise<boolean> {
 // during, and without Phaser: it never reads game state, only the validated
 // publication fixture (durable backend replaces the source in M8).
 export function WeddingBook() {
-  const checked = useMemo(() => validatePublication(DEMO_PUBLICATION), []);
+  const runtime = useRuntimeWedding();
+  const checked = useMemo(() => validatePublication(runtime.publication), [runtime.publication]);
   const [open, setOpen] = useState(false);
   const [section, setSection] = useState<BookSection>("home");
   const [guestName, setGuestName] = useState(() => loadProfile()?.name ?? "");

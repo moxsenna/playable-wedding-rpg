@@ -1,13 +1,22 @@
 import { neon } from "@neondatabase/serverless";
 import {
   NeonStore,
+  allowedStatusTransition,
+  mintGuestToken,
+  mintPreviewToken,
   neonHttpPool,
+  parseGuestCsv,
   signSession,
+  summarizeAnalytics,
+  validateAnalyticsEvent,
+  validateProjectCreate,
+  validateProjectUpdate,
   verifySession,
   type SessionClaims,
   type WeddingStore,
 } from "@wedding-rpg/wedding-core";
 import {
+  projectIdSchema,
   rsvpChoiceSchema,
   rsvpRecordSchema,
   validatePublication,
@@ -302,16 +311,309 @@ export default {
       });
     }
 
+    if (url.pathname.startsWith("/v1/guest/") && request.method === "GET") {
+      const token = decodeURIComponent(url.pathname.slice("/v1/guest/".length));
+      if (!token || token.includes("/")) return json({ error: "bad token" }, 400);
+      const guest = await store.findGuestByToken(token);
+      if (!guest) return json({ error: "unknown token" }, 404);
+      const project = await store.getProject(guest.projectId);
+      if (!project) return json({ error: "unknown project" }, 404);
+      if (project.status === "archived") return json({ error: "wedding archived" }, 410);
+      const active = await store.findActive(project.id, project.id).catch(() => null);
+      const manifestRef = await store.findWorldManifestRef(project.id).catch(() => null);
+      try {
+        await store.recordAnalyticsEvent({
+          projectId: project.id,
+          guestId: guest.id,
+          type: "guest_link_opened",
+          at: Date.now(),
+        });
+      } catch {
+        /* analytics must never break guest bootstrap */
+      }
+      return json({
+        guest: { id: guest.id, projectId: guest.projectId, name: guest.name },
+        project: { id: project.id, name: project.name, status: project.status },
+        publication: active ? { snapshot: active.snapshot, version: active.version } : null,
+        world: { manifestRef },
+        realtime: { enabled: manifestRef != null },
+      });
+    }
+
+    if (url.pathname.startsWith("/v1/preview/") && request.method === "GET") {
+      const token = decodeURIComponent(url.pathname.slice("/v1/preview/".length));
+      const resolved = await store.resolvePreviewToken(token, Date.now());
+      if (!resolved) return json({ error: "unknown preview" }, 404);
+      const v = await store.findVersion(resolved.versionId);
+      if (!v || v.projectId !== resolved.projectId) return json({ error: "unknown version" }, 404);
+      return json({ snapshot: v.snapshot, version: v.version, status: v.status });
+    }
+
+    if (url.pathname === "/v1/analytics" && request.method === "POST") {
+      let body: { token?: string; type?: string; guestId?: string };
+      try {
+        body = (await request.json()) as { token?: string; type?: string; guestId?: string };
+      } catch {
+        return json({ error: "bad request" }, 400);
+      }
+      const checked = validateAnalyticsEvent({ type: String(body.type ?? ""), guestId: body.guestId });
+      if (!checked.ok) return json({ error: checked.errors[0] ?? "bad event" }, 400);
+      let projectId = "";
+      let guestId: string | null = null;
+      const claims = await claimsOf(request, env);
+      if (claims) {
+        projectId = claims.projectId;
+        guestId = claims.guestId;
+      } else if (body.token) {
+        const guest = await store.findGuestByToken(body.token);
+        if (!guest) return json({ error: "unknown token" }, 404);
+        projectId = guest.projectId;
+        guestId = guest.id;
+      } else {
+        return json({ error: "token or session required" }, 401);
+      }
+      try {
+        await store.recordAnalyticsEvent({
+          projectId,
+          guestId,
+          type: String(body.type),
+          at: Date.now(),
+        });
+      } catch {
+        return json({ error: "analytics unavailable" }, 500);
+      }
+      return json({ ok: true });
+    }
+
     if (url.pathname.startsWith("/v1/admin/")) {
       if (!env.ADMIN_KEY || request.headers.get("x-admin-key") !== env.ADMIN_KEY) {
         return unauthorized();
       }
-      let body: Record<string, unknown> = {};
-      try {
-        body = (await request.json()) as Record<string, unknown>;
-      } catch {
-        return json({ error: "bad request" }, 400);
+      const readBody = async (): Promise<Record<string, unknown>> => {
+        try {
+          return (await request.json()) as Record<string, unknown>;
+        } catch {
+          return {};
+        }
+      };
+      if (url.pathname === "/v1/admin/projects" && request.method === "GET") {
+        return json({ projects: await store.listProjects() });
       }
+      if (url.pathname === "/v1/admin/projects" && request.method === "POST") {
+        const body = await readBody();
+        const checked = validateProjectCreate(body);
+        if (!checked.ok) return json({ error: checked.errors[0] }, 400);
+        const id = `${checked.slug}-${Date.now().toString(36)}`;
+        if (!projectIdSchema.safeParse(id).success) return json({ error: "bad project id" }, 400);
+        const existing = await store.listProjects();
+        if (existing.some((p) => p.slug === checked.slug)) return json({ error: "slug taken" }, 409);
+        const now = Date.now();
+        const row = {
+          id,
+          name: checked.name ?? "Untitled",
+          slug: checked.slug ?? "wedding",
+          status: "draft" as const,
+          createdAt: now,
+          updatedAt: now,
+        };
+        await store.createProject(row);
+        await store.recordAudit(id, "admin", "project.create", row.slug, now);
+        return json({ project: row }, 201);
+      }
+      if (url.pathname.startsWith("/v1/admin/projects/") && request.method === "PATCH") {
+        const id = decodeURIComponent(url.pathname.slice("/v1/admin/projects/".length));
+        const body = await readBody();
+        const checked = validateProjectUpdate(body);
+        if (!checked.ok) return json({ error: checked.errors[0] }, 400);
+        const cur = await store.getProject(id);
+        if (!cur) return json({ error: "unknown project" }, 404);
+        if (checked.patch.status && !allowedStatusTransition(cur.status, checked.patch.status)) {
+          return json({ error: "archived projects cannot go live directly" }, 400);
+        }
+        const next = await store.updateProject(id, checked.patch, Date.now());
+        await store.recordAudit(id, "admin", "project.update", JSON.stringify(checked.patch).slice(0, 200), Date.now());
+        return json({ project: next });
+      }
+      if (url.pathname === "/v1/admin/guests" && request.method === "GET") {
+        const project = url.searchParams.get("project") ?? "";
+        if (!project) return json({ error: "project required" }, 400);
+        const guests = await store.listGuests(project);
+        const rsvps = await store.listRsvps(project).catch(() => []);
+        const byToken = new Map(rsvps.map((r) => [r.token, r]));
+        return json({
+          guests: guests.map((g) => ({
+            id: g.id,
+            projectId: g.projectId,
+            name: g.name,
+            token: g.token,
+            createdAt: g.createdAt,
+            rsvp: byToken.get(g.token)?.attending ?? null,
+          })),
+        });
+      }
+      if (url.pathname === "/v1/admin/guests" && request.method === "POST") {
+        const body = await readBody();
+        const projectId = String(body.projectId ?? "");
+        const name = String(body.name ?? "").trim();
+        if (!projectIdSchema.safeParse(projectId).success) return json({ error: "bad project" }, 400);
+        if (!name || name.length > 80) return json({ error: "guest name must be 1..80 characters" }, 400);
+        const project = await store.getProject(projectId);
+        if (!project) return json({ error: "unknown project" }, 404);
+        for (let attempt = 0; attempt < 5; attempt++) {
+          const token = mintGuestToken();
+          if (await store.findGuestByToken(token)) continue;
+          const id = `guest-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e6).toString(36)}`;
+          const row = {
+            id,
+            projectId,
+            name,
+            token,
+            createdAt: Date.now(),
+            phone: typeof body.phone === "string" ? body.phone.slice(0, 32) : undefined,
+            email: typeof body.email === "string" ? body.email.slice(0, 120) : undefined,
+            group: typeof body.group === "string" ? body.group.slice(0, 64) : undefined,
+            notes: typeof body.notes === "string" ? body.notes.slice(0, 280) : undefined,
+          };
+          await store.insertGuest(row);
+          await store.recordAudit(projectId, "admin", "guest.create", id, Date.now());
+          return json({ guest: { id, projectId, name, token, createdAt: row.createdAt } }, 201);
+        }
+        return json({ error: "token collision — retry" }, 409);
+      }
+      if (url.pathname === "/v1/admin/guests/import" && request.method === "POST") {
+        const body = await readBody();
+        const projectId = String(body.projectId ?? "");
+        if (!projectIdSchema.safeParse(projectId).success) return json({ error: "bad project" }, 400);
+        const project = await store.getProject(projectId);
+        if (!project) return json({ error: "unknown project" }, 404);
+        const csvText = typeof body.csv === "string" ? body.csv : "";
+        const rowsInput = Array.isArray(body.rows) ? (body.rows as unknown[]) : null;
+        const parsed = rowsInput
+          ? { valid: rowsInput.length, rows: rowsInput }
+          : parseGuestCsv(csvText);
+        let created = 0;
+        let skipped = 0;
+        const rejected: { rowNumber: number; reason: string }[] = [];
+        const existing = new Set((await store.listGuests(projectId)).map((g) => g.name.toLowerCase()));
+        if (rowsInput) {
+          let n = 0;
+          for (const raw of rowsInput as { name?: unknown }[]) {
+            n++;
+            const name = String((raw as { name?: unknown }).name ?? "").trim();
+            if (!name) {
+              rejected.push({ rowNumber: n, reason: "missing name" });
+              continue;
+            }
+            if (name.length > 80) {
+              rejected.push({ rowNumber: n, reason: "name too long" });
+              continue;
+            }
+            if (existing.has(name.toLowerCase())) {
+              skipped++;
+              continue;
+            }
+            const token = mintGuestToken();
+            if (await store.findGuestByToken(token)) {
+              rejected.push({ rowNumber: n, reason: "token collision — retry" });
+              continue;
+            }
+            await store.insertGuest({
+              id: `guest-${Date.now().toString(36)}-${n}-${Math.floor(Math.random() * 1e4).toString(36)}`,
+              projectId,
+              name,
+              token,
+              createdAt: Date.now(),
+            });
+            existing.add(name.toLowerCase());
+            created++;
+          }
+        } else {
+          const csvParsed = parsed as ReturnType<typeof parseGuestCsv>;
+          for (const item of csvParsed.valid) {
+            if (existing.has(item.row.name.toLowerCase())) {
+              skipped++;
+              continue;
+            }
+            const token = mintGuestToken();
+            if (await store.findGuestByToken(token)) {
+              rejected.push({ rowNumber: item.rowNumber, reason: "token collision — retry" });
+              continue;
+            }
+            await store.insertGuest({
+              id: `guest-${Date.now().toString(36)}-${item.rowNumber}-${Math.floor(Math.random() * 1e4).toString(36)}`,
+              projectId,
+              name: item.row.name,
+              token,
+              createdAt: Date.now(),
+              phone: item.row.phone,
+              email: item.row.email,
+              group: item.row.group,
+              notes: item.row.notes,
+            });
+            existing.add(item.row.name.toLowerCase());
+            created++;
+          }
+          for (const r of csvParsed.rejected) rejected.push({ rowNumber: r.rowNumber, reason: r.reason });
+          skipped += csvParsed.skippedBlank;
+        }
+        await store.recordAudit(projectId, "admin", "guests.import", `created=${created} skipped=${skipped} rejected=${rejected.length}`, Date.now());
+        return json({ created, skipped, rejected });
+      }
+      if (url.pathname.startsWith("/v1/admin/guests/") && (request.method === "PATCH" || request.method === "DELETE")) {
+        const id = decodeURIComponent(url.pathname.slice("/v1/admin/guests/".length));
+        const body = request.method === "PATCH" ? await readBody() : {};
+        const projectId = String(url.searchParams.get("project") ?? body.projectId ?? "");
+        if (!projectId) return json({ error: "project required" }, 400);
+        if (request.method === "DELETE") {
+          const ok = await store.deleteGuest(projectId, id);
+          if (!ok) return json({ error: "unknown guest" }, 404);
+          await store.recordAudit(projectId, "admin", "guest.delete", id, Date.now());
+          return json({ ok: true });
+        }
+        const name = typeof body.name === "string" ? body.name : "";
+        try {
+          const next = await store.updateGuest(projectId, id, { name });
+          if (!next) return json({ error: "unknown guest" }, 404);
+          return json({ guest: next });
+        } catch {
+          return json({ error: "bad guest name" }, 400);
+        }
+      }
+      if (url.pathname === "/v1/admin/guest-links" && request.method === "GET") {
+        const project = url.searchParams.get("project") ?? "";
+        if (!project) return json({ error: "project required" }, 400);
+        const guests = await store.listGuests(project);
+        return json({
+          links: guests.map((g) => ({ name: g.name, token: g.token, createdAt: g.createdAt })),
+        });
+      }
+      if (url.pathname === "/v1/admin/versions" && request.method === "GET") {
+        const project = url.searchParams.get("project") ?? "";
+        if (!project) return json({ error: "project required" }, 400);
+        return json({ versions: await store.listVersions(project) });
+      }
+      if (url.pathname === "/v1/admin/preview" && request.method === "POST") {
+        const body = await readBody();
+        const v = await store.findVersion(String(body.versionId ?? ""));
+        if (!v) return json({ error: "unknown version" }, 404);
+        const token = mintPreviewToken();
+        await store.createPreviewToken(token, v.projectId, v.id, Date.now() + 1000 * 60 * 60 * 24);
+        return json({ previewToken: token });
+      }
+      if (url.pathname === "/v1/admin/analytics" && request.method === "GET") {
+        const project = url.searchParams.get("project") ?? "";
+        if (!project) return json({ error: "project required" }, 400);
+        const guests = await store.listGuests(project).catch(() => []);
+        const events = await store.listAnalyticsEvents(project).catch(() => []);
+        const rsvps = await store.listRsvps(project).catch(() => []);
+        const wishes = await store.listGuestbook(project).catch(() => []);
+        const summary = summarizeAnalytics(
+          events.map((e) => ({ projectId: e.projectId, guestId: e.guestId, type: e.type, at: e.at })),
+          guests.length
+        );
+        return json({ summary: { ...summary, rsvps: rsvps.length, wishes: wishes.length } });
+      }
+      let body: Record<string, unknown> = await readBody();
       if (url.pathname === "/v1/admin/draft" && request.method === "POST") {
         const checked = validatePublication(body.snapshot);
         if (!checked.ok || !checked.publication) return json({ error: checked.errors[0] }, 400);
