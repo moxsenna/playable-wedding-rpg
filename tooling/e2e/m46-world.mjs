@@ -112,7 +112,7 @@ async function main() {
     const pageLogs = [];
     page.on("pageerror", (e) => pageLogs.push(`[pageerror] ${e && e.message}`));
     await page.addInitScript(() => {
-      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_male_batik_burgundy_01" }));
     });
     await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForFunction(
@@ -178,7 +178,7 @@ async function main() {
       const p2 = await c2.newPage();
       await prepPage(p2);
       await p2.addInitScript(() => {
-        window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+        window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_male_batik_burgundy_01" }));
       });
       await p2.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
       await p2.waitForFunction(() => !!window.__wedding?.player && !!window.__wedding?.input, null, { timeout: 60000 });

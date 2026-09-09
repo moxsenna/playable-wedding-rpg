@@ -112,7 +112,10 @@ async function main() {
     const pageLogs = [];
     page.on("pageerror", (e) => pageLogs.push(`[pageerror] ${e && e.message}`));
     await page.addInitScript(() => {
-      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
+      // Seed a production avatar: this probe asserts the player runs on
+      // the data-driven production guest avatar, not the guest_01 stub
+      // used by the movement/dialogue probes.
+      window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_male_batik_burgundy_01" }));
     });
     await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
     await page.waitForFunction(

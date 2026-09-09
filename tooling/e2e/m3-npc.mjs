@@ -189,13 +189,16 @@ async function main() {
     await sleep(400);
     const r1 = await pos(page);
     if (Math.hypot(r1.x - r0.x, r1.y - r0.y) > 2) fail("residual drift after dialogue close");
+    // resume check drags SOUTH (back along the path from spawn): the player
+    // ends the dialogue adjacent to Sari, so a northward drag pushes
+    // straight into her static collider and proves nothing about input.
     await page.mouse.move(g.stick.x, g.stick.y);
     await page.mouse.down();
-    await page.mouse.move(g.stick.x, g.stick.y - 44, { steps: 8 });
+    await page.mouse.move(g.stick.x, g.stick.y + 44, { steps: 8 });
     await sleep(600);
     const r2 = await pos(page);
     await page.mouse.up();
-    if (!(r0.y - r2.y > 20)) fail("no movement after dialogue close");
+    if (!(r2.y - r0.y > 20)) fail("no movement after dialogue close");
 
     // --- M3-B: keyboard to RSVP keeper, RSVP dispatch ---
     await seek(page, 456, 904, 30000, 25);

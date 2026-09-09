@@ -122,6 +122,9 @@ async function prepPage(page) {
       const pt = await page.evaluate((sel) => {
         const el = document.querySelector(sel);
         if (!el) return null;
+        // book nav row scrolls horizontally: bring far tabs into view
+        // before measuring, same as the m15 tap helper.
+        el.scrollIntoView({ block: "center" });
         const r = el.getBoundingClientRect();
         return { x: r.x + r.width / 2, y: r.y + r.height / 2 };
       }, selector);

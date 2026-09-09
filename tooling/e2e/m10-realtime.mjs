@@ -176,9 +176,12 @@ async function main() {
     }
     console.log(`remote travel ${total.toFixed(0)}px over ${samples.length} smooth samples`);
 
-    // 5-6: Dinda waves via the HUD emote button; Maya sees it
+    // 5-6: Dinda picks heart via the HUD emote button + picker menu;
+    // Maya sees it over the room
     const geom = await hook(dinda.page, () => window.__wedding.input.geometry());
     await dinda.page.touchscreen.tap(geom.emote.x, geom.emote.y);
+    await dinda.page.waitForSelector('[data-testid="emote-menu"]', { state: "visible", timeout: 15000 });
+    await dinda.page.click('[data-testid="emote-pick-heart"]');
     let emoteSeen = null;
     {
       const start = Date.now();

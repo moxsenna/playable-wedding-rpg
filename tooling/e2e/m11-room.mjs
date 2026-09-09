@@ -195,6 +195,8 @@ async function main() {
 
     const geom = await hook(dinda.page, () => window.__wedding.input.geometry());
     await dinda.page.touchscreen.tap(geom.emote.x, geom.emote.y);
+    await dinda.page.waitForSelector('[data-testid="emote-menu"]', { state: "visible", timeout: 15000 });
+    await dinda.page.click('[data-testid="emote-pick-heart"]');
     {
       const start = Date.now();
       for (;;) {
