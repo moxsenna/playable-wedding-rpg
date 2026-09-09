@@ -494,7 +494,7 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   put` via `--driver r2`.
 - Next: M13 Deployment (BLOCKED, same login).
 
-## M13 � Deployment (VERIFIED 2026-09-09)
+## M13 � Deployment (VERIFIED 2026-09-09)
 
 - Status: live in production (VERIFIED 2026-09-09). API + realtime
   Workers deployed, web on Pages, R2 template v6 published, Neon migrated
@@ -504,9 +504,11 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   API proxy with pinned env base assets/environment/3ced0e5caac7/;
   realtime /health 200 "ok"; Pages 200, boots to scene-ready, quest HUD
   "OUR STORY ♡ ♡ ♡ ♡", zero page errors (docs/qa/prod-smoke-390.png).
-- Remaining credential-gated work: full prod-smoke with real guest session
-  (needs DATABASE_URL + wrangler-capable token in-session); production soak
-  traffic.
+- Full prod-smoke (`node tooling/e2e/prod-smoke.mjs`): PROD SMOKE VERIFIED
+  2026-09-09 — world-config pin v6, R2 manifest pinned env base, session
+  minted for Dinda (demo-ayu-bima), realtime welcome p_guest-dinda with
+  canonical name, game boot + HUD + net joined, zero page errors.
+- Remaining: production soak traffic.
 - Next: M14 production soak.
 
 ## M14 — Hardening (VERIFIED LOCAL 2026-09-08)
