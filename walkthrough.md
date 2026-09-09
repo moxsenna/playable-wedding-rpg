@@ -13,9 +13,11 @@ Live stack (verified 2026-09-09):
 ## 1. Guest flow (HP)
 
 1. Buka link undangan bersih, mis. `https://wedding-rpg-bli.pages.dev/g/gt_AbC123XyZ9qQ`
-   (tanpa `?wedding=&api=&session=&net=` — semua di-resolve server).
+   (tanpa `?wedding=&api=&session=&net=` — satu bootstrap server me-resolve
+   guest, project, session, publication, world, dan realtime sekaligus).
    Token salah → “Tautan tidak valid”; wedding diarsip → info arsip;
-   belum ada publikasi aktif → info menyusul, bukan crash.
+   wedding draft → “Undangan belum tersedia”; belum ada publikasi aktif →
+   info standby. Tidak ada fallback ke wedding lain.
 2. Game boot dari manifest R2 yang di-pin (`garden-village-v1/v6`); HUD `OUR STORY ♡ ♡ ♡ ♡` muncul.
 3. Jalan dengan joystick, dekati NPC (Sari), tekan Aksi, ikuti dialog untuk mengumpulkan 4 hati (urutan bebas).
 4. HUD penuh → gerbang aula terbuka → masuk Wedding Hall → finale Ayu & Bima.
@@ -29,10 +31,15 @@ Live stack (verified 2026-09-09):
 2. Tamu: Tambah satu per satu, atau tempel CSV (`name,phone,email,group,notes`)
    → Preview & Import → ringkasan dibuat/dilewati/ditolak.
 3. Konfigurasi: edit mempelai/acara/NPC seperti biasa (validasi Zod memblokir
-   draft rusak) → Simpan Draft → Publish → Aktifkan.
+   draft rusak) → Simpan Draft → Publish → Aktifkan. Dengan Admin Key +
+   wedding aktif, lifecycle berjalan terhadap server/Neon (daftar versi
+   server tampil di admin); tanpa key, editor berjalan sebagai dry-run lokal.
 4. Export Links → `guest-links-<wedding>.csv` berisi `name,link` (`/g/:token`,
    tanpa session secret) → bagikan.
 5. Analitik: Muat Analitik (total, dibuka, mulai, hati, finale, wishes, RSVP).
+   Catatan: event bertoken adalah bearer credential (pemegang URL bisa
+   mengirimnya) — perlakukan sebagai metrik indikatif, bukan otoritatif.
+   Jalur normal memakai session yang di-mint saat bootstrap.
 6. CSV contoh:
 ```csv
 name,phone,group

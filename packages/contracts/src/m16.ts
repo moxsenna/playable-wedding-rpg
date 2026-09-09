@@ -79,10 +79,14 @@ export const bootstrapResponseSchema = z.object({
     name: z.string(),
     status: z.string(),
   }),
+  session: z.string().nullable(),
+  sessionGuest: z
+    .object({ displayName: z.string(), avatarId: z.string() })
+    .nullable(),
   publication: z
     .object({ snapshot: z.record(z.string(), z.unknown()), version: z.number() })
     .nullable(),
   world: z.object({ manifestRef: z.string().nullable() }),
-  realtime: z.object({ enabled: z.boolean() }),
+  realtime: z.object({ enabled: z.boolean(), room: z.string().optional() }),
 });
 export type BootstrapResponse = z.infer<typeof bootstrapResponseSchema>;

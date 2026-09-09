@@ -27,7 +27,7 @@ export const weddingProjects = pgTable("wedding_projects", {
   status: projectStatus("status").notNull(),
   createdAt: bigint("created_at", { mode: "number" }).notNull().default(0),
   updatedAt: bigint("updated_at", { mode: "number" }).notNull().default(0),
-});
+}, (t) => [uniqueIndex("projects_slug_unique").on(t.slug)]);
 
 export const guests = pgTable(
   "guests",

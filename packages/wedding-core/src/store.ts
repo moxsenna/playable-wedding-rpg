@@ -95,6 +95,20 @@ export interface AnalyticsRow {
   at: number;
 }
 
+function isUniqueViolation(e: unknown): boolean {
+  const err = e as { code?: unknown; message?: unknown };
+  if (err?.code === "23505") return true;
+  const msg = typeof err?.message === "string" ? err.message : "";
+  return /duplicate key|unique constraint|UNIQUE constraint failed/i.test(msg);
+}
+
+function isUndefinedColumn(e: unknown): boolean {
+  const err = e as { code?: unknown; message?: unknown };
+  if (err?.code === "42703") return true;
+  const msg = typeof err?.message === "string" ? err.message : "";
+  return /column .* does not exist|no such column|undefined column/i.test(msg);
+}
+
 export interface WeddingStore {
   findGuestByToken(token: string): Promise<Guest | null>;
   listGuests(projectId: string): Promise<Guest[]>;
@@ -313,7 +327,9 @@ export class NeonStore implements WeddingStore {
         `INSERT INTO wedding_projects (id, name, slug, status, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)`,
         [row.id, row.name, row.slug, row.status, row.createdAt, row.updatedAt]
       );
-    } catch {
+    } catch (e) {
+      if (isUniqueViolation(e)) throw new Error("slug-taken");
+      if (!isUndefinedColumn(e)) throw e;
       await this.db.query(`INSERT INTO wedding_projects (id, name, status) VALUES ($1, $2, $3)`, [
         row.id,
         row.name,
@@ -351,7 +367,9 @@ export class NeonStore implements WeddingStore {
         `INSERT INTO guests (id, project_id, name, token, created_at, phone, email, group_name, notes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
         [row.id, row.projectId, row.name, row.token, row.createdAt, row.phone ?? null, row.email ?? null, row.group ?? null, row.notes ?? null]
       );
-    } catch {
+    } catch (e) {
+      if (isUniqueViolation(e)) throw new Error("token-taken");
+      if (!isUndefinedColumn(e)) throw e;
       await this.db.query(
         `INSERT INTO guests (id, project_id, name, token, created_at) VALUES ($1, $2, $3, $4, $5)`,
         [row.id, row.projectId, row.name, row.token, row.createdAt]

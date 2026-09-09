@@ -1,8 +1,8 @@
-// M16 guest probe: clean /g/:token route + runtime binding in a real browser.
-// - bad token renders the invalid state (no query plumbing, no crash)
-// - home still boots the fixture world (no regression)
-// - main.ts resolves bootstrap bindings instead of fixture-only import
-// Prints M16 GUEST VERIFIED only when every assertion passes.
+// M16.1 guest probe: one bootstrap carrying session, no fixture fallback.
+// - invalid token renders the invalid state with a single bootstrap request
+// - the URL never gains session/net params from auto-boot
+// - home keeps the explicit dev fixture path (onboarding boots)
+// Prints M161 GUEST VERIFIED only when every assertion passes.
 import { spawn, execSync } from "node:child_process";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -11,21 +11,18 @@ import { createRequire } from "node:module";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const WEB_DIR = join(ROOT, "apps/web");
-const PORT = 8116;
+const PORT = 8118;
 const BIN = process.platform === "win32" ? ".cmd" : "";
-const fail = (msg) => { console.error(`M16 guest check FAILED: ${msg}`); process.exit(1); };
+const fail = (msg) => { console.error(`M16.1 guest check FAILED: ${msg}`); process.exit(1); };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const mainSrc = readFileSync(join(WEB_DIR, "src/game/main.ts"), "utf8");
-if (!mainSrc.includes("fetchBootstrap") || !mainSrc.includes("guestTokenFromPath")) {
-  fail("main.ts still fixture-only (no guest bootstrap)");
+if (!mainSrc.includes("fetchBootstrap") || !mainSrc.includes("__weddingSession")) {
+  fail("main.ts missing single-flight session bootstrap");
 }
-if (mainSrc.includes("/v1/session")) fail("main.ts mints sessions outside the single bootstrap");
-const bookSrc = readFileSync(join(WEB_DIR, "src/components/wedding-book.tsx"), "utf8");
-if (bookSrc.includes('from "../weddings/demo-publication"')) fail("wedding-book still imports DEMO fixture");
-if (!bookSrc.includes("useRuntimeWedding")) fail("wedding-book missing runtime binding");
-const guestSrc = readFileSync(join(WEB_DIR, "src/pages/g/[token].tsx"), "utf8");
-if (!guestSrc.includes("fetchBootstrap")) fail("guest page missing bootstrap fetch");
+if (mainSrc.includes("/v1/session") || mainSrc.includes('set("session"')) {
+  fail("main.ts still mints sessions separately or leaks them into the URL");
+}
 
 const webRequire = createRequire(join(WEB_DIR, "package.json"));
 let chromium;
@@ -79,20 +76,28 @@ async function main() {
     const page = await ctx.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(String(e && e.message)));
+    let bootstrapCalls = 0;
+    page.on("request", (req) => {
+      if (/\/v1\/guest\//.test(req.url())) bootstrapCalls += 1;
+    });
     await page.goto(`http://localhost:${PORT}/g/gt_invalidtoken123`, { waitUntil: "domcontentloaded", timeout: 60000 });
-    await page.waitForSelector('[data-testid="guest-invalid"], [data-testid="guest-loading"]', { state: "visible", timeout: 30000 });
-    await sleep(6000);
+    await page.waitForSelector('[data-testid="guest-invalid"]', { state: "visible", timeout: 30000 });
+    await sleep(3000);
+    if (bootstrapCalls !== 1) fail(`expected exactly one bootstrap call, saw ${bootstrapCalls}`);
+    const url = new URL(page.url());
+    if (url.searchParams.has("session") || url.searchParams.has("net")) {
+      fail(`guest URL gained plumbing params: ${url.search}`);
+    }
     const body = (await page.textContent("body")) ?? "";
-    if (!/tidak valid|Membuka undangan/i.test(body)) fail(`guest route copy missing: ${body.slice(0, 200)}`);
-    if (/projectId|publicationId|manifestRef|session token|API URL/i.test(body)) fail("guest leaks technical concepts");
+    if (/Ayu|Bima|demo-ayu-bima/i.test(body)) fail("invalid guest sees fixture content");
     await page.goto(`http://localhost:${PORT}/`, { waitUntil: "domcontentloaded", timeout: 60000 });
-    await sleep(4000);
+    await page.waitForSelector('[data-testid="onboarding-panel"], #game-container', { state: "visible", timeout: 30000 });
     if (errors.length > 0) fail(`page errors: ${errors.join(" | ").slice(0, 300)}`);
     await browser.close();
   } finally {
     await stopServer();
   }
-  console.log("M16 GUEST VERIFIED");
+  console.log("M161 GUEST VERIFIED");
 }
 
 main().catch((e) => fail(e && e.message ? e.message : String(e)));

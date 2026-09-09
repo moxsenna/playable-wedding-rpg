@@ -73,6 +73,9 @@ export default function Admin() {
   const [analytics, setAnalytics] = useState("");
   const [newGuestName, setNewGuestName] = useState("");
   const [opsNote, setOpsNote] = useState("");
+  const [serverVersions, setServerVersions] = useState<
+    { id: string; version: number; status: string }[]
+  >([]);
 
   useEffect(() => {
     fetch("assets/avatars/avatar-registry.json")
@@ -122,21 +125,50 @@ export default function Admin() {
     setLog((l) => [`${new Date().toLocaleTimeString()} ${line}`, ...l].slice(0, 20));
   };
 
-  const saveDraft = () => {
+  const serverConfigured = adminKey.length > 0 && activeProject.length > 0;
+
+  const saveDraft = async () => {
     if (!pubCheck.ok || !bindCheck.ok) return;
+    if (serverConfigured) {
+      const res = await fetch(`${api}/v1/admin/draft`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ projectId: activeProject, publicationId: activeProject, snapshot: pub }),
+      });
+      if (!res.ok) {
+        setOpsNote(`Simpan draft server gagal (${res.status}).`);
+        return;
+      }
+      const body = (await res.json()) as { version: { version: number } };
+      note(`draft server v${body.version.version}`);
+      await loadServerVersions();
+      return;
+    }
     const r = createDraft(storeRef.current, pub.id, pub.id, pub, Date.now());
     if (!r.ok) return;
     note(`draft v${r.version.version}`);
     refreshVersions();
-    if (adminKey && activeProject) {
-      fetch(`${api}/v1/admin/draft`, {
+  };
+  const publish = async () => {
+    if (serverConfigured) {
+      const draft = [...serverVersions].reverse().find((v) => v.status === "draft");
+      if (!draft) {
+        setOpsNote("Tidak ada draft server untuk dipublish.");
+        return;
+      }
+      const res = await fetch(`${api}/v1/admin/publish`, {
         method: "POST",
         headers,
-        body: JSON.stringify({ projectId: activeProject, publicationId: activeProject, snapshot: pub }),
-      }).catch(() => undefined);
+        body: JSON.stringify({ versionId: draft.id }),
+      });
+      if (!res.ok) {
+        setOpsNote(`Publish server gagal (${res.status}).`);
+        return;
+      }
+      note(`published server v${draft.version}`);
+      await loadServerVersions();
+      return;
     }
-  };
-  const publish = () => {
     const draft = [...storeRef.current.versions]
       .reverse()
       .find((v) => v.publicationId === pub.id && v.status === "draft");
@@ -146,7 +178,26 @@ export default function Admin() {
     note(`published v${r.version.version}`);
     refreshVersions();
   };
-  const activate = () => {
+  const activate = async () => {
+    if (serverConfigured) {
+      const p = [...serverVersions].reverse().find((v) => v.status === "published");
+      if (!p) {
+        setOpsNote("Tidak ada versi published di server untuk diaktifkan.");
+        return;
+      }
+      const res = await fetch(`${api}/v1/admin/activate`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ versionId: p.id }),
+      });
+      if (!res.ok) {
+        setOpsNote(`Aktivasi server gagal (${res.status}).`);
+        return;
+      }
+      note(`activated server v${p.version}`);
+      await loadServerVersions();
+      return;
+    }
     const p = [...storeRef.current.versions]
       .reverse()
       .find((v) => v.publicationId === pub.id && v.status === "published");
@@ -195,6 +246,16 @@ export default function Admin() {
     setGuests(body.guests ?? []);
   };
 
+  const loadServerVersions = async () => {
+    if (!adminKey || !activeProject) return;
+    const res = await fetch(`${api}/v1/admin/versions?project=${encodeURIComponent(activeProject)}`, {
+      headers: { "x-admin-key": adminKey },
+    });
+    if (!res.ok) return;
+    const body = (await res.json()) as { versions: { id: string; version: number; status: string }[] };
+    setServerVersions(body.versions ?? []);
+  };
+
   const loadAnalytics = async () => {
     if (!adminKey || !activeProject) return;
     const res = await fetch(`${api}/v1/admin/analytics?project=${encodeURIComponent(activeProject)}`, {
@@ -209,6 +270,7 @@ export default function Admin() {
     if (adminKey && activeProject) {
       void loadGuests(activeProject);
       void loadAnalytics();
+      void loadServerVersions();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeProject]);
@@ -478,7 +540,7 @@ export default function Admin() {
         </section>
 
         <section aria-label="Publikasi">
-          <h2>Publikasi (dry-run)</h2>
+          <h2>Publikasi {serverConfigured ? "(server)" : "(dry-run)"}</h2>
           <div role="group" aria-label="Lifecycle">
             <button data-testid="admin-draft" onClick={saveDraft} disabled={errors.length > 0}>
               Simpan Draft
@@ -501,6 +563,15 @@ export default function Admin() {
               </li>
             ))}
           </ul>
+          {serverConfigured && (
+            <ul data-testid="admin-server-versions">
+              {serverVersions.map((v) => (
+                <li key={v.id}>
+                  v{v.version} {v.status}
+                </li>
+              ))}
+            </ul>
+          )}
           {log.length > 0 && (
             <ul data-testid="admin-log">
               {log.map((l, i) => (

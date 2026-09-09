@@ -78,7 +78,8 @@ async function sendWish(name: string, message: string): Promise<boolean> {
 // publication fixture (durable backend replaces the source in M8).
 export function WeddingBook() {
   const runtime = useRuntimeWedding();
-  const checked = useMemo(() => validatePublication(runtime.publication), [runtime.publication]);
+  const publication = runtime.status === "ready" || runtime.status === "fixture" ? runtime.publication : null;
+  const checked = useMemo(() => (publication ? validatePublication(publication) : null), [publication]);
   const [open, setOpen] = useState(false);
   const [section, setSection] = useState<BookSection>("home");
   const [guestName, setGuestName] = useState(() => loadProfile()?.name ?? "");
@@ -128,7 +129,14 @@ export function WeddingBook() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open ]);
 
-  if (!checked.ok || !checked.publication) {
+  if (runtime.status === "loading") {
+    return (
+      <button data-testid="wedding-book-open" className="book-open-btn" disabled>
+        Undangan
+      </button>
+    );
+  }
+  if (runtime.status === "error" || !checked?.ok || !checked.publication) {
     return (
       <>
         <button data-testid="wedding-book-open" className="book-open-btn" onClick={() => openBook("home")}>

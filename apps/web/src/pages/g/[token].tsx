@@ -2,43 +2,48 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { resolveApiBase } from "@/weddings/runtime";
+import { fetchBootstrap } from "@/weddings/runtime";
 
 const AppWithoutSSR = dynamic(() => import("@/App"), { ssr: false });
+
+type GuestState = "loading" | "ready" | "invalid" | "archived" | "not-live" | "no-publication";
 
 export default function GuestEntry() {
   const router = useRouter();
   const token = typeof router.query.token === "string" ? router.query.token : "";
-  const [state, setState] = useState<"loading" | "ready" | "invalid" | "archived" | "no-publication">("loading");
+  const [state, setState] = useState<GuestState>("loading");
   const [couple, setCouple] = useState("");
 
   useEffect(() => {
     if (!token) return;
-    const api = resolveApiBase();
-    fetch(`${api}/v1/guest/${encodeURIComponent(token)}`)
-      .then((r) => {
-        if (r.status === 404) {
-          setState("invalid");
-          return null;
-        }
-        if (r.status === 410) {
-          setState("archived");
-          return null;
-        }
-        return r.ok ? r.json() : null;
-      })
-      .then((body) => {
-        if (!body) {
-          setState((s) => (s === "loading" ? "invalid" : s));
-          return;
-        }
-        const snapshot = body.publication?.snapshot as
-          | { couple?: { partnerA?: string; partnerB?: string } }
-          | undefined;
-        if (snapshot?.couple) setCouple(`${snapshot.couple.partnerA ?? ""} & ${snapshot.couple.partnerB ?? ""}`);
-        setState(body.publication ? "ready" : "no-publication");
-      })
-      .catch(() => setState("invalid"));
+    let cancelled = false;
+    void fetchBootstrap(token).then((body) => {
+      if (cancelled) return;
+      if (body.status === 404) {
+        setState("invalid");
+        return;
+      }
+      if (body.status === 410) {
+        setState("archived");
+        return;
+      }
+      if (body.status === 403) {
+        setState("not-live");
+        return;
+      }
+      if (body.status !== 200) {
+        setState("invalid");
+        return;
+      }
+      const snapshot = body.publication?.snapshot as
+        | { couple?: { partnerA?: string; partnerB?: string } }
+        | undefined;
+      if (snapshot?.couple) setCouple(`${snapshot.couple.partnerA ?? ""} & ${snapshot.couple.partnerB ?? ""}`);
+      setState(body.publication ? "ready" : "no-publication");
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [token]);
 
   if (state === "loading") {
@@ -64,6 +69,22 @@ export default function GuestEntry() {
       </main>
     );
   }
+  if (state === "not-live") {
+    return (
+      <main className="guest-entry" data-testid="guest-not-live">
+        <h1>Undangan belum tersedia</h1>
+        <p>Mempelai masih menyiapkan undangan ini.</p>
+      </main>
+    );
+  }
+  if (state === "no-publication") {
+    return (
+      <main className="guest-entry" data-testid="guest-no-publication">
+        <h1>Undangan sedang disiapkan</h1>
+        <p>Game belum aktif — info menyusul.</p>
+      </main>
+    );
+  }
   return (
     <>
       <Head>
@@ -71,11 +92,6 @@ export default function GuestEntry() {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
       </Head>
       <main>
-        {state === "no-publication" && (
-          <p data-testid="guest-no-publication" className="guest-notice">
-            Undangan sedang disiapkan — game belum aktif, info menyusul.
-          </p>
-        )}
         <AppWithoutSSR />
       </main>
     </>

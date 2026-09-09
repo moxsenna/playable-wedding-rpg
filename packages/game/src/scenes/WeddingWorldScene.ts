@@ -526,8 +526,9 @@ export class WeddingWorldScene extends Scene {
   private maybeStartNet(): void {
     if (typeof window === "undefined") return;
     const q = new URLSearchParams(window.location.search);
-    const url = q.get("net");
-    const session = q.get("session") ?? "";
+    const w = window as unknown as { __weddingNetUrl?: string; __weddingSession?: string };
+    const url = w.__weddingNetUrl ?? q.get("net");
+    const session = w.__weddingSession ?? q.get("session") ?? "";
     if (!url || !session) return;
     const socketFor = (ws: WebSocket): SocketLike => ({
       send: (d: string) => ws.send(d),

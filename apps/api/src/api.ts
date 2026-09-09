@@ -319,8 +319,17 @@ export default {
       const project = await store.getProject(guest.projectId);
       if (!project) return json({ error: "unknown project" }, 404);
       if (project.status === "archived") return json({ error: "wedding archived" }, 410);
+      if (project.status !== "live") return json({ error: "wedding not live" }, 403);
       const active = await store.findActive(project.id, project.id).catch(() => null);
       const manifestRef = await store.findWorldManifestRef(project.id).catch(() => null);
+      const avatars = avatarsFor(env, project.id);
+      const signed = await signSession(
+        guest,
+        avatars[0] ?? "guest_01",
+        avatars,
+        env.ROOM_SECRET ?? "",
+        Date.now()
+      ).catch(() => null);
       try {
         await store.recordAnalyticsEvent({
           projectId: project.id,
@@ -334,9 +343,14 @@ export default {
       return json({
         guest: { id: guest.id, projectId: guest.projectId, name: guest.name },
         project: { id: project.id, name: project.name, status: project.status },
+        session: signed && signed.ok ? signed.session : null,
+        sessionGuest:
+          signed && signed.ok
+            ? { displayName: signed.claims.displayName, avatarId: signed.claims.avatarId }
+            : null,
         publication: active ? { snapshot: active.snapshot, version: active.version } : null,
         world: { manifestRef },
-        realtime: { enabled: manifestRef != null },
+        realtime: { enabled: manifestRef != null, room: project.id },
       });
     }
 
@@ -416,7 +430,13 @@ export default {
           createdAt: now,
           updatedAt: now,
         };
-        await store.createProject(row);
+        try {
+          await store.createProject(row);
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : "";
+          if (/slug-taken|project exists|duplicate/i.test(msg)) return json({ error: "slug taken" }, 409);
+          throw e;
+        }
         await store.recordAudit(id, "admin", "project.create", row.slug, now);
         return json({ project: row }, 201);
       }
@@ -474,7 +494,13 @@ export default {
             group: typeof body.group === "string" ? body.group.slice(0, 64) : undefined,
             notes: typeof body.notes === "string" ? body.notes.slice(0, 280) : undefined,
           };
-          await store.insertGuest(row);
+          try {
+            await store.insertGuest(row);
+          } catch (e) {
+            const msg = e instanceof Error ? e.message : "";
+            if (/token-taken|duplicate/i.test(msg)) continue;
+            throw e;
+          }
           await store.recordAudit(projectId, "admin", "guest.create", id, Date.now());
           return json({ guest: { id, projectId, name, token, createdAt: row.createdAt } }, 201);
         }

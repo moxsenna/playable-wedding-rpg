@@ -695,4 +695,38 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   preview tokens need a cleanup cron eventually; analytics is minimal
   counts (no funnels yet).
 
+## M16.1 — Hardening Closure (DELIVERED 2026-09-10)
+
+- Status: complete. `.unlazy/m161/GATES.md` G0..G5 PASS with recorded
+  evidence. Closes the four review gaps on top of 72f0fe9, no game
+  content or protocol changes.
+- Atomic slug (`0003_m161_slug_unique`, backfill `slug=id` before the
+  index): `wedding_projects.slug` is UNIQUE at the DB level; the store
+  maps unique violations to `slug-taken`/`token-taken` instead of the
+  legacy-column fallback, the API answers slug conflicts with 409 and
+  retries token races server-side.
+- No fixture fallback: guest paths (`/g/`, `?guest=`) resolve through a
+  single-flight `fetchBootstrap` into loading/ready/error states; a
+  failed or content-less bootstrap renders a safe error, never
+  DEMO content. Fixture data remains only for the keyless dev home path.
+  Draft projects are explicitly rejected from guest bootstrap (403);
+  archived stays 410.
+- Single bootstrap: `GET /v1/guest/:token` now also mints and returns
+  the realtime session plus room membership, so one call yields guest,
+  project, session, publication, world, and realtime. Session and net
+  URL reach the game via injected memory; `?net=`/`?session=` remain as
+  dev/probe fallback and the clean guest URL gains no params.
+- Server admin lifecycle: with Admin Key + project set, Simpan
+  Draft/Publish/Aktifkan run against `/v1/admin/*` with the server
+  version list displayed; keyless use keeps the local dry-run editor
+  (M9/M16 probes green).
+- Tests: `verify-m161-slug` (11), `verify-m161-guards` (26),
+  `m161-guest` (exactly one bootstrap call, no URL plumbing, no
+  fixture leak), `m161-admin` (server wiring + keyless v1 active),
+  `m16-guest`/`m16-admin` re-green, `verify-m161-regression`
+  (5x tsc + M16 logic + CI 22/22).
+- Remaining: live Neon/R2 golden (50 guests, 3 weddings) still needs
+  operator credentials; preview end-to-end and operator-console IA
+  stay queued behind that verification.
+
 
