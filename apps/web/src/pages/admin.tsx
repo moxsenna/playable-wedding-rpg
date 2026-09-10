@@ -666,7 +666,12 @@ export default function Admin() {
 
         <StorySection story={pub.story} onChange={(story) => setPub((p) => ({ ...p, story }))} />
 
-        <GallerySection gallery={pub.gallery} onChange={(gallery) => setPub((p) => ({ ...p, gallery }))} />
+        <GallerySection
+          gallery={pub.gallery}
+          onChange={(gallery) => setPub((p) => ({ ...p, gallery }))}
+          media={serverConfigured ? { apiBase: api, adminKey, projectId: activeProject } : undefined}
+          onNotice={setOpsNote}
+        />
 
         <GiftSection pub={pub} onChange={(patch) => setPub((p) => ({ ...p, ...patch }))} />
 

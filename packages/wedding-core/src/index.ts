@@ -25,4 +25,6 @@ export { mintGuestToken, mintPreviewToken } from "./tokens";
 export { validateAnalyticsEvent, summarizeAnalytics } from "./analytics";
 export { validateSnapshot, validateVersionSnapshot, validateNpcBindingsStructure, readSnapshot } from "./snapshots";
 export type { SnapshotValidation, BindingsStructure, VersionSnapshot, ResolvedSnapshot } from "./snapshots";
+export { mediaKeyFor, parseMediaKey, validateUploadIntent, randomUuid, galleryRefs, keyReferenced, MEDIA_MIME_EXT, MEDIA_MAX_BYTES, PRESIGN_TTL_S } from "./media";
+export type { UploadIntent, S3Credentials } from "./media";
 export { validateProjectCreate, validateProjectUpdate, allowedStatusTransition, slugifyProject } from "./projects";

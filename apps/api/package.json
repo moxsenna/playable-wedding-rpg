@@ -11,6 +11,7 @@
     "@neondatabase/serverless": "^1.1.0",
     "@wedding-rpg/contracts": "workspace:*",
     "@wedding-rpg/wedding-core": "workspace:*",
+    "aws4fetch": "^1.0.20",
     "zod": "^4"
   },
   "devDependencies": {

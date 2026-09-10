@@ -36,6 +36,9 @@ Live stack (verified 2026-09-09):
    avatar, peran, dialog, aksi) + 4 hati Our Story + tukar lokasi
    antar-slot. World (template, suasana, musik) + Avatar Tamu
    (centang dari registry). Memuat editan server: Muat dari Server.
+   Gallery: tempel URL, atau Unggah foto (otomatis WebP, tersimpan di
+   R2 per-project); susun, jadikan cover, hapus (ditolak bila dipakai
+   publikasi aktif).
 3. Simpan Draft → Preview Draft (buka `/g/preview/<token>`, data draft,
    production tidak tersentuh) → Publish → Aktifkan.
 4. Tamu: Tambah satu per satu (tombol Copy per baris), atau tempel CSV

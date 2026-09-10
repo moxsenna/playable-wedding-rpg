@@ -6,7 +6,17 @@ import type {
   WeddingEvent,
 } from "@wedding-rpg/contracts";
 import { landmarkIds } from "@wedding-rpg/contracts";
+import { useState } from "react";
 import { moveItem, uniqueId } from "./npcOps";
+import {
+  completeUpload,
+  deleteMedia,
+  fileToWebp,
+  mediaKeyFromSrc,
+  putDirect,
+  putProxied,
+  requestUploadUrl,
+} from "./mediaClient";
 
 type PubPatch = (patch: Partial<Publication>) => void;
 
@@ -265,19 +275,89 @@ export function StorySection({ story, onChange }: { story: StoryItem[]; onChange
   );
 }
 
-export function GallerySection({ gallery, onChange }: { gallery: GalleryImage[]; onChange: (g: GalleryImage[]) => void }) {
+export function GallerySection({
+  gallery,
+  onChange,
+  media,
+  onNotice,
+}: {
+  gallery: GalleryImage[];
+  onChange: (g: GalleryImage[]) => void;
+  media?: { apiBase: string; adminKey: string; projectId: string };
+  onNotice?: (msg: string) => void;
+}) {
+  const [uploading, setUploading] = useState(false);
   const set = (i: number, patch: Partial<GalleryImage>) => {
     const next = [...gallery];
     next[i] = { ...next[i], ...patch };
     onChange(next);
   };
   const setCover = (i: number) => onChange(gallery.map((g, j) => ({ ...g, cover: j === i ? true : undefined })));
+  const upload = async (file: File) => {
+    if (!media) return;
+    setUploading(true);
+    try {
+      const { bytes, contentType } = await fileToWebp(file);
+      const intent = await requestUploadUrl(media.apiBase, media.adminKey, media.projectId, contentType, bytes.byteLength);
+      if (intent.mode === "presigned" && intent.uploadUrl) {
+        await putDirect(intent.uploadUrl, bytes, contentType);
+        await completeUpload(media.apiBase, media.adminKey, media.projectId, intent.key);
+      } else {
+        await putProxied(media.apiBase, media.adminKey, media.projectId, intent.key, bytes, contentType);
+      }
+      onChange([...gallery, { src: intent.publicUrl, alt: file.name.replace(/\.[a-z0-9]+$/i, "") || "Foto" }]);
+      onNotice?.("Foto terunggah.");
+    } catch {
+      onNotice?.("Unggah gagal — coba lagi.");
+    } finally {
+      setUploading(false);
+    }
+  };
+  const remove = async (i: number) => {
+    const target = gallery[i];
+    if (media) {
+      const key = mediaKeyFromSrc(media.apiBase, target.src);
+      if (key) {
+        try {
+          const result = await deleteMedia(media.apiBase, media.adminKey, media.projectId, key);
+          if (result === "referenced") {
+            onNotice?.("Foto dipakai publikasi aktif — tidak bisa dihapus.");
+            return;
+          }
+        } catch {
+          onNotice?.("Hapus gagal — coba lagi.");
+          return;
+        }
+      }
+    }
+    onChange(gallery.filter((_, j) => j !== i));
+  };
   return (
     <section aria-label="Galeri">
       <h2>Gallery</h2>
+      {media && (
+        <label>
+          Unggah foto
+          <input
+            data-testid="admin-gallery-upload"
+            type="file"
+            accept="image/*"
+            disabled={uploading || gallery.length >= 24}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              e.target.value = "";
+              if (file) void upload(file);
+            }}
+          />
+        </label>
+      )}
+      {uploading && <p data-testid="admin-gallery-progress">Mengunggah…</p>}
       {gallery.map((g, i) => (
         <details key={`${g.src}-${i}`} data-testid={`admin-gallery-card-${i}`}>
           <summary>{g.alt || g.src}{g.cover ? " ★" : ""}</summary>
+          {/^https?:\/\//i.test(g.src) || g.src.startsWith("/") ? (
+            <img data-testid={`admin-gallery-thumb-${i}`} src={g.src} alt="" loading="lazy" className="admin-thumb" />
+          ) : null}
           <label>
             URL gambar
             <input data-testid={`admin-gallery-src-${i}`} value={g.src} onChange={(e) => set(i, { src: e.target.value })} placeholder="https://… atau assets/…" />
@@ -297,7 +377,7 @@ export function GallerySection({ gallery, onChange }: { gallery: GalleryImage[];
             <button onClick={() => onChange(moveItem(gallery, i, i + 1))} disabled={i === gallery.length - 1}>
               Turun
             </button>
-            <button data-testid={`admin-gallery-del-${i}`} onClick={() => onChange(gallery.filter((_, j) => j !== i))}>
+            <button data-testid={`admin-gallery-del-${i}`} onClick={() => void remove(i)}>
               Hapus
             </button>
           </div>

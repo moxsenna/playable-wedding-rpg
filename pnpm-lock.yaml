@@ -45,6 +45,9 @@ importers:
       '@wedding-rpg/wedding-core':
         specifier: workspace:*
         version: link:../../packages/wedding-core
+      aws4fetch:
+        specifier: ^1.0.20
+        version: 1.0.20
       zod:
         specifier: ^4
         version: 4.5.4
@@ -1251,6 +1254,9 @@ packages:
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
 
+  aws4fetch@1.0.20:
+    resolution: {integrity: sha512-/djoAN709iY65ETD6LKCtyyEI04XIBP5xVvfmNxsEP0uJB5tyaGBztSryRr4HqMStr9R06PisQE7m9zDTXKu6g==}
+
   blake3-wasm@2.1.5:
     resolution: {integrity: sha512-F1+K8EbfOZE49dtoPtmxUQrpXaBIl3ICvasLh+nJta0xkz+9kF/7uet9fLnwKqhDrmj6g+6K3Tw9yQPUg2ka5g==}
 
@@ -2286,6 +2292,8 @@ snapshots:
   '@types/ws@8.18.1':
     dependencies:
       '@types/node': 20.19.43
+
+  aws4fetch@1.0.20: {}
 
   blake3-wasm@2.1.5: {}
 

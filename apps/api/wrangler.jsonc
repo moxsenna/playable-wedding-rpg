@@ -4,7 +4,10 @@
   "main": "src/api.ts",
   "compatibility_date": "2026-08-01",
   "workers_dev": true,
-  "r2_buckets": [{ "binding": "ASSETS", "bucket_name": "wedding-templates" }],
+  "r2_buckets": [
+    { "binding": "ASSETS", "bucket_name": "wedding-templates" },
+    { "binding": "MEDIA", "bucket_name": "yutemu-wedding-media" }
+  ],
   "vars": {
     "PROJECT_AVATARS_JSON": "{\"demo-ayu-bima\":[\"guest_01\"],\"raka-naya\":[\"guest_01\"],\"arvin-selena\":[\"guest_01\"]}"
   }

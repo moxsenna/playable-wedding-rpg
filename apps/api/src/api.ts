@@ -1,7 +1,17 @@
 import { neon } from "@neondatabase/serverless";
+import { AwsClient } from "aws4fetch";
 import {
   NeonStore,
   allowedStatusTransition,
+  galleryRefs,
+  keyReferenced,
+  mediaKeyFor,
+  parseMediaKey,
+  randomUuid,
+  validateUploadIntent,
+  MEDIA_MAX_BYTES,
+  MEDIA_MIME_EXT,
+  PRESIGN_TTL_S,
   mintGuestToken,
   mintPreviewToken,
   neonHttpPool,
@@ -26,6 +36,9 @@ import {
 
 interface R2BucketLike {
   get(key: string): Promise<{ body: unknown; httpMetadata?: { contentType?: string } } | null>;
+  put(key: string, value: BodyInit, opts?: { httpMetadata?: { contentType?: string } }): Promise<unknown>;
+  head(key: string): Promise<{ size: number } | null>;
+  delete(key: string): Promise<void>;
 }
 
 interface Env {
@@ -36,6 +49,37 @@ interface Env {
   PROJECT_AVATARS_JSON?: string;
   ALLOW_DEV_TOKENS?: string;
   ASSETS?: R2BucketLike;
+  MEDIA?: R2BucketLike;
+  R2_ACCOUNT_ID?: string;
+  R2_ACCESS_KEY_ID?: string;
+  R2_SECRET_ACCESS_KEY?: string;
+  MEDIA_BUCKET?: string;
+}
+
+const MEDIA_EXT_TYPES: Record<string, string> = {
+  ".webp": "image/webp",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".png": "image/png",
+};
+
+async function signMediaUpload(
+  env: Env,
+  key: string,
+  contentType: string
+): Promise<{ uploadUrl: string; expiresIn: number } | null> {
+  const accountId = env.R2_ACCOUNT_ID ?? "";
+  const accessKeyId = env.R2_ACCESS_KEY_ID ?? "";
+  const secretAccessKey = env.R2_SECRET_ACCESS_KEY ?? "";
+  const bucket = env.MEDIA_BUCKET ?? "yutemu-wedding-media";
+  if (!accountId || !accessKeyId || !secretAccessKey) return null;
+  const client = new AwsClient({ accessKeyId, secretAccessKey, service: "s3" });
+  const url = new URL(`https://${accountId}.r2.cloudflarestorage.com/${bucket}/${key}`);
+  url.searchParams.set("X-Amz-Expires", String(PRESIGN_TTL_S));
+  const signed = await client.sign(new Request(url.toString(), { method: "PUT", headers: { "content-type": contentType } }), {
+    aws: { signQuery: true },
+  });
+  return { uploadUrl: signed.url, expiresIn: PRESIGN_TTL_S };
 }
 
 const ASSET_CONTENT_TYPES: Record<string, string> = {
@@ -69,7 +113,7 @@ async function storeFor(env: Env): Promise<WeddingStore> {
 // CORS is permissive so any deployed wedding domain can call it.
 const CORS: Record<string, string> = {
   "access-control-allow-origin": "*",
-  "access-control-allow-methods": "GET, POST, OPTIONS",
+  "access-control-allow-methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
   "access-control-allow-headers": "content-type, x-session, x-admin-key",
   "access-control-max-age": "86400",
 };
@@ -402,6 +446,23 @@ export default {
       return json({ ok: true });
     }
 
+    if (url.pathname.startsWith("/v1/media/") && request.method === "GET") {
+      if (!env.MEDIA) return json({ error: "media not bound" }, 500);
+      const key = decodeURIComponent(url.pathname.slice("/v1/media/".length));
+      if (!parseMediaKey(key)) return json({ error: "bad media key" }, 400);
+      const obj = await env.MEDIA.get(key);
+      if (!obj) return json({ error: "not found" }, 404);
+      const ext = key.slice(key.lastIndexOf(".")).toLowerCase();
+      return new Response(obj.body as BodyInit, {
+        status: 200,
+        headers: {
+          "content-type": obj.httpMetadata?.contentType ?? MEDIA_EXT_TYPES[ext] ?? "application/octet-stream",
+          ...CORS,
+          "cache-control": "public, max-age=31536000, immutable",
+        },
+      });
+    }
+
     if (url.pathname.startsWith("/v1/admin/")) {
       if (!env.ADMIN_KEY || request.headers.get("x-admin-key") !== env.ADMIN_KEY) {
         return unauthorized();
@@ -672,6 +733,74 @@ export default {
         await store.setAvatarPool(projectId, clean);
         await store.recordAudit(projectId, "admin", "avatars.update", `${clean.length} avatars`, Date.now());
         return json({ avatarIds: clean });
+      }
+      if (url.pathname === "/v1/admin/media/upload-url" && request.method === "POST") {
+        const body = await readBody();
+        const intent = validateUploadIntent({
+          projectId: body.projectId,
+          contentType: body.contentType,
+          sizeBytes: body.sizeBytes,
+        });
+        if (!intent.ok) return json({ error: intent.error }, 400);
+        if (!(await store.getProject(intent.projectId as string))) return json({ error: "unknown project" }, 404);
+        const key = mediaKeyFor(intent.projectId as string, randomUuid(), intent.ext as string);
+        const publicUrl = `${new URL(request.url).origin}/v1/media/${key}`;
+        const signed = await signMediaUpload(env, key, intent.contentType as string).catch(() => null);
+        if (signed) {
+          return json({ mode: "presigned", key, publicUrl, uploadUrl: signed.uploadUrl, expiresIn: signed.expiresIn });
+        }
+        if (!env.MEDIA) return json({ error: "media storage not configured" }, 500);
+        return json({ mode: "proxy", key, publicUrl });
+      }
+      if (url.pathname === "/v1/admin/media/upload" && request.method === "POST") {
+        if (!env.MEDIA) return json({ error: "media storage not configured" }, 500);
+        const projectId = url.searchParams.get("projectId") ?? "";
+        const key = decodeURIComponent(url.searchParams.get("key") ?? "");
+        const contentType = url.searchParams.get("contentType") ?? "";
+        const parsed = parseMediaKey(key);
+        if (!parsed || parsed.projectId !== projectId) return json({ error: "bad media key" }, 400);
+        if (!(await store.getProject(projectId))) return json({ error: "unknown project" }, 404);
+        const ext = MEDIA_MIME_EXT[contentType];
+        if (!ext || !key.endsWith(`.${ext}`)) return json({ error: "unsupported content type" }, 400);
+        const bytes = await request.arrayBuffer();
+        if (bytes.byteLength < 1 || bytes.byteLength > MEDIA_MAX_BYTES) {
+          return json({ error: "size out of range" }, 400);
+        }
+        await env.MEDIA.put(key, bytes, { httpMetadata: { contentType } });
+        await store.recordAudit(projectId, "admin", "media.upload", key, Date.now());
+        return json({ key, size: bytes.byteLength });
+      }
+      if (url.pathname === "/v1/admin/media/complete" && request.method === "POST") {
+        if (!env.MEDIA) return json({ error: "media storage not configured" }, 500);
+        const body = await readBody();
+        const projectId = String(body.projectId ?? "");
+        const key = String(body.key ?? "");
+        const parsed = parseMediaKey(key);
+        if (!parsed || parsed.projectId !== projectId) return json({ error: "bad media key" }, 400);
+        const head = await env.MEDIA.head(key);
+        if (!head) return json({ error: "object missing" }, 404);
+        if (head.size < 1 || head.size > MEDIA_MAX_BYTES) {
+          await env.MEDIA.delete(key).catch(() => undefined);
+          return json({ error: "size out of range" }, 400);
+        }
+        await store.recordAudit(projectId, "admin", "media.complete", key, Date.now());
+        return json({ ok: true, size: head.size });
+      }
+      if (url.pathname === "/v1/admin/media" && request.method === "DELETE") {
+        if (!env.MEDIA) return json({ error: "media storage not configured" }, 500);
+        const body = await readBody();
+        const projectId = String(body.projectId ?? "");
+        const key = String(body.key ?? "");
+        const parsed = parseMediaKey(key);
+        if (!parsed || parsed.projectId !== projectId) return json({ error: "bad media key" }, 400);
+        const versions = await store.listVersions(projectId);
+        const active = versions.find((v) => v.status === "active");
+        if (active && keyReferenced(galleryRefs(active.snapshot), key)) {
+          return json({ error: "referenced by active publication" }, 409);
+        }
+        await env.MEDIA.delete(key);
+        await store.recordAudit(projectId, "admin", "media.delete", key, Date.now());
+        return json({ ok: true });
       }
       if (url.pathname === "/v1/admin/preview" && request.method === "POST") {
         const body = await readBody();

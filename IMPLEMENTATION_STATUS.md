@@ -800,4 +800,33 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   (`DATABASE_URL=… node tooling/e2e/m126-neon.mjs` + Studio publish
   flow against production).
 
+## M17.1 — R2 Wedding Media Pipeline (DELIVERED 2026-09-10)
+
+- Status: complete. `.unlazy/m171/GATES.md` G0..G4 PASS with recorded
+  evidence. Gallery shape `[{src, alt}]` unchanged; photos now live in
+  project-scoped R2 instead of URL-only strings.
+- Infra: new `yutemu-wedding-media` bucket, `MEDIA` binding on the API
+  worker, bucket CORS locked to the two Studio origins (PUT only).
+- API (`apps/api/src/media.ts` + routes): `POST
+  /v1/admin/media/upload-url` (ADMIN_KEY, MIME allowlist jpeg/png/webp,
+  ≤5MB, server-minted `weddings/{project}/gallery/{uuid}.webp`) returns
+  presigned PUT (10-min TTL, pinned Content-Type) when R2 S3 secrets
+  exist, else a real proxied-upload mode; `POST .../media/upload`
+  stores bytes via binding; `POST .../media/complete` enforces size;
+  `GET /v1/media/<key>` serves immutable bytes; `DELETE
+  /v1/admin/media` returns 409 when the key is referenced by the
+  active publication. Fixed API CORS to allow PUT/PATCH/DELETE (this
+  was also silently breaking cross-origin guest/project mutations).
+- Studio: gallery upload (client WebP ≤1920px), thumbnails, reorder,
+  cover, delete with active-reference guard surfacing.
+- Tests: `R2 MEDIA VERIFIED` (7, incl. live bucket+CORS readback),
+  `MEDIA API VERIFIED` (31, both upload modes, isolation, delete
+  protection), `STUDIO MEDIA VERIFIED` (browser upload→draft→publish→
+  activate→blocked delete), `M171 REGRESSION VERIFIED`.
+- Operator steps for presigned direct upload: create an R2 API token
+  (dashboard R2 → Manage R2 API tokens, Object Read & Write on
+  `yutemu-wedding-media`), then `wrangler secret put R2_ACCOUNT_ID`,
+  `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` on `wedding-rpg-api`.
+  Until then the proxied mode serves uploads with zero extra setup.
+
 

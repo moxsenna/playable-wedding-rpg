@@ -865,3 +865,4 @@ body {
 .admin-page{background:var(--yutemu-night)}
 .admin-page h1{letter-spacing:.5px}
 
+.admin-thumb{width:100%;max-width:220px;height:120px;object-fit:cover;border-radius:12px;margin:6px 0}
