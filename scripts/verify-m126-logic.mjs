@@ -89,7 +89,9 @@ try {
   ok(touched.length === 1, `single atomic statement (saw ${touched.length})`);
   const stmt = touched[0];
   ok(stmt.text.includes("WITH target AS"), "target validated inside the statement");
-  ok(stmt.text.includes("ELSE 'archived' END"), "archive + activate in one write");
+  // (M17: literals carry ::version_status casts because the status
+  // column is a Postgres enum; the archived-sibling semantic is unchanged.)
+  ok(stmt.text.includes("ELSE 'archived'"), "archive + activate in one write");
   ok(/status = 'published'/.test(stmt.text), "target must be published");
 
   // empty activate result throws (caller maps to 409, never two actives)

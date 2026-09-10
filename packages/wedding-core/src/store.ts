@@ -26,7 +26,11 @@ export interface DbPool {
 /** Minimal Neon HTTP query function (sql.query(text, params)); full type lives in apps/api. */
 export interface NeonQueryFn {
   query(text: string, params?: unknown[]): Promise<QueryRow[]>;
-  transaction?(fn: (tx: { query(text: string, params?: unknown[]): unknown }) => unknown[]): Promise<unknown>;
+  transaction?: unknown;
+}
+
+interface NeonTransaction {
+  (fn: (tx: { query(text: string, params?: unknown[]): { queryData: unknown } }) => { queryData: unknown }[]): Promise<unknown[][]>;
 }
 
 /** DbPool over Neon HTTP. No TCP, no node-postgres — works in workerd. */
@@ -37,10 +41,9 @@ export function neonHttpPool(sql: NeonQueryFn): DbPool {
       return { rows, rowCount: rows.length };
     },
     async transact(statements: DbStatement[]) {
-      if (typeof sql.transaction !== "function") throw new Error("transactions unsupported");
-      const out = (await sql.transaction((tx) =>
-        statements.map((s) => tx.query(s.text, s.params ?? []))
-      )) as unknown[];
+      const run = sql.transaction as NeonTransaction | undefined;
+      if (typeof run !== "function") throw new Error("transactions unsupported");
+      const out = await run((tx) => statements.map((s) => tx.query(s.text, s.params ?? [])));
       return out.map((rows) => ({ rows: rows as QueryRow[] }));
     },
   };

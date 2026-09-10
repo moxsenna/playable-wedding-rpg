@@ -73,6 +73,7 @@ export default function Admin() {
   const [guestFilter, setGuestFilter] = useState("");
   const [csvText, setCsvText] = useState("name\nTamu 1\nTamu 2");
   const [importSummary, setImportSummary] = useState("");
+  const [importRejected, setImportRejected] = useState<{ rowNumber?: number; reason: string }[]>([]);
   const [analytics, setAnalytics] = useState("");
   const [newGuestName, setNewGuestName] = useState("");
   const [newProjectName, setNewProjectName] = useState("");
@@ -481,12 +482,13 @@ export default function Admin() {
       headers,
       body: JSON.stringify({ projectId: activeProject, csv: csvText }),
     });
-    const body = res.ok ? ((await res.json()) as { created: number; skipped: number; rejected: { reason: string }[] }) : null;
+    const body = res.ok ? ((await res.json()) as { created: number; skipped: number; rejected: { rowNumber?: number; reason: string }[] }) : null;
     setImportSummary(
       body
         ? `Preview valid ${preview.valid.length}, ditolak ${preview.rejected.length}. Hasil: dibuat ${body.created}, dilewati ${body.skipped}, ditolak ${body.rejected.length}.`
         : `Import gagal (${res.status}).`
     );
+    setImportRejected(body?.rejected ?? []);
     await loadGuests(activeProject);
   };
 
@@ -515,6 +517,32 @@ export default function Admin() {
 
   const filteredGuests = guests.filter((g) => g.name.toLowerCase().includes(guestFilter.toLowerCase()));
 
+  const activeProjectMeta = projects.find((p) => p.id === activeProject) ?? null;
+
+  const METRIC_LABELS: Record<string, string> = {
+    totalGuests: "Total tamu",
+    uniqueOpened: "Membuka undangan",
+    uniqueStarted: "Mulai bermain",
+    heartsCollected: "Hati terkumpul",
+    finaleReached: "Sampai finale",
+    wishes: "Pesan & doa",
+    rsvps: "RSVP",
+  };
+  const analyticsMetrics = (() => {
+    if (!analytics) return null;
+    try {
+      const parsed = JSON.parse(analytics) as Record<string, unknown>;
+      const rows = Object.entries(METRIC_LABELS)
+        .filter(([k]) => typeof parsed[k] === "number")
+        .map(([k, label]) => ({ key: k, label, value: parsed[k] as number }));
+      return rows.length > 0 ? rows : null;
+    } catch {
+      return null;
+    }
+  })();
+
+  const opsNoteError = /gagal|tidak bisa|tidak valid|ditolak|belum|harus|wajib|pilih .* dulu|isi .* dulu/i.test(opsNote);
+
   return (
     <>
       <Head>
@@ -524,8 +552,42 @@ export default function Admin() {
       <main data-testid="admin-page" className="admin-page">
         <h1>YUTEMU Studio</h1>
 
-        <section aria-label="Operasional">
-          <h2>Weddings (server)</h2>
+        <div className="studio-layout">
+          <aside className="studio-rail" aria-label="Ringkasan wedding">
+            <div className="studio-card">
+              <div className="studio-status">
+                <span>{activeProjectMeta ? activeProjectMeta.name : "Belum ada wedding dipilih"}</span>
+                {activeProjectMeta && (
+                  <span data-testid="admin-project-status" className={`studio-pill studio-pill-${activeProjectMeta.status}`}>
+                    {activeProjectMeta.status}
+                  </span>
+                )}
+              </div>
+              {!serverConfigured && (
+                <p className="field-hint">Mode dry-run lokal — isi Admin Key dan pilih wedding untuk operasi server.</p>
+              )}
+              <div data-testid="admin-rail-validation" className={errors.length === 0 ? "studio-valid-ok" : "studio-valid-bad"}>
+                {errors.length === 0 ? (
+                  serverConfigured ? "✓ Siap publish" : "✓ Valid (lokal)"
+                ) : (
+                  <a href="#st-validasi">{errors.length} masalah — lihat Validasi</a>
+                )}
+              </div>
+            </div>
+            <nav className="studio-nav" aria-label="Navigasi Studio">
+              <a href="#st-wedding">Wedding</a>
+              <a href="#st-konten">Konten</a>
+              <a href="#st-npc">NPC</a>
+              <a href="#st-world">World</a>
+              <a href="#st-tamu">Tamu</a>
+              <a href="#st-validasi">Validasi</a>
+              <a href="#st-publikasi">Publikasi</a>
+            </nav>
+          </aside>
+
+          <div className="studio-main">
+        <section aria-label="Operasional" id="st-wedding">
+          <h2>Wedding</h2>
           <label>
             Admin Key
             <input
@@ -536,9 +598,10 @@ export default function Admin() {
               placeholder="wajib untuk operasi server"
               autoComplete="off"
             />
+            <p className="field-hint">Kunci operator dari Cloudflare — tidak tersimpan di mana pun selain browser ini.</p>
           </label>
           <div role="group" aria-label="Operasional">
-            <button data-testid="admin-reload-projects" onClick={() => void loadProjects()}>
+            <button className="admin-btn" data-testid="admin-reload-projects" onClick={() => void loadProjects()}>
               Muat Weddings
             </button>
             <select
@@ -561,33 +624,18 @@ export default function Admin() {
               onChange={(e) => setNewProjectName(e.target.value)}
               placeholder="Nama wedding baru"
             />
-            <button data-testid="admin-project-create" onClick={() => void createProject()}>
+            <button className="admin-btn-primary" data-testid="admin-project-create" onClick={() => void createProject()}>
               Buat Wedding
             </button>
           </div>
-          {opsNote && <p data-testid="admin-ops-note">{opsNote}</p>}
+          {opsNote && (
+            <p data-testid="admin-ops-note" role="status" className={opsNoteError ? "admin-note admin-note-error" : "admin-note"}>
+              {opsNote}
+            </p>
+          )}
         </section>
 
-        <section aria-label="Pilih wedding">
-          <h2>Wedding</h2>
-          <div role="group" aria-label="Fixture">
-            {WEDDING_IDS.map((id) => (
-              <button
-                key={id}
-                data-testid={`admin-pick-${id}`}
-                className={id === weddingId ? "admin-pick-active" : ""}
-                onClick={() => pick(id)}
-              >
-                {id}
-              </button>
-            ))}
-          </div>
-          <a data-testid="admin-preview" href={`/?wedding=${weddingId}`}>
-            Preview {weddingId}
-          </a>
-        </section>
-
-        <section aria-label="Tamu">
+        <section aria-label="Tamu" id="st-tamu">
           <h2>Tamu {guests.length > 0 && `(${filteredGuests.length}/${guests.length})`}</h2>
           <input
             data-testid="admin-guest-filter"
@@ -602,55 +650,84 @@ export default function Admin() {
               onChange={(e) => setNewGuestName(e.target.value)}
               placeholder="Nama tamu baru"
             />
-            <button data-testid="admin-guest-add" onClick={() => void addGuest()}>
+            <button className="admin-btn-primary" data-testid="admin-guest-add" onClick={() => void addGuest()}>
               Tambah
             </button>
-            <button data-testid="admin-links-export" onClick={exportLinks}>
+            <button className="admin-btn" data-testid="admin-links-export" onClick={exportLinks}>
               Export Links
             </button>
           </div>
-          <ul data-testid="admin-guests">
-            {filteredGuests.slice(0, 50).map((g) => (
-              <li key={g.id}>
-                {g.name} · /g/{g.token}
-                {g.rsvp ? ` · ${g.rsvp}` : ""}{" "}
-                <button data-testid={`admin-copy-${g.id}`} onClick={() => void copyLink(g.token)}>
-                  Copy
-                </button>
-              </li>
-            ))}
-          </ul>
+          {filteredGuests.length === 0 ? (
+            <p className="empty-note">Belum ada tamu — tambah di atas atau import dari CSV.</p>
+          ) : (
+            <ul data-testid="admin-guests">
+              {filteredGuests.slice(0, 50).map((g) => (
+                <li key={g.id} className="guest-row">
+                  <span className="guest-name">{g.name}</span>
+                  <button data-testid={`admin-copy-${g.id}`} onClick={() => void copyLink(g.token)}>
+                    Copy
+                  </button>
+                  <span className="guest-link">/g/{g.token}</span>
+                  {g.rsvp ? <span className="guest-meta">RSVP: {g.rsvp}</span> : <span />}
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
 
-        <section aria-label="Import">
+        <section aria-label="Import" id="st-import">
           <h2>Import Tamu (CSV)</h2>
+          <p className="field-hint">Format: kolom name wajib; phone, email, group, notes opsional.</p>
           <textarea
             data-testid="admin-csv"
             value={csvText}
             onChange={(e) => setCsvText(e.target.value)}
             rows={4}
           />
-          <button data-testid="admin-import" onClick={() => void runImport()}>
+          <button className="admin-btn-primary" data-testid="admin-import" onClick={() => void runImport()}>
             Preview & Import
           </button>
           {importSummary && <p data-testid="admin-import-summary">{importSummary}</p>}
+          {importRejected.length > 0 && (
+            <ul className="reject-list">
+              {importRejected.slice(0, 10).map((r, i) => (
+                <li key={i}>
+                  Baris {r.rowNumber ?? "?"}: {r.reason}
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
 
         <section aria-label="Analitik">
           <h2>Analitik</h2>
-          <button data-testid="admin-analytics-reload" onClick={() => void loadAnalytics()}>
+          <button className="admin-btn" data-testid="admin-analytics-reload" onClick={() => void loadAnalytics()}>
             Muat Analitik
           </button>
-          {analytics && <p data-testid="admin-analytics">{analytics}</p>}
+          {analyticsMetrics ? (
+            <div data-testid="admin-analytics" className="metric-grid">
+              {analyticsMetrics.map((m) => (
+                <div key={m.key} className="metric">
+                  <b>{m.value}</b>
+                  <span>{m.label}</span>
+                </div>
+              ))}
+            </div>
+          ) : analytics ? (
+            <p data-testid="admin-analytics">{analytics}</p>
+          ) : (
+            <p className="empty-note">Belum ada data — muat analitik setelah tamu membuka undangan.</p>
+          )}
         </section>
 
-        <section aria-label="Konten">
+        <section aria-label="Konten" id="st-konten">
           <h2>Konten Wedding</h2>
           {serverConfigured && (
-            <button data-testid="admin-load-server" onClick={() => void loadServerSnapshot()}>
+            <button className="admin-btn" data-testid="admin-load-server" onClick={() => void loadServerSnapshot()}>
               Muat dari Server
             </button>
           )}
+          <p className="field-hint">Mulai dari contoh, ubah seperlunya, lalu Simpan Draft ke server.</p>
         </section>
 
         <CoupleSection couple={pub.couple} onChange={(couple) => setPub((p) => ({ ...p, couple }))} />
@@ -689,22 +766,22 @@ export default function Admin() {
           onChange={(patch) => setWorldCfg((w) => ({ ...w, ...patch }))}
         />
         {serverConfigured && (
-          <button data-testid="admin-world-save" onClick={() => void saveWorld()}>
+          <button className="admin-btn-primary" data-testid="admin-world-save" onClick={() => void saveWorld()}>
             Simpan World
           </button>
         )}
 
         <AvatarPoolSection pool={avatarPool} registry={avatarMeta} onChange={setAvatarPool} />
         {serverConfigured && (
-          <button data-testid="admin-pool-save" onClick={() => void savePool()}>
+          <button className="admin-btn-primary" data-testid="admin-pool-save" onClick={() => void savePool()}>
             Simpan Avatar
           </button>
         )}
 
-        <section aria-label="Validasi">
+        <section aria-label="Validasi" id="st-validasi">
           <h2>Validasi</h2>
           <div data-testid="admin-validation" className={errors.length === 0 ? "admin-valid" : "admin-invalid"}>
-            {errors.length === 0 ? `VALID — ${weddingId}` : `${errors.length} masalah`}
+            {errors.length === 0 ? `VALID — ${weddingId}` : `${errors.length} masalah — perbaiki sebelum Simpan Draft`}
           </div>
           {errors.length > 0 && (
             <ul data-testid="admin-errors">
@@ -715,23 +792,26 @@ export default function Admin() {
           )}
         </section>
 
-        <section aria-label="Publikasi">
+        <section aria-label="Publikasi" id="st-publikasi">
           <h2>Publikasi {serverConfigured ? "(server)" : "(dry-run)"}</h2>
+          {!serverConfigured && (
+            <p className="field-hint">Dry-run lokal — isi Admin Key dan pilih wedding untuk publish sungguhan.</p>
+          )}
           <div role="group" aria-label="Lifecycle">
-            <button data-testid="admin-draft" onClick={saveDraft} disabled={errors.length > 0}>
+            <button className="admin-btn-primary" data-testid="admin-draft" onClick={saveDraft} disabled={errors.length > 0} title={errors.length > 0 ? "Perbaiki validasi dulu" : undefined}>
               Simpan Draft
             </button>
-            <button data-testid="admin-publish" onClick={publish}>
+            <button className="admin-btn-primary" data-testid="admin-publish" onClick={publish}>
               Publish
             </button>
-            <button data-testid="admin-activate" onClick={activate}>
+            <button className="admin-btn-primary" data-testid="admin-activate" onClick={activate}>
               Aktifkan
             </button>
-            <button data-testid="admin-export" onClick={exportJson} disabled={errors.length > 0}>
+            <button className="admin-btn" data-testid="admin-export" onClick={exportJson} disabled={errors.length > 0}>
               Export JSON
             </button>
             {serverConfigured && (
-              <button data-testid="admin-preview-make" onClick={() => void makePreview()}>
+              <button className="admin-btn" data-testid="admin-preview-make" onClick={() => void makePreview()}>
                 Preview Draft
               </button>
             )}
@@ -744,6 +824,7 @@ export default function Admin() {
             </p>
           )}
           <ul data-testid="admin-versions">
+            {versions.versions.length === 0 && <li className="empty-note">Belum ada versi lokal.</li>}
             {versions.versions.map((v) => (
               <li key={v.id}>
                 v{v.version} {v.status}
@@ -768,6 +849,28 @@ export default function Admin() {
             </ul>
           )}
         </section>
+
+        <section aria-label="Data contoh">
+          <h2>Data Contoh (dev)</h2>
+          <p className="field-hint">Template bawaan untuk mulai cepat — tidak tersimpan ke server.</p>
+          <div role="group" aria-label="Fixture">
+            {WEDDING_IDS.map((id) => (
+              <button
+                key={id}
+                data-testid={`admin-pick-${id}`}
+                className={id === weddingId ? "admin-pick-active" : ""}
+                onClick={() => pick(id)}
+              >
+                {id}
+              </button>
+            ))}
+          </div>
+          <a data-testid="admin-preview" href={`/?wedding=${weddingId}`}>
+            Preview {weddingId}
+          </a>
+        </section>
+          </div>
+        </div>
       </main>
     </>
   );

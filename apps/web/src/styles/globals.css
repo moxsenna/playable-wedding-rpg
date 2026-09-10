@@ -866,3 +866,64 @@ body {
 .admin-page h1{letter-spacing:.5px}
 
 .admin-thumb{width:100%;max-width:220px;height:120px;object-fit:cover;border-radius:12px;margin:6px 0}
+
+.studio-layout{display:block}
+.studio-rail{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.studio-card{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px}
+.studio-status{display:flex;align-items:center;gap:8px;font-weight:700}
+.studio-pill{display:inline-block;min-width:44px;text-align:center;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:999px;padding:4px 10px;background:rgba(255,255,255,.12);color:#f2f4f8}
+.studio-pill-live{background:rgba(159,232,169,.18);color:#9fe8a9}
+.studio-pill-draft{background:rgba(255,217,138,.16);color:#ffd98a}
+.studio-pill-archived{background:rgba(242,163,163,.16);color:#f2a3a3}
+.studio-nav{display:flex;flex-wrap:wrap;gap:6px}
+.studio-nav a{font-size:13px;font-weight:600;color:#ffd98a;text-decoration:none;border:1px solid rgba(255,217,138,.35);border-radius:999px;padding:8px 12px;min-height:44px;display:inline-flex;align-items:center}
+.studio-nav a:active{background:rgba(255,217,138,.15)}
+.studio-valid-ok{color:#9fe8a9;font-weight:700}
+.studio-valid-bad{color:#f2a3a3;font-weight:700}
+.admin-page button.admin-btn{background:rgba(255,255,255,.07);color:#f2f4f8;border:1px solid rgba(255,255,255,.2)}
+.admin-page button.admin-btn-primary{background:#ffd98a;color:#1a2233;border:none}
+.admin-page button:hover{filter:brightness(1.08)}
+.admin-page button:active{transform:translateY(1px)}
+.admin-page button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.admin-note{border:1px solid rgba(255,217,138,.4);background:rgba(255,217,138,.08);border-radius:12px;padding:10px 12px;font-size:14px}
+.admin-note-error{border-color:rgba(242,163,163,.5);background:rgba(242,163,163,.08)}
+.guest-row{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:10px 0;border-top:1px solid rgba(255,255,255,.08)}
+.guest-row:first-child{border-top:none}
+.guest-name{font-weight:700}
+.guest-link{font-size:12px;color:#b9b3d4;word-break:break-all}
+.guest-meta{font-size:12px;color:#9fe8a9}
+.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.metric{background:rgba(255,255,255,.05);border-radius:12px;padding:10px 12px}
+.metric b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.metric span{font-size:12px;color:#b9b3d4}
+.stat-chips{display:flex;gap:8px;flex-wrap:wrap}
+.stat-chip{font-size:13px;font-weight:700;border-radius:999px;padding:6px 12px;background:rgba(255,255,255,.08)}
+.stat-ok{background:rgba(159,232,169,.16);color:#9fe8a9}
+.stat-warn{background:rgba(255,217,138,.14);color:#ffd98a}
+.stat-bad{background:rgba(242,163,163,.14);color:#f2a3a3}
+.reject-list{font-size:13px;color:#f2a3a3;margin:8px 0 0;padding-left:18px}
+.field-hint{font-size:12px;color:#b9b3d4;margin:4px 0 0}
+.empty-note{font-size:14px;color:#b9b3d4;border:1px dashed rgba(255,255,255,.2);border-radius:12px;padding:12px}
+@media(min-width:1024px){.studio-layout{display:grid;grid-template-columns:288px minmax(0,1fr);gap:20px;align-items:start}.studio-rail{position:sticky;top:16px;margin-bottom:0}.metric-grid{grid-template-columns:repeat(4,1fr)}}
+
+.studio-nav a{border-radius:10px}
+
+/* Marketing landing page (`/`) only. The body lock above exists so the game
+   canvas can own the viewport; a page that has to scroll releases it. The class
+   is applied by an inline script in _document.tsx, before first paint, so the
+   page never renders unscrollable while it waits for hydration. */
+body.landing-page{
+    position:static;
+    inset:auto;
+    height:auto;
+    overflow:visible;
+    overscroll-behavior:auto;
+    -webkit-user-select:auto;
+    user-select:auto;
+    background-color:#191331;
+}
+
+/* The boot splash covers Phaser's start on the game routes; on the landing page
+   it would only sit on top of the hero, so it is never shown there. */
+body.landing-page #boot-splash{display:none}
+

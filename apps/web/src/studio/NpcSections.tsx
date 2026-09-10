@@ -42,8 +42,9 @@ export function NpcSection({
     (a, b) => npcSlotIds.indexOf(a.slotId as (typeof npcSlotIds)[number]) - npcSlotIds.indexOf(b.slotId as (typeof npcSlotIds)[number])
   );
   return (
-    <section aria-label="NPC">
+    <section aria-label="NPC" id="st-npc">
       <h2>NPC ({bindings.length}/{npcSlotIds.length})</h2>
+      <p className="field-hint">Setiap peran diisi tepat satu karakter. Lokasi mengikuti slot; tukar untuk memindahkan.</p>
       {ordered.map((b) => (
         <details key={b.slotId} data-testid={`admin-npc-${b.slotId}`}>
           <summary>

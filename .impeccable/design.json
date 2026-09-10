@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-10T23:17:30.904Z",
+  "title": "Design System: YUTEMU",
+  "extensions": {
+    "colorMeta": {
+      "lentera-gold": {
+        "role": "primary",
+        "displayName": "Lentera Emas",
+        "canonical": "#ffd98a",
+        "tonalRamp": [
+          "#262115",
+          "#645536",
+          "#a28a58",
+          "#e0bf79",
+          "#ffde99",
+          "#ffe8b7",
+          "#fff1d5",
+          "#fffbf3"
+        ]
+      },
+      "night": {
+        "role": "neutral",
+        "displayName": "Malam",
+        "canonical": "#191331",
+        "tonalRamp": [
+          "#040307",
+          "#0a0713",
+          "#100c1f",
+          "#16112b",
+          "#37314b",
+          "#726e80",
+          "#adabb5",
+          "#e8e7ea"
+        ]
+      },
+      "night-deep": {
+        "role": "neutral",
+        "displayName": "Malam Pekat",
+        "canonical": "#221a3d",
+        "tonalRamp": [
+          "#050409",
+          "#0d0a18",
+          "#161127",
+          "#1e1736",
+          "#3e3756",
+          "#777288",
+          "#b0adba",
+          "#e9e8ec"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel",
+        "canonical": "#232c44",
+        "tonalRamp": [
+          "#05070a",
+          "#0e111b",
+          "#161c2b",
+          "#1f273c",
+          "#3f475c",
+          "#787d8c",
+          "#b0b4bc",
+          "#e9eaec"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Tinta",
+        "canonical": "#f2f4f8",
+        "tonalRamp": [
+          "#242525",
+          "#5f6061",
+          "#9a9b9e",
+          "#d5d6da",
+          "#f4f5f9",
+          "#f7f8fb",
+          "#fafbfd",
+          "#fefefe"
+        ]
+      },
+      "muted-lavender": {
+        "role": "neutral",
+        "displayName": "Lavender Redup",
+        "canonical": "#b9b3d4",
+        "tonalRamp": [
+          "#1c1b20",
+          "#494653",
+          "#767287",
+          "#a39dba",
+          "#c2bdda",
+          "#d4d0e5",
+          "#e6e4f0",
+          "#f8f7fb"
+        ]
+      },
+      "coral": {
+        "role": "tertiary",
+        "displayName": "Koral",
+        "canonical": "#e4636f",
+        "tonalRamp": [
+          "#220f11",
+          "#5a272c",
+          "#913f47",
+          "#c85762",
+          "#e77782",
+          "#ee9fa7",
+          "#f5c7cc",
+          "#fceff1"
+        ]
+      },
+      "violet": {
+        "role": "tertiary",
+        "displayName": "Violet",
+        "canonical": "#8b76c9",
+        "tonalRamp": [
+          "#15121e",
+          "#372e4f",
+          "#584b80",
+          "#7a68b1",
+          "#9a88d0",
+          "#b8abde",
+          "#d6ceec",
+          "#f3f1fa"
+        ]
+      },
+      "cream": {
+        "role": "tertiary",
+        "displayName": "Krim",
+        "canonical": "#fff6ea",
+        "tonalRamp": [
+          "#262523",
+          "#64615c",
+          "#a29c95",
+          "#e0d8ce",
+          "#fff7ed",
+          "#fff9f2",
+          "#fffcf8",
+          "#fffefd"
+        ]
+      },
+      "success-leaf": {
+        "role": "secondary",
+        "displayName": "Daun Sukses",
+        "canonical": "#9fe8a9",
+        "tonalRamp": [
+          "#182319",
+          "#3e5b42",
+          "#65936b",
+          "#8ccc94",
+          "#abebb4",
+          "#c4f1ca",
+          "#ddf7e0",
+          "#f5fdf6"
+        ]
+      },
+      "warning-rose": {
+        "role": "secondary",
+        "displayName": "Mawar Peringatan",
+        "canonical": "#f2a3a3",
+        "tonalRamp": [
+          "#241818",
+          "#5f4040",
+          "#9a6868",
+          "#d58f8f",
+          "#f4afaf",
+          "#f7c6c6",
+          "#fadede",
+          "#fef6f6"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Brand name, onboarding titles, invitation headers (Georgia)."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Forms, paragraphs, lists (system sans, 15px)."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field labels, hints, metadata (12-14px, muted)."
+      }
+    },
+    "shadows": [
+      {
+        "name": "lentera-lift",
+        "value": "0 4px 16px rgba(255,217,138,.3)",
+        "purpose": "Warm lift under the primary confirmation CTA."
+      },
+      {
+        "name": "layer-float",
+        "value": "0 12px 40px rgba(0,0,0,.55)",
+        "purpose": "Ambient lift for floating layers above the game world."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "app",
+        "value": "430px"
+      },
+      {
+        "name": "admin",
+        "value": "720px"
+      },
+      {
+        "name": "rail",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single next action. Gold pill, dark text, 44px minimum.",
+      "html": "<button class=\"ds-btn-primary\">Simpan Draft</button>",
+      "css": ".ds-btn-primary{background:#ffd98a;color:#191331;border:none;border-radius:999px;padding:10px 14px;min-height:44px;font-size:15px;font-weight:700;cursor:pointer;transition:filter .15s ease-out}.ds-btn-primary:hover{filter:brightness(1.08)}.ds-btn-primary:focus-visible{outline:2px solid #ffd98a;outline-offset:2px}.ds-btn-primary:active{transform:translateY(1px)}.ds-btn-primary:disabled{opacity:.45;cursor:not-allowed}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Supporting actions. Ghost outline, light text.",
+      "html": "<button class=\"ds-btn-secondary\">Muat Ulang</button>",
+      "css": ".ds-btn-secondary{background:rgba(255,255,255,.07);color:#f2f4f8;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:10px 14px;min-height:44px;font-size:15px;font-weight:600;cursor:pointer}.ds-btn-secondary:hover{filter:brightness(1.15)}.ds-btn-secondary:focus-visible{outline:2px solid #ffd98a;outline-offset:2px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Dark panel field with gold focus ring.",
+      "html": "<label class=\"ds-field\"><span>Nama</span><input type=\"text\" placeholder=\"Nama kamu\" /></label>",
+      "css": ".ds-field{display:block;font-size:14px;color:#f2f4f8}.ds-field span{display:block;margin-bottom:4px}.ds-field input{width:100%;box-sizing:border-box;min-height:44px;padding:10px 12px;font-size:15px;color:#f2f4f8;background:#232c44;border:1px solid rgba(255,255,255,.16);border-radius:12px}.ds-field input:focus-visible{outline:2px solid #ffd98a;outline-offset:2px}.ds-field input::placeholder{color:#b9b3d4}"
+    },
+    {
+      "name": "Studio Nav Pill",
+      "kind": "nav",
+      "refersTo": "nav-pill",
+      "description": "Anchor navigation between Studio sections.",
+      "html": "<nav class=\"ds-studio-nav\"><a href=\"#st-tamu\">Tamu</a></nav>",
+      "css": ".ds-studio-nav{display:flex;gap:6px}.ds-studio-nav a{font-size:13px;font-weight:600;color:#ffd98a;text-decoration:none;border:1px solid rgba(255,217,138,.35);border-radius:10px;padding:8px 12px;min-height:44px;display:inline-flex;align-items:center}.ds-studio-nav a:active{background:rgba(255,217,138,.15)}"
+    },
+    {
+      "name": "Metric Card",
+      "kind": "card",
+      "refersTo": "metric",
+      "description": "Analytics number with muted label, tabular numerals.",
+      "html": "<div class=\"ds-metric\"><b>128</b><span>Membuka undangan</span></div>",
+      "css": ".ds-metric{background:rgba(255,255,255,.05);border-radius:12px;padding:10px 12px}.ds-metric b{display:block;font-size:22px;font-variant-numeric:tabular-nums;color:#f2f4f8}.ds-metric span{font-size:12px;color:#b9b3d4}"
+    },
+    {
+      "name": "Guest Row",
+      "kind": "custom",
+      "refersTo": "guest-row",
+      "description": "Guest name, link, RSVP state, and copy action in one row.",
+      "html": "<div class=\"ds-guest-row\"><span class=\"ds-guest-name\">Budi</span><button>Copy</button><span class=\"ds-guest-link\">/g/abc123</span></div>",
+      "css": ".ds-guest-row{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:10px 0;border-top:1px solid rgba(255,255,255,.08)}.ds-guest-name{font-weight:700;color:#f2f4f8}.ds-guest-link{font-size:12px;color:#b9b3d4;word-break:break-all}"
+    },
+    {
+      "name": "Status Pill",
+      "kind": "chip",
+      "refersTo": "status-pill",
+      "description": "Draft/live/archived state label. Read-only.",
+      "html": "<span class=\"ds-pill-live\">live</span>",
+      "css": ".ds-pill-live{display:inline-block;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:999px;padding:4px 10px;background:rgba(159,232,169,.18);color:#9fe8a9}"
+    },
+    {
+      "name": "Notice",
+      "kind": "card",
+      "refersTo": "notice",
+      "description": "Operator feedback line, info or error tone.",
+      "html": "<p class=\"ds-note\">Tautan disalin.</p>",
+      "css": ".ds-note{border:1px solid rgba(255,217,138,.4);background:rgba(255,217,138,.08);border-radius:12px;padding:10px 12px;font-size:14px;color:#f2f4f8}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Arsip Kenangan",
+    "overview": "YUTEMU terlihat seperti album kenangan yang dibuka bersama orang tersayang: premium tapi dekat, tidak pernah jauh atau formal. Latar senja yang dalam menahan konten, dan cahaya lentera emas menandai satu-satunya hal yang penting di setiap layar. Game-nya boleh magis; perkakasnya tertib seperti arsip yang terawat.",
+    "keyCharacteristics": [
+      "Senja yang tenang, bukan neon yang ramai.",
+      "Satu aksen emas untuk semua tindakan dan status penting.",
+      "Tertib arsip: hierarki jelas, kepadatan disengaja, tidak ada dekorasi tanpa tugas."
+    ],
+    "rules": [
+      {
+        "name": "The One Lantern Rule",
+        "body": "Aksen emas muncul hanya untuk tindakan, pilihan aktif, dan status.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Voices Rule",
+        "body": "Georgia berbicara kepada hati; sans bekerja untuk tangan. Jangan tertukar.",
+        "section": "typography"
+      },
+      {
+        "name": "The Resting Flat Rule",
+        "body": "Kartu dan section diam tanpa bayangan; depth datang dari tone.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do pakai emas Lentera (#ffd98a) hanya untuk tindakan, pilihan aktif, dan status.",
+      "Do jaga tinggi sentuh min 44px untuk semua kontrol.",
+      "Do beri setiap destructive action konfirmasi dan setiap daftar kosong empty state yang mengajari.",
+      "Do redupkan teks sekunder dari rona tinta (#b9b3d4), bukan abu-abu netral."
+    ],
+    "donts": [
+      "Don't memakai estetika kasino/mobile-game generik.",
+      "Don't mendinginkan Studio menjadi SaaS korporat.",
+      "Don't menaruh teks di atas tile logo krem kecuali dengan tinta gelap.",
+      "Don't menduplikasi `data-testid` antar dua tombol."
+    ]
+  }
+}

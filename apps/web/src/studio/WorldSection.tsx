@@ -27,7 +27,7 @@ export function WorldSection({
   onChange: (patch: { templateVersionId?: string; ambientPreset?: string; musicRef?: string }) => void;
 }) {
   return (
-    <section aria-label="World">
+    <section aria-label="World" id="st-world">
       <h2>World</h2>
       <label>
         Template
