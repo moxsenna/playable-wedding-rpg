@@ -828,5 +828,8 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   `yutemu-wedding-media`), then `wrangler secret put R2_ACCOUNT_ID`,
   `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` on `wedding-rpg-api`.
   Until then the proxied mode serves uploads with zero extra setup.
+- 2026-09-10: S3 secrets installed, API redeployed, live presigned
+  cycle verified (intent → direct PUT 200 → serve 200 → complete →
+  delete → 404, test object removed).
 
 
