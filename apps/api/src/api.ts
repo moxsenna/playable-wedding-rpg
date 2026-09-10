@@ -11,6 +11,7 @@ import {
   validateAnalyticsEvent,
   validateProjectCreate,
   validateProjectUpdate,
+  validateVersionSnapshot,
   verifySession,
   type SessionClaims,
   type WeddingStore,
@@ -91,7 +92,9 @@ async function claimsOf(request: Request, env: Env): Promise<SessionClaims | nul
   return v.ok ? v.claims : null;
 }
 
-function avatarsFor(env: Env, projectId: string): string[] {
+async function avatarsFor(env: Env, store: WeddingStore, projectId: string): Promise<string[]> {
+  const pool = await store.getAvatarPool(projectId).catch(() => [] as string[]);
+  if (pool.length > 0) return pool;
   try {
     const all = JSON.parse(env.PROJECT_AVATARS_JSON ?? "{}") as Record<string, string[]>;
     return all[projectId] ?? ["guest_01"];
@@ -166,7 +169,7 @@ export default {
       }
       const guest = await store.findGuestByToken(body.token ?? "");
       if (!guest) return json({ error: "unknown token" }, 404);
-      const avatars = avatarsFor(env, guest.projectId);
+      const avatars = await avatarsFor(env, store, guest.projectId);
       const signed = await signSession(
         guest,
         body.avatarId ?? avatars[0] ?? "guest_01",
@@ -322,7 +325,7 @@ export default {
       if (project.status !== "live") return json({ error: "wedding not live" }, 403);
       const active = await store.findActive(project.id, project.id).catch(() => null);
       const manifestRef = await store.findWorldManifestRef(project.id).catch(() => null);
-      const avatars = avatarsFor(env, project.id);
+      const avatars = await avatarsFor(env, store, project.id);
       const signed = await signSession(
         guest,
         avatars[0] ?? "guest_01",
@@ -360,7 +363,7 @@ export default {
       if (!resolved) return json({ error: "unknown preview" }, 404);
       const v = await store.findVersion(resolved.versionId);
       if (!v || v.projectId !== resolved.projectId) return json({ error: "unknown version" }, 404);
-      return json({ snapshot: v.snapshot, version: v.version, status: v.status });
+      return json({ snapshot: v.snapshot, version: v.version, status: v.status, projectId: v.projectId });
     }
 
     if (url.pathname === "/v1/analytics" && request.method === "POST") {
@@ -618,6 +621,58 @@ export default {
         if (!project) return json({ error: "project required" }, 400);
         return json({ versions: await store.listVersions(project) });
       }
+      if (url.pathname.startsWith("/v1/admin/versions/") && request.method === "GET") {
+        const v = await store.findVersion(decodeURIComponent(url.pathname.slice("/v1/admin/versions/".length)));
+        if (!v) return json({ error: "unknown version" }, 404);
+        return json({ version: v });
+      }
+      if (url.pathname === "/v1/admin/templates" && request.method === "GET") {
+        return json({ templates: await store.listTemplateVersions() });
+      }
+      if (url.pathname === "/v1/admin/world-config" && request.method === "GET") {
+        const project = url.searchParams.get("project") ?? "";
+        if (!project) return json({ error: "project required" }, 400);
+        return json({ config: await store.getWorldConfig(project) });
+      }
+      if (url.pathname === "/v1/admin/world-config" && request.method === "POST") {
+        const body = await readBody();
+        const projectId = String(body.projectId ?? "");
+        if (!projectIdSchema.safeParse(projectId).success) return json({ error: "bad project" }, 400);
+        if (!(await store.getProject(projectId))) return json({ error: "unknown project" }, 404);
+        const templates = await store.listTemplateVersions();
+        const templateVersionId = String(body.templateVersionId ?? "");
+        if (!templates.some((t) => t.id === templateVersionId)) return json({ error: "unknown template version" }, 400);
+        const ambient = body.ambientPreset == null || body.ambientPreset === "" ? null : String(body.ambientPreset);
+        if (ambient !== null && !["garden-day", "garden-golden-hour", "garden-evening"].includes(ambient)) {
+          return json({ error: "unknown ambient preset" }, 400);
+        }
+        const music = body.musicRef == null || body.musicRef === "" ? null : String(body.musicRef);
+        if (music !== null && (music.length > 256 || /[<>"']/.test(music))) return json({ error: "bad music ref" }, 400);
+        const row = { id: `worldcfg-${projectId}`, projectId, templateVersionId, ambientPreset: ambient, musicRef: music };
+        await store.upsertWorldConfig(row);
+        await store.recordAudit(projectId, "admin", "world.update", templateVersionId, Date.now());
+        return json({ config: row });
+      }
+      if (url.pathname === "/v1/admin/avatar-pool" && request.method === "GET") {
+        const project = url.searchParams.get("project") ?? "";
+        if (!project) return json({ error: "project required" }, 400);
+        return json({ avatarIds: await store.getAvatarPool(project) });
+      }
+      if (url.pathname === "/v1/admin/avatar-pool" && request.method === "POST") {
+        const body = await readBody();
+        const projectId = String(body.projectId ?? "");
+        if (!projectIdSchema.safeParse(projectId).success) return json({ error: "bad project" }, 400);
+        if (!(await store.getProject(projectId))) return json({ error: "unknown project" }, 404);
+        const ids = Array.isArray(body.avatarIds) ? body.avatarIds : null;
+        if (!ids || ids.length === 0 || ids.length > 24) return json({ error: "1..24 avatar ids required" }, 400);
+        const clean = [...new Set(ids.map((x) => String(x ?? "")))];
+        if (clean.some((x) => !/^[a-z0-9_]+$/i.test(x) || x.length > 64)) {
+          return json({ error: "bad avatar id" }, 400);
+        }
+        await store.setAvatarPool(projectId, clean);
+        await store.recordAudit(projectId, "admin", "avatars.update", `${clean.length} avatars`, Date.now());
+        return json({ avatarIds: clean });
+      }
       if (url.pathname === "/v1/admin/preview" && request.method === "POST") {
         const body = await readBody();
         const v = await store.findVersion(String(body.versionId ?? ""));
@@ -641,8 +696,8 @@ export default {
       }
       let body: Record<string, unknown> = await readBody();
       if (url.pathname === "/v1/admin/draft" && request.method === "POST") {
-        const checked = validatePublication(body.snapshot);
-        if (!checked.ok || !checked.publication) return json({ error: checked.errors[0] }, 400);
+        const checked = validateVersionSnapshot(body.snapshot);
+        if (!checked.ok || !checked.snapshot) return json({ error: checked.errors[0] }, 400);
         const projectId = String(body.projectId ?? "");
         const publicationId = String(body.publicationId ?? "");
         if (!projectId || !publicationId) return json({ error: "projectId + publicationId required" }, 400);
@@ -653,7 +708,7 @@ export default {
           publicationId,
           version: n + 1,
           status: "draft" as const,
-          snapshot: checked.publication as unknown as Record<string, unknown>,
+          snapshot: checked.snapshot,
           createdAt: Date.now(),
         };
         await store.insertVersion(version);
@@ -664,7 +719,7 @@ export default {
         const v = await store.findVersion(String(body.versionId ?? ""));
         if (!v) return json({ error: "unknown version" }, 404);
         if (v.status !== "draft") return json({ error: "only drafts publish" }, 400);
-        const checked = validatePublication(v.snapshot);
+        const checked = validateVersionSnapshot(v.snapshot);
         if (!checked.ok) return json({ error: checked.errors[0] }, 400);
         await store.updateVersionStatus(v.id, "published");
         await store.recordAudit(v.projectId, "admin", "publish", v.id, Date.now());

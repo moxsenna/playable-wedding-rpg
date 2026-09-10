@@ -41,7 +41,7 @@ export interface WeddingGameOptions {
   playerAvatarId?: string;
 }
 
-const DEFAULT_MANIFEST_URL = "assets/worlds/garden-village-v1/manifest.json";
+const DEFAULT_MANIFEST_URL = "/assets/worlds/garden-village-v1/manifest.json";
 
 export function resolveManifestUrl(url: string | undefined): string {
   const trimmed = (url ?? "").trim();

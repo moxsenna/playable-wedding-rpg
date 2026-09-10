@@ -16,6 +16,16 @@ const fail = (msg) => { console.error(`M16 admin check FAILED: ${msg}`); process
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const adminSrc = readFileSync(join(WEB_DIR, "src/pages/admin.tsx"), "utf8");
+const studioSrc = ["WeddingSections.tsx", "NpcSections.tsx", "WorldSection.tsx"]
+  .map((f) => {
+    try {
+      return readFileSync(join(WEB_DIR, "src/studio", f), "utf8");
+    } catch {
+      return "";
+    }
+  })
+  .join("\n");
+const adminSurface = `${adminSrc}\n${studioSrc}`;
 for (const needle of [
   "/v1/admin/projects",
   "/v1/admin/guests",
@@ -28,11 +38,11 @@ for (const needle of [
 ]) {
   if (!adminSrc.includes(needle)) fail(`admin.tsx missing production section: ${needle}`);
 }
-if (adminSrc.includes("createVersionStore()") === false) fail("admin lost fixture lifecycle (M9 regression)");
+if (adminSurface.includes("createVersionStore()") === false) fail("admin lost fixture lifecycle (M9 regression)");
 for (const legacy of ["admin-pick-", "admin-partner-a", "admin-draft", "admin-publish", "admin-activate", "admin-versions", "admin-export"]) {
-  if (!adminSrc.includes(legacy)) fail(`admin lost M9 testid: ${legacy}`);
+  if (!adminSurface.includes(legacy)) fail(`admin lost M9 testid: ${legacy}`);
 }
-if (adminSrc.includes("DEMO_PUBLICATION") === false && adminSrc.includes("DEMO_PUBLICATION_DATA") === false) {
+if (adminSurface.includes("DEMO_PUBLICATION") === false && adminSurface.includes("DEMO_PUBLICATION_DATA") === false) {
   fail("admin lost fixture config editor");
 }
 

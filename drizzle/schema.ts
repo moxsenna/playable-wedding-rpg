@@ -171,3 +171,14 @@ export const previewTokens = pgTable(
   },
   (t) => [index("preview_project_idx").on(t.projectId)]
 );
+
+export const projectAvatarPool = pgTable(
+  "project_avatar_pool",
+  {
+    projectId: text("project_id")
+      .notNull()
+      .references(() => weddingProjects.id),
+    avatarId: text("avatar_id").notNull(),
+  },
+  (t) => [index("avatar_pool_project_idx").on(t.projectId)]
+);

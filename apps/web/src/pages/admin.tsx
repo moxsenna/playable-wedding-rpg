@@ -3,11 +3,14 @@ import Head from "next/head";
 import {
   validateNpcBindings,
   validatePublication,
-  npcSlotIds,
   type NpcBinding,
   type Publication,
 } from "@wedding-rpg/contracts";
-import { parseGuestCsv } from "@wedding-rpg/wedding-core";
+import { parseGuestCsv, readSnapshot } from "@wedding-rpg/wedding-core";
+import { CoupleSection, EventsSection, GallerySection, GiftSection, OptionsSection, StorySection, VenuesSection } from "@/studio/WeddingSections";
+import { HeartsSection, NpcSection } from "@/studio/NpcSections";
+import { AvatarPoolSection, WorldSection, type AvatarMeta, type WorldTemplateOption } from "@/studio/WorldSection";
+import { heartAssignments } from "@/studio/npcOps";
 import {
   activateVersion,
   activeVersion,
@@ -72,17 +75,32 @@ export default function Admin() {
   const [importSummary, setImportSummary] = useState("");
   const [analytics, setAnalytics] = useState("");
   const [newGuestName, setNewGuestName] = useState("");
+  const [newProjectName, setNewProjectName] = useState("");
   const [opsNote, setOpsNote] = useState("");
   const [serverVersions, setServerVersions] = useState<
     { id: string; version: number; status: string }[]
   >([]);
+  const [templates, setTemplates] = useState<WorldTemplateOption[]>([]);
+  const [worldCfg, setWorldCfg] = useState({ templateVersionId: "", ambientPreset: "", musicRef: "" });
+  const [avatarPool, setAvatarPool] = useState<string[]>([]);
+  const [avatarMeta, setAvatarMeta] = useState<AvatarMeta[]>([]);
 
   useEffect(() => {
-    fetch("assets/avatars/avatar-registry.json")
+    fetch("/assets/avatars/avatar-registry.json")
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
-        const ids = j && typeof j.avatars === "object" ? Object.keys(j.avatars) : null;
-        if (ids && ids.length > 0) setAvatarIds(ids.sort());
+        if (!j || typeof j.avatars !== "object") return;
+        const entries = Object.values(
+          j.avatars as Record<string, { id?: string; displayName?: string; category?: string }>
+        ).filter((a) => a && typeof a.id === "string");
+        const ids = entries.map((a) => a.id as string).sort();
+        if (ids.length > 0) setAvatarIds(ids);
+        setAvatarMeta(
+          entries
+            .filter((a) => (a.category === "guest" || a.id === "guest_01"))
+            .map((a) => ({ id: a.id as string, displayName: (a.displayName || a.id) as string }))
+            .sort((a, b) => a.displayName.localeCompare(b.displayName))
+        );
       })
       .catch(() => undefined);
   }, []);
@@ -108,9 +126,16 @@ export default function Admin() {
     () => validateNpcBindings(bindings, avatarIds),
     [bindings, avatarIds]
   );
+  const heartState = useMemo(() => {
+    const rows = heartAssignments(bindings);
+    const assigned = rows.filter((r) => r.slotId !== null);
+    return assigned.length === 4 && new Set(assigned.map((r) => r.slotId)).size === 4
+      ? []
+      : ["Tetapkan tepat 4 hati di slot berbeda (Our Story)"];
+  }, [bindings]);
   const errors = useMemo(
-    () => [...pubCheck.errors, ...bindCheck.errors],
-    [pubCheck, bindCheck]
+    () => [...pubCheck.errors, ...bindCheck.errors, ...heartState],
+    [pubCheck, bindCheck, heartState]
   );
   const active = activeVersion(storeRef.current, pub.id, pub.id);
 
@@ -128,12 +153,16 @@ export default function Admin() {
   const serverConfigured = adminKey.length > 0 && activeProject.length > 0;
 
   const saveDraft = async () => {
-    if (!pubCheck.ok || !bindCheck.ok) return;
+    if (!pubCheck.ok || !bindCheck.ok || heartState.length > 0) return;
     if (serverConfigured) {
       const res = await fetch(`${api}/v1/admin/draft`, {
         method: "POST",
         headers,
-        body: JSON.stringify({ projectId: activeProject, publicationId: activeProject, snapshot: pub }),
+        body: JSON.stringify({
+          projectId: activeProject,
+          publicationId: activeProject,
+          snapshot: { publication: pub, npcBindings: bindings },
+        }),
       });
       if (!res.ok) {
         setOpsNote(`Simpan draft server gagal (${res.status}).`);
@@ -224,8 +253,7 @@ export default function Admin() {
     if (!adminKey) {
       setOpsNote("Isi Admin Key dulu.");
       return;
-    }
-    const res = await fetch(`${api}/v1/admin/projects`, { headers: { "x-admin-key": adminKey } });
+    }    const res = await fetch(`${api}/v1/admin/projects`, { headers: { "x-admin-key": adminKey } });
     if (!res.ok) {
       setOpsNote(`Gagal memuat weddings (${res.status}).`);
       return;
@@ -234,6 +262,32 @@ export default function Admin() {
     setProjects(body.projects ?? []);
     if (!activeProject && body.projects?.[0]) setActiveProject(body.projects[0].id);
     setOpsNote(`Weddings: ${(body.projects ?? []).length}.`);
+  };
+
+  const createProject = async () => {
+    const name = newProjectName.trim();
+    if (!name || !adminKey) {
+      setOpsNote("Isi nama wedding + Admin Key dulu.");
+      return;
+    }
+    const res = await fetch(`${api}/v1/admin/projects`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ name }),
+    });
+    if (res.status === 409) {
+      setOpsNote("Nama/slug sudah dipakai — pilih nama lain.");
+      return;
+    }
+    if (!res.ok) {
+      setOpsNote(`Gagal membuat wedding (${res.status}).`);
+      return;
+    }
+    const body = (await res.json()) as { project: OpsProject };
+    setNewProjectName("");
+    await loadProjects();
+    setActiveProject(body.project.id);
+    setOpsNote(`Wedding "${body.project.name}" dibuat sebagai draft.`);
   };
 
   const loadGuests = async (projectId: string) => {
@@ -254,6 +308,130 @@ export default function Admin() {
     if (!res.ok) return;
     const body = (await res.json()) as { versions: { id: string; version: number; status: string }[] };
     setServerVersions(body.versions ?? []);
+    return body.versions ?? [];
+  };
+
+  const loadServerSnapshot = async () => {
+    if (!adminKey || !activeProject) {
+      setOpsNote("Pilih wedding + Admin Key dulu.");
+      return;
+    }
+    const versions = (await loadServerVersions()) ?? [];
+    const target =
+      [...versions].reverse().find((v) => v.status === "draft") ??
+      [...versions].reverse().find((v) => v.status === "active");
+    if (!target) {
+      setOpsNote("Belum ada versi server — mulai dari fixture, lalu Simpan Draft.");
+      return;
+    }
+    const res = await fetch(`${api}/v1/admin/versions/${encodeURIComponent(target.id)}`, {
+      headers: { "x-admin-key": adminKey },
+    });
+    if (!res.ok) {
+      setOpsNote(`Gagal memuat versi server (${res.status}).`);
+      return;
+    }
+    const body = (await res.json()) as { version: { snapshot: unknown; version: number; status: string } };
+    const resolved = readSnapshot(body.version.snapshot);
+    if (!resolved) {
+      setOpsNote("Snapshot server tidak valid.");
+      return;
+    }
+    setPub(clone(resolved.publication));
+    if (resolved.npcBindings.length > 0) setBindings(clone(resolved.npcBindings));
+    setOpsNote(`Dimuat dari server v${body.version.version} (${body.version.status}).`);
+  };
+
+  const [previewLink, setPreviewLink] = useState("");
+  const makePreview = async () => {
+    if (!adminKey || !activeProject) {
+      setOpsNote("Pilih wedding + Admin Key dulu.");
+      return;
+    }
+    const versions = serverVersions.length > 0 ? serverVersions : (await loadServerVersions()) ?? [];
+    const draft = [...versions].reverse().find((v) => v.status === "draft");
+    if (!draft) {
+      setOpsNote("Simpan Draft dulu sebelum Preview.");
+      return;
+    }
+    const res = await fetch(`${api}/v1/admin/preview`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ versionId: draft.id }),
+    });
+    if (!res.ok) {
+      setOpsNote(`Preview gagal (${res.status}).`);
+      return;
+    }
+    const body = (await res.json()) as { previewToken: string };
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    setPreviewLink(`${origin}/g/preview/${body.previewToken}`);
+  };
+
+  const loadWorld = async () => {
+    if (!adminKey || !activeProject) return;
+    const [tRes, cRes, pRes] = await Promise.all([
+      fetch(`${api}/v1/admin/templates`, { headers: { "x-admin-key": adminKey } }),
+      fetch(`${api}/v1/admin/world-config?project=${encodeURIComponent(activeProject)}`, {
+        headers: { "x-admin-key": adminKey },
+      }),
+      fetch(`${api}/v1/admin/avatar-pool?project=${encodeURIComponent(activeProject)}`, {
+        headers: { "x-admin-key": adminKey },
+      }),
+    ]);
+    if (tRes.ok) {
+      const body = (await tRes.json()) as { templates: WorldTemplateOption[] };
+      setTemplates(body.templates ?? []);
+    }
+    if (cRes.ok) {
+      const body = (await cRes.json()) as {
+        config: { templateVersionId: string; ambientPreset: string | null; musicRef: string | null } | null;
+      };
+      if (body.config) {
+        setWorldCfg({
+          templateVersionId: body.config.templateVersionId,
+          ambientPreset: body.config.ambientPreset ?? "",
+          musicRef: body.config.musicRef ?? "",
+        });
+      } else {
+        setWorldCfg({ templateVersionId: "", ambientPreset: "", musicRef: "" });
+      }
+    }
+    if (pRes.ok) {
+      const body = (await pRes.json()) as { avatarIds: string[] };
+      setAvatarPool(body.avatarIds ?? []);
+    }
+  };
+
+  const saveWorld = async () => {
+    if (!adminKey || !activeProject || !worldCfg.templateVersionId) {
+      setOpsNote("Pilih world + Admin Key dulu.");
+      return;
+    }
+    const res = await fetch(`${api}/v1/admin/world-config`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ projectId: activeProject, ...worldCfg }),
+    });
+    if (!res.ok) {
+      setOpsNote(`Simpan world gagal (${res.status}).`);
+      return;
+    }
+    setOpsNote("World tersimpan.");
+  };
+
+  const savePool = async () => {
+    if (!adminKey || !activeProject) return;
+    const res = await fetch(`${api}/v1/admin/avatar-pool`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ projectId: activeProject, avatarIds: avatarPool }),
+    });
+    if (!res.ok) {
+      setOpsNote(`Simpan avatar gagal (${res.status}) — minimal 1 avatar.`);
+      return;
+    }
+    setOpsNote(`Avatar tersimpan (${avatarPool.length}).`);
   };
 
   const loadAnalytics = async () => {
@@ -271,6 +449,7 @@ export default function Admin() {
       void loadGuests(activeProject);
       void loadAnalytics();
       void loadServerVersions();
+      void loadWorld();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeProject]);
@@ -311,6 +490,17 @@ export default function Admin() {
     await loadGuests(activeProject);
   };
 
+  const copyLink = async (token: string) => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const link = `${origin}/g/${token}`;
+    try {
+      await window.navigator.clipboard.writeText(link);
+      setOpsNote("Tautan disalin.");
+    } catch {
+      setOpsNote(`Salin manual: ${link}`);
+    }
+  };
+
   const exportLinks = () => {
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     const lines = ["name,link", ...guests.map((g) => `${JSON.stringify(g.name)},${origin}/g/${g.token}`)];
@@ -324,24 +514,6 @@ export default function Admin() {
   };
 
   const filteredGuests = guests.filter((g) => g.name.toLowerCase().includes(guestFilter.toLowerCase()));
-
-  const setCouple = (k: "partnerA" | "partnerB" | "welcome" | "dateISO", v: string) =>
-    setPub((p) => ({ ...p, couple: { ...p.couple, [k]: v } }));
-  const setEventTitle = (id: string, title: string) =>
-    setPub((p) => ({
-      ...p,
-      events: p.events.map((e) => (e.id === id ? { ...e, title } : e)),
-    }));
-  const setDisplayName = (slotId: string, displayName: string) =>
-    setBindings((bs) => bs.map((b) => (b.slotId === slotId ? { ...b, displayName } : b)));
-  const setNodeText = (slotId: string, nodeId: string, text: string) =>
-    setBindings((bs) =>
-      bs.map((b) =>
-        b.slotId === slotId
-          ? { ...b, dialogue: b.dialogue.map((d) => (d.id === nodeId ? { ...d, text } : d)) }
-          : b
-      )
-    );
 
   return (
     <>
@@ -381,6 +553,17 @@ export default function Admin() {
                 </option>
               ))}
             </select>
+          </div>
+          <div role="group" aria-label="Wedding baru">
+            <input
+              data-testid="admin-project-name"
+              value={newProjectName}
+              onChange={(e) => setNewProjectName(e.target.value)}
+              placeholder="Nama wedding baru"
+            />
+            <button data-testid="admin-project-create" onClick={() => void createProject()}>
+              Buat Wedding
+            </button>
           </div>
           {opsNote && <p data-testid="admin-ops-note">{opsNote}</p>}
         </section>
@@ -430,7 +613,10 @@ export default function Admin() {
             {filteredGuests.slice(0, 50).map((g) => (
               <li key={g.id}>
                 {g.name} · /g/{g.token}
-                {g.rsvp ? ` · ${g.rsvp}` : ""}
+                {g.rsvp ? ` · ${g.rsvp}` : ""}{" "}
+                <button data-testid={`admin-copy-${g.id}`} onClick={() => void copyLink(g.token)}>
+                  Copy
+                </button>
               </li>
             ))}
           </ul>
@@ -458,72 +644,57 @@ export default function Admin() {
           {analytics && <p data-testid="admin-analytics">{analytics}</p>}
         </section>
 
-        <section aria-label="Mempelai">
-          <h2>Mempelai</h2>
-          <label>
-            Partner A
-            <input
-              data-testid="admin-partner-a"
-              value={pub.couple.partnerA}
-              onChange={(e) => setCouple("partnerA", e.target.value)}
-            />
-          </label>
-          <label>
-            Partner B
-            <input
-              data-testid="admin-partner-b"
-              value={pub.couple.partnerB}
-              onChange={(e) => setCouple("partnerB", e.target.value)}
-            />
-          </label>
-          <label>
-            Tanggal (YYYY-MM-DD)
-            <input
-              data-testid="admin-date"
-              value={pub.couple.dateISO}
-              onChange={(e) => setCouple("dateISO", e.target.value)}
-            />
-          </label>
-          {pub.events.map((e) => (
-            <label key={e.id}>
-              Acara {e.id}
-              <input
-                data-testid={`admin-event-${e.id}`}
-                value={e.title}
-                onChange={(ev) => setEventTitle(e.id, ev.target.value)}
-              />
-            </label>
-          ))}
+        <section aria-label="Konten">
+          <h2>Konten Wedding</h2>
+          {serverConfigured && (
+            <button data-testid="admin-load-server" onClick={() => void loadServerSnapshot()}>
+              Muat dari Server
+            </button>
+          )}
         </section>
 
-        <section aria-label="NPC slots">
-          <h2>NPC Slots ({bindings.length}/{npcSlotIds.length})</h2>
-          {bindings.map((b) => (
-            <details key={b.slotId} data-testid={`admin-npc-${b.slotId}`}>
-              <summary>
-                {b.slotId} — {b.displayName}
-              </summary>
-              <label>
-                Display name
-                <input
-                  data-testid={`admin-npc-name-${b.slotId}`}
-                  value={b.displayName}
-                  onChange={(e) => setDisplayName(b.slotId, e.target.value)}
-                />
-              </label>
-              {b.dialogue.map((d) => (
-                <label key={d.id}>
-                  {d.id}
-                  <input
-                    data-testid={`admin-node-${b.slotId}-${d.id}`}
-                    value={d.text}
-                    onChange={(e) => setNodeText(b.slotId, d.id, e.target.value)}
-                  />
-                </label>
-              ))}
-            </details>
-          ))}
-        </section>
+        <CoupleSection couple={pub.couple} onChange={(couple) => setPub((p) => ({ ...p, couple }))} />
+
+        <EventsSection
+          events={pub.events}
+          venues={pub.venues}
+          coupleDate={pub.couple.dateISO}
+          onChange={(events) => setPub((p) => ({ ...p, events }))}
+        />
+
+        <VenuesSection venues={pub.venues} events={pub.events} onChange={(venues) => setPub((p) => ({ ...p, venues }))} />
+
+        <StorySection story={pub.story} onChange={(story) => setPub((p) => ({ ...p, story }))} />
+
+        <GallerySection gallery={pub.gallery} onChange={(gallery) => setPub((p) => ({ ...p, gallery }))} />
+
+        <GiftSection pub={pub} onChange={(patch) => setPub((p) => ({ ...p, ...patch }))} />
+
+        <OptionsSection pub={pub} onChange={(patch) => setPub((p) => ({ ...p, ...patch }))} />
+
+        <NpcSection bindings={bindings} avatarIds={avatarIds} onChange={setBindings} />
+
+        <HeartsSection bindings={bindings} onChange={setBindings} />
+
+        <WorldSection
+          templates={templates}
+          templateVersionId={worldCfg.templateVersionId}
+          ambientPreset={worldCfg.ambientPreset}
+          musicRef={worldCfg.musicRef}
+          onChange={(patch) => setWorldCfg((w) => ({ ...w, ...patch }))}
+        />
+        {serverConfigured && (
+          <button data-testid="admin-world-save" onClick={() => void saveWorld()}>
+            Simpan World
+          </button>
+        )}
+
+        <AvatarPoolSection pool={avatarPool} registry={avatarMeta} onChange={setAvatarPool} />
+        {serverConfigured && (
+          <button data-testid="admin-pool-save" onClick={() => void savePool()}>
+            Simpan Avatar
+          </button>
+        )}
 
         <section aria-label="Validasi">
           <h2>Validasi</h2>
@@ -554,7 +725,19 @@ export default function Admin() {
             <button data-testid="admin-export" onClick={exportJson} disabled={errors.length > 0}>
               Export JSON
             </button>
+            {serverConfigured && (
+              <button data-testid="admin-preview-make" onClick={() => void makePreview()}>
+                Preview Draft
+              </button>
+            )}
           </div>
+          {previewLink && (
+            <p>
+              <a data-testid="admin-preview-link" href={previewLink} target="_blank" rel="noreferrer">
+                Buka Preview
+              </a>
+            </p>
+          )}
           <ul data-testid="admin-versions">
             {versions.versions.map((v) => (
               <li key={v.id}>

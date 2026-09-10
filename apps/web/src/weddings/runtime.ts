@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { validatePublication, type Publication } from "@wedding-rpg/contracts";
+import { readSnapshot } from "@wedding-rpg/wedding-core";
+import type { NpcBinding, Publication } from "@wedding-rpg/contracts";
 import { DEMO_PUBLICATION } from "./demo-publication";
 import { DEMO_NPC_BINDINGS_DATA } from "./demo-bindings";
-import type { NpcBinding } from "@wedding-rpg/contracts";
 
 export function resolveApiBase(): string {
   if (typeof window === "undefined") return "";
@@ -80,6 +80,27 @@ export function useRuntimeWedding(guestToken?: string): RuntimeState {
 
   useEffect(() => {
     let cancelled = false;
+    const previewToken = previewTokenFromPath();
+    if (previewToken) {
+      void fetchPreview(previewToken).then((body) => {
+        if (cancelled) return;
+        const resolved = body.status === 200 ? readSnapshot(body.snapshot) : null;
+        if (!resolved || resolved.npcBindings.length === 0) {
+          setState({ status: "error", reason: "unavailable" });
+          return;
+        }
+        setState({
+          status: "ready",
+          publication: resolved.publication,
+          bindings: resolved.npcBindings,
+          projectId: String(body.projectId ?? ""),
+          session: null,
+        });
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
     const token = guestToken ?? guestTokenFromPath();
     if (!token) return;
     void fetchBootstrap(token).then((body) => {
@@ -100,22 +121,19 @@ export function useRuntimeWedding(guestToken?: string): RuntimeState {
         setState({ status: "error", reason: "unavailable" });
         return;
       }
-      const snapshot = body.publication.snapshot as Publication | undefined;
-      const checked = snapshot ? validatePublication(snapshot) : null;
-      if (!checked?.ok || !checked.publication) {
+      const resolved = body.publication ? readSnapshot(body.publication.snapshot) : null;
+      if (!resolved) {
         setState({ status: "error", reason: "invalid publication" });
         return;
       }
-      const raw = snapshot as unknown as { npcBindings?: unknown };
-      const bindings = Array.isArray(raw.npcBindings) && raw.npcBindings.length > 0 ? (raw.npcBindings as NpcBinding[]) : null;
-      if (!bindings) {
+      if (resolved.npcBindings.length === 0) {
         setState({ status: "error", reason: "missing content" });
         return;
       }
       setState({
         status: "ready",
-        publication: checked.publication,
-        bindings,
+        publication: resolved.publication,
+        bindings: resolved.npcBindings,
         projectId: String(body.project?.id ?? body.guest?.projectId ?? ""),
         session: body.session ?? null,
       });
@@ -130,7 +148,34 @@ export function useRuntimeWedding(guestToken?: string): RuntimeState {
 
 export function guestTokenFromPath(): string | null {
   if (typeof window === "undefined") return null;
+  if (/\/g\/preview\//.test(window.location.pathname)) return null;
   const m = window.location.pathname.match(/\/g\/([^/]+)/);
   if (m?.[1]) return decodeURIComponent(m[1]);
   return new URLSearchParams(window.location.search).get("guest");
+}
+
+export function previewTokenFromPath(): string | null {
+  if (typeof window === "undefined") return null;
+  const m = window.location.pathname.match(/\/g\/preview\/([^/]+)/);
+  return m?.[1] ? decodeURIComponent(m[1]) : null;
+}
+
+export interface PreviewData {
+  status: number;
+  snapshot?: unknown;
+  version?: number;
+  previewStatus?: string;
+  projectId?: string;
+}
+
+export async function fetchPreview(token: string): Promise<PreviewData> {
+  const api = resolveApiBase();
+  try {
+    const res = await fetch(`${api}/v1/preview/${encodeURIComponent(token)}`);
+    if (!res.ok) return { status: res.status };
+    const body = (await res.json()) as { snapshot?: unknown; version?: number; status?: string; projectId?: string };
+    return { status: res.status, snapshot: body.snapshot, version: body.version, previewStatus: body.status, projectId: body.projectId };
+  } catch {
+    return { status: 0 };
+  }
 }

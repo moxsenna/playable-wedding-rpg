@@ -24,19 +24,26 @@ Live stack (verified 2026-09-09):
 5. Realtime tersambung otomatis dari bootstrap (`?rt=0` untuk opt-out);
    guest lain terlihat sebagai remote player + emote real-time.
 
-## 1b. Operator flow (M16, tanpa SQL / tanpa edit source)
+## 1b. Operator flow (M17 Studio, tanpa SQL / tanpa edit source)
 
 1. Buka `/admin`, isi Admin Key (operator, sessionStorage perangkat saja),
-   klik Muat Weddings, pilih wedding aktif.
-2. Tamu: Tambah satu per satu, atau tempel CSV (`name,phone,email,group,notes`)
+   klik Muat Weddings, pilih wedding aktif. Wedding baru: isi nama →
+   Buat Wedding (langsung berstatus draft).
+2. Konten: Mempelai (nama, panggilan, bio, foto URL, sapaan, tanggal),
+   Acara (tambah/ubah/hapus/susun), Venue (nama, alamat, Maps URL,
+   landmark), Cerita, Gallery (URL + susunan + cover), Hadiah (bank,
+   e-wallet, registry), Opsi modul & dresscode. NPC per slot (nama,
+   avatar, peran, dialog, aksi) + 4 hati Our Story + tukar lokasi
+   antar-slot. World (template, suasana, musik) + Avatar Tamu
+   (centang dari registry). Memuat editan server: Muat dari Server.
+3. Simpan Draft → Preview Draft (buka `/g/preview/<token>`, data draft,
+   production tidak tersentuh) → Publish → Aktifkan.
+4. Tamu: Tambah satu per satu (tombol Copy per baris), atau tempel CSV
+   (`name,phone,email,group,notes`)
    → Preview & Import → ringkasan dibuat/dilewati/ditolak.
-3. Konfigurasi: edit mempelai/acara/NPC seperti biasa (validasi Zod memblokir
-   draft rusak) → Simpan Draft → Publish → Aktifkan. Dengan Admin Key +
-   wedding aktif, lifecycle berjalan terhadap server/Neon (daftar versi
-   server tampil di admin); tanpa key, editor berjalan sebagai dry-run lokal.
-4. Export Links → `guest-links-<wedding>.csv` berisi `name,link` (`/g/:token`,
+5. Export Links → `guest-links-<wedding>.csv` berisi `name,link` (`/g/:token`,
    tanpa session secret) → bagikan.
-5. Analitik: Muat Analitik (total, dibuka, mulai, hati, finale, wishes, RSVP).
+6. Analitik: Muat Analitik (total, dibuka, mulai, hati, finale, wishes, RSVP).
    Catatan: event bertoken adalah bearer credential (pemegang URL bisa
    mengirimnya) — perlakukan sebagai metrik indikatif, bukan otoritatif.
    Jalur normal memakai session yang di-mint saat bootstrap.

@@ -1,11 +1,11 @@
 import { createWeddingGame } from "@wedding-rpg/game";
-import { validatePublication } from "@wedding-rpg/contracts";
+import { readSnapshot } from "@wedding-rpg/wedding-core";
 import { DEMO_NPC_BINDINGS } from "../weddings/demo-bindings";
 import { resolveWeddingId } from "../weddings/select";
 import { loadProfile } from "../weddings/profile";
-import { fetchBootstrap, guestTokenFromPath, isGuestPath, resolveApiBase } from "../weddings/runtime";
+import { fetchBootstrap, fetchPreview, guestTokenFromPath, isGuestPath, previewTokenFromPath, resolveApiBase } from "../weddings/runtime";
 
-const DEFAULT_MANIFEST_URL = "assets/worlds/garden-village-v1/manifest.json";
+const DEFAULT_MANIFEST_URL = "/assets/worlds/garden-village-v1/manifest.json";
 const DEFAULT_AVATAR_ID = "guest_male_batik_burgundy_01";
 
 declare global {
@@ -69,10 +69,9 @@ async function bootFromGuest(token: string): Promise<{ manifestUrl: string; bind
   if (body.status === 410) throw new Error("wedding-archived");
   if (body.status === 403) throw new Error("wedding-not-live");
   if (body.status !== 200 || !body.publication) throw new Error("publication-unavailable");
-  const checked = validatePublication(body.publication.snapshot);
-  if (!checked.ok || !checked.publication) throw new Error("publication-invalid");
-  const raw = body.publication.snapshot as { npcBindings?: unknown };
-  if (!Array.isArray(raw.npcBindings) || raw.npcBindings.length === 0) throw new Error("content-missing");
+  const resolved = readSnapshot(body.publication.snapshot);
+  if (!resolved) throw new Error("publication-invalid");
+  if (resolved.npcBindings.length === 0) throw new Error("content-missing");
   const projectId = String(body.project?.id ?? body.guest?.projectId ?? "");
   if (!projectId) throw new Error("project-missing");
   const manifestUrl = (await pinnedManifestUrl(projectId, body.world?.manifestRef ?? null)) ?? DEFAULT_MANIFEST_URL;
@@ -85,13 +84,27 @@ async function bootFromGuest(token: string): Promise<{ manifestUrl: string; bind
   }
   return {
     manifestUrl,
-    bindings: raw.npcBindings as typeof DEMO_NPC_BINDINGS,
+    bindings: resolved.npcBindings,
     avatarId: resolvePlayerAvatarId(body.sessionGuest?.avatarId),
   };
 }
 
 const StartGame = async (parent: string) => {
   const direct = manifestFromQuery();
+  const previewToken = previewTokenFromPath();
+  if (previewToken) {
+    const body = await fetchPreview(previewToken);
+    if (body.status !== 200) throw new Error("preview-not-found");
+    const resolved = readSnapshot(body.snapshot);
+    if (!resolved || resolved.npcBindings.length === 0) throw new Error("preview-unavailable");
+    const projectId = String(body.projectId ?? "");
+    const manifestUrl = direct ?? (await pinnedManifestUrl(projectId, null)) ?? DEFAULT_MANIFEST_URL;
+    return createWeddingGame(parent, {
+      manifestUrl,
+      npcBindings: resolved.npcBindings,
+      playerAvatarId: resolvePlayerAvatarId(),
+    });
+  }
   const token = guestTokenFromPath();
   if (token || isGuestPath()) {
     if (!token) throw new Error("guest-not-found");

@@ -1,6 +1,9 @@
 // M15 guest-experience probe: loading shimmer, onboarding name+avatar,
 // emoji menu + head bubble, Sari entry gate, "Undangan" rename, wishes
 // submit — in a real mobile browser. Self-contained: starts `next dev`.
+// Boots the LOCAL dev manifest explicitly: the pinned R2 template (v6)
+// predates the Sari entry gate, so the default prod-pinned boot cannot
+// exercise gate.entry; manifest sourcing itself is covered by m127.
 // Prints M15 GUEST VERIFIED only when every assertion passes.
 import { spawn, execSync } from "node:child_process";
 import { join, dirname } from "node:path";
@@ -11,6 +14,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const WEB_DIR = join(ROOT, "apps/web");
 const PORT = 8110;
 const URL = `http://localhost:${PORT}/`;
+const LOCAL_MANIFEST = `http://localhost:${PORT}/assets/worlds/garden-village-v1/manifest.json`;
 const BIN = process.platform === "win32" ? ".cmd" : "";
 
 const fail = (msg) => { console.error(`M15 guest check FAILED: ${msg}`); process.exit(1); };
@@ -141,7 +145,7 @@ async function main() {
     const pageLogs = [];
     page.on("pageerror", (e) => pageLogs.push(`[pageerror] ${e && e.message}`));
     await page.addInitScript(() => window.localStorage.clear());
-    await page.goto(URL, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.goto(`${URL}?manifest=${encodeURIComponent(LOCAL_MANIFEST)}`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await sleep(1200);
 
     // --- G1: onboarding first, game boots only after ---

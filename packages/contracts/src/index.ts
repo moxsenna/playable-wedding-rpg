@@ -12,6 +12,7 @@ export * from "./publication";
 export * from "./avatar";
 export * from "./environment";
 export * from "./m16";
+export * from "./snapshot";
 
 export const PROTOCOL_VERSION = 1 as const;
 

@@ -109,6 +109,22 @@ function isUndefinedColumn(e: unknown): boolean {
   return /column .* does not exist|no such column|undefined column/i.test(msg);
 }
 
+export interface WeddingWorldConfigRow {
+  id: string;
+  projectId: string;
+  templateVersionId: string;
+  ambientPreset: string | null;
+  musicRef: string | null;
+}
+
+export interface TemplateVersionRow {
+  id: string;
+  templateKey: string;
+  templateName: string;
+  version: number;
+  manifestRef: string;
+}
+
 export interface WeddingStore {
   findGuestByToken(token: string): Promise<Guest | null>;
   listGuests(projectId: string): Promise<Guest[]>;
@@ -136,6 +152,11 @@ export interface WeddingStore {
   listAnalyticsEvents(projectId: string): Promise<AnalyticsRow[]>;
   createPreviewToken(token: string, projectId: string, versionId: string, exp: number): Promise<void>;
   resolvePreviewToken(token: string, now: number): Promise<{ projectId: string; versionId: string } | null>;
+  getAvatarPool(projectId: string): Promise<string[]>;
+  setAvatarPool(projectId: string, avatarIds: string[]): Promise<void>;
+  getWorldConfig(projectId: string): Promise<WeddingWorldConfigRow | null>;
+  upsertWorldConfig(row: WeddingWorldConfigRow): Promise<void>;
+  listTemplateVersions(): Promise<TemplateVersionRow[]>;
 }
 
 export class NeonStore implements WeddingStore {
@@ -431,6 +452,64 @@ export class NeonStore implements WeddingStore {
     const row = r.rows[0];
     if (Number(row.exp) <= now) return null;
     return { projectId: String(row.project_id), versionId: String(row.version_id) };
+  }
+
+  async getAvatarPool(projectId: string): Promise<string[]> {
+    try {
+      const r = await this.db.query(`SELECT avatar_id FROM project_avatar_pool WHERE project_id = $1 ORDER BY avatar_id`, [projectId]);
+      return r.rows.map((row) => String(row.avatar_id));
+    } catch (e) {
+      if (!isUndefinedColumn(e) && !(e instanceof Error && /relation .* does not exist|no such table/i.test(e.message))) throw e;
+      return [];
+    }
+  }
+
+  async setAvatarPool(projectId: string, avatarIds: string[]): Promise<void> {
+    await this.db.query(`DELETE FROM project_avatar_pool WHERE project_id = $1`, [projectId]);
+    for (const avatarId of avatarIds) {
+      await this.db.query(`INSERT INTO project_avatar_pool (project_id, avatar_id) VALUES ($1, $2)`, [projectId, avatarId]);
+    }
+  }
+
+  async getWorldConfig(projectId: string): Promise<WeddingWorldConfigRow | null> {
+    const r = await this.db.query(
+      `SELECT id, project_id, template_version_id, ambient_preset, music_ref FROM wedding_world_configs WHERE project_id = $1 LIMIT 1`,
+      [projectId]
+    );
+    if (r.rows.length === 0) return null;
+    const row = r.rows[0];
+    return {
+      id: String(row.id),
+      projectId: String(row.project_id),
+      templateVersionId: String(row.template_version_id),
+      ambientPreset: row.ambient_preset == null ? null : String(row.ambient_preset),
+      musicRef: row.music_ref == null ? null : String(row.music_ref),
+    };
+  }
+
+  async upsertWorldConfig(row: WeddingWorldConfigRow): Promise<void> {
+    await this.db.query(
+      `INSERT INTO wedding_world_configs (id, project_id, template_version_id, ambient_preset, music_ref)
+       VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT (id) DO UPDATE SET template_version_id = EXCLUDED.template_version_id,
+         ambient_preset = EXCLUDED.ambient_preset, music_ref = EXCLUDED.music_ref`,
+      [row.id, row.projectId, row.templateVersionId, row.ambientPreset, row.musicRef]
+    );
+  }
+
+  async listTemplateVersions(): Promise<TemplateVersionRow[]> {
+    const r = await this.db.query(
+      `SELECT v.id AS id, t.key AS key, t.name AS name, v.version AS version, v.manifest_ref AS ref
+       FROM world_template_versions v JOIN world_templates t ON t.id = v.template_id
+       ORDER BY t.key, v.version`
+    );
+    return r.rows.map((row) => ({
+      id: String(row.id),
+      templateKey: String(row.key),
+      templateName: String(row.name),
+      version: Number(row.version),
+      manifestRef: String(row.ref),
+    }));
   }
 }
 

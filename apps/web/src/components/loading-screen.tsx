@@ -47,7 +47,7 @@ export function LoadingScreen() {
   const pct = Math.round(progress * 100);
   return (
     <div data-testid="loading-screen" className="loading-screen" role="status" aria-label="Membuka YUTEMU">
-      <img data-testid="loading-mark" className="loading-mark" src="brand/logo/yutemu-mark.webp" alt="YUTEMU" />
+      <img data-testid="loading-mark" className="loading-mark" src="/brand/logo/yutemu-mark.webp" alt="YUTEMU" />
       <div className="loading-brand">YUTEMU</div>
       <div className="loading-tagline">Temui kisah mereka.</div>
       <div className="loading-bar" aria-hidden="true">

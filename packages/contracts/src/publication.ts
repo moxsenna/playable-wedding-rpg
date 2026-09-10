@@ -14,6 +14,10 @@ export const coupleProfileSchema = z.object({
   dateISO,
   welcome: z.string().min(1).max(300),
   heroImage: z.string().min(1).max(256).optional(),
+  photo: z.string().url().max(512).optional(),
+  nicknameA: z.string().min(1).max(40).optional(),
+  nicknameB: z.string().min(1).max(40).optional(),
+  bio: z.string().min(1).max(600).optional(),
 });
 export type CoupleProfile = z.infer<typeof coupleProfileSchema>;
 
@@ -56,6 +60,7 @@ export type StoryItem = z.infer<typeof storyItemSchema>;
 export const galleryImageSchema = z.object({
   src: z.string().min(1).max(256),
   alt: z.string().min(1).max(120),
+  cover: z.boolean().optional(),
 });
 export type GalleryImage = z.infer<typeof galleryImageSchema>;
 
@@ -64,6 +69,10 @@ export const giftInfoSchema = z.object({
   accountNumber: z.string().min(1).max(64),
   accountName: z.string().min(1).max(80),
   note: z.string().max(200).optional(),
+  ewalletProvider: z.string().min(1).max(40).optional(),
+  ewalletNumber: z.string().min(1).max(64).optional(),
+  ewalletName: z.string().min(1).max(80).optional(),
+  registryUrl: z.string().url().max(512).optional(),
 });
 export type GiftInfo = z.infer<typeof giftInfoSchema>;
 
@@ -106,6 +115,9 @@ export const publicationSchema = z
     }
     for (const d of dupes(p.venues.map((v) => v.id))) {
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: `duplicate venue id: ${d}` });
+    }
+    if (p.gallery.filter((g) => g.cover === true).length > 1) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "at most one gallery cover" });
     }
   });
 export type Publication = z.infer<typeof publicationSchema>;

@@ -12,8 +12,10 @@ import type {
   GuestbookEntry,
   PublicationVersion,
   RsvpRecord,
+  TemplateVersionRow,
   WeddingProjectRow,
   WeddingStore,
+  WeddingWorldConfigRow,
 } from "./store";
 
 export class MemoryStore implements WeddingStore {
@@ -188,5 +190,31 @@ export class MemoryStore implements WeddingStore {
     const p = this.previews.find((x) => x.token === token) ?? null;
     if (!p || p.exp <= now) return null;
     return { projectId: p.projectId, versionId: p.versionId };
+  }
+
+  private pools: { projectId: string; avatarId: string }[] = [];
+  private worldConfigs: WeddingWorldConfigRow[] = [];
+
+  async getAvatarPool(projectId: string): Promise<string[]> {
+    return this.pools.filter((p) => p.projectId === projectId).map((p) => p.avatarId).sort();
+  }
+
+  async setAvatarPool(projectId: string, avatarIds: string[]): Promise<void> {
+    this.pools = this.pools.filter((p) => p.projectId !== projectId);
+    for (const avatarId of avatarIds) this.pools.push({ projectId, avatarId });
+  }
+
+  async getWorldConfig(projectId: string): Promise<WeddingWorldConfigRow | null> {
+    return this.worldConfigs.find((c) => c.projectId === projectId) ?? null;
+  }
+
+  async upsertWorldConfig(row: WeddingWorldConfigRow): Promise<void> {
+    const i = this.worldConfigs.findIndex((c) => c.id === row.id);
+    if (i < 0) this.worldConfigs.push({ ...row });
+    else this.worldConfigs[i] = { ...row };
+  }
+
+  async listTemplateVersions(): Promise<TemplateVersionRow[]> {
+    return [{ id: "garden-village-v1", templateKey: "garden-village-v1", templateName: "Garden Village", version: 1, manifestRef: "" }];
   }
 }

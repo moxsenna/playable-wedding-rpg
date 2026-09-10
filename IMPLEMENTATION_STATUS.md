@@ -758,4 +758,46 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   `CI SUBSET VERIFIED (22/22)`.
 - "User-facing product branding is now YUTEMU."
 
+## M17 — Wedding Production Studio (DELIVERED 2026-09-10)
+
+- Status: complete credential-free. `.unlazy/m17/GATES.md` G0..G8 PASS
+  with recorded evidence; live golden (Neon) correctly BLOCKED pending
+  operator credentials — never faked.
+- G1 envelope: additive `{publication, npcBindings}` snapshot
+  (`contracts/snapshot.ts`, `wedding-core/snapshots.ts`); draft/publish
+  validate both parts separately; legacy bare snapshots keep reading;
+  `M17 ENVELOPE VERIFIED` (18 unit) + browser quest→finale from a
+  server-published envelope with renamed couple (no fixture).
+- G2/G3 Studio editor: server-backed Couple/Events/Venues/Story/
+  Gallery/Gift/Options sections + 10 NPC cards (name/avatar/role/
+  dialogue/action/speaker) + heart assignment + slot swap, all pure
+  helpers unit-tested (`M17 NPC VERIFIED` 16); project create UI;
+  `M17 STUDIO VERIFIED` (create→edit→draft→publish→activate→preview
+  token→reload persistence) against a live worker.
+- G4 world+avatars: additive `project_avatar_pool` migration (0004);
+  template catalog + world-config + avatar-pool admin routes; pool
+  enforced at session mint (unknown avatar → 403); `M17 WORLD
+  VERIFIED` (14, incl. URL-injection rejection).
+- G5 preview: `/g/preview/<token>` plays draft data through the same
+  runtime with badge, never activates; `M17 PREVIEW VERIFIED`
+  (production stays 404 throughout).
+- G6 publish+links: per-guest Copy (clipboard-verified), CSV export
+  without secrets, active-version display; `M17 PUBLISH VERIFIED`.
+- G7 isolation: 3-wedding + 50-guest golden, cross-project attacks
+  rejected, pools/configs isolated; `M17 ISOLATION VERIFIED` (22).
+- Contract additions (all optional/backward compatible): couple
+  photo/nickname/bio, gallery cover (max 1), gift ewallet/registry.
+  No upload endpoint (URL refs; upload documented as next infra).
+- Collateral: nested-route asset URLs made root-absolute (guest boot
+  under `/g/:token` was resolving `assets/…` relatively — found by the
+  G1 E2E); M4-D kill switch extended to pinned R2 paths; m15 boots the
+  local manifest (R2 v6 predates `gate.entry`); m127 accepts the
+  intended pinned default.
+- Open production ops (need credentials): publish template v7
+  (`node tooling/publish/publish.mjs garden-village-v1 --driver r2
+  --bucket wedding-templates`) then advance the pin
+  (`DATABASE_URL=… node tooling/db/seed.mjs`); live 50-guest golden
+  (`DATABASE_URL=… node tooling/e2e/m126-neon.mjs` + Studio publish
+  flow against production).
+
 

@@ -2,10 +2,10 @@ import { Scene } from "phaser";
 import { BRIDGE_EVENTS, EventBus } from "../bridge";
 import { validateNpcBindings, runtimeEnvRegistrySchema, type AvatarRegistry, type NpcBinding, type RuntimeEnvRegistry } from "@wedding-rpg/contracts";
 
-export const DEFAULT_MANIFEST_URL = "assets/worlds/garden-village-v1/manifest.json";
+export const DEFAULT_MANIFEST_URL = "/assets/worlds/garden-village-v1/manifest.json";
 export const MANIFEST_URL = DEFAULT_MANIFEST_URL;
-export const LEGACY_AVATAR_BASE = "assets/avatars/";
-export const LEGACY_ENV_BASE = "assets/environment/";
+export const LEGACY_AVATAR_BASE = "/assets/avatars/";
+export const LEGACY_ENV_BASE = "/assets/environment/";
 export const AVATAR_REGISTRY_URL = `${LEGACY_AVATAR_BASE}avatar-registry.json`;
 export const ENV_REGISTRY_URL = `${LEGACY_ENV_BASE}environment-registry.json`;
 
@@ -48,8 +48,12 @@ export class PreloadScene extends Scene {
     }
     // Pinned dependency prefixes come from the published version manifest;
     // dev (unpublished) manifests fall back to the legacy shared paths.
-    const envBase = env.base;
-    const avatarBase = manifest.avatars?.prefix ?? LEGACY_AVATAR_BASE;
+    // Site-root convention: manifest payload paths resolve against "/"
+    // so nested routes boot the same files; absolute R2 bases unchanged.
+    const siteResolve = (p: string): string =>
+      /^https?:\/\//i.test(p) || p.startsWith("/") ? p : `/${p}`;
+    const envBase = siteResolve(env.base);
+    const avatarBase = siteResolve(manifest.avatars?.prefix ?? LEGACY_AVATAR_BASE);
     this.load.json("avatar-registry", `${avatarBase}avatar-registry.json`);
     this.load.json("environment-registry", `${envBase}${env.registry}`);
     this.load.once("complete", () => this.continueBoot(manifest, envBase, avatarBase));

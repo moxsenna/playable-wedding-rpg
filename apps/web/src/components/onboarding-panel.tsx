@@ -17,7 +17,7 @@ export function OnboardingPanel({ onDone }: { onDone: (profile: GuestProfile) =>
 
   useEffect(() => {
     let cancelled = false;
-    fetch("assets/avatars/avatar-registry.json")
+    fetch("/assets/avatars/avatar-registry.json")
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
         if (cancelled || !j || typeof j.avatars !== "object") return;
@@ -51,7 +51,7 @@ export function OnboardingPanel({ onDone }: { onDone: (profile: GuestProfile) =>
 
   return (
     <div data-testid="onboarding-panel" className="onboarding-sheet" role="dialog" aria-modal="true" aria-label="Selamat datang">
-      <img className="onboarding-mark" src="brand/logo/yutemu-mark.webp" alt="" aria-hidden="true" />
+      <img className="onboarding-mark" src="/brand/logo/yutemu-mark.webp" alt="" aria-hidden="true" />
       <div className="onboarding-brand">YUTEMU</div>
       <h2 className="onboarding-title">Selamat Datang!</h2>
       <p className="onboarding-sub">Isi namamu dan pilih karakter untuk masuk ke taman.</p>
@@ -83,7 +83,7 @@ export function OnboardingPanel({ onDone }: { onDone: (profile: GuestProfile) =>
             title={a.displayName}
           >
             <span className="onboarding-sprite" aria-hidden="true">
-              <img src={`assets/avatars/${a.id}.png`} alt="" draggable={false} />
+              <img src={`/assets/avatars/${a.id}.png`} alt="" draggable={false} />
             </span>
             <span className="onboarding-avatar-name">{a.displayName}</span>
           </button>

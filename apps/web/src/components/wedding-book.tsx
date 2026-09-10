@@ -31,6 +31,11 @@ function formatDateID(iso: string): string {
   }).format(d);
 }
 
+function resolveGallerySrc(src: string): string {
+  if (/^https?:\/\//i.test(src) || src.startsWith("/")) return src;
+  return `/${src.replace(/^\.\//, "")}`;
+}
+
 function formatTimeID(hhmm: string): string {
   return hhmm.replace(":", ".");
 }
@@ -248,7 +253,7 @@ export function WeddingBook() {
                 <h2>Gallery</h2>
                 <div className="book-gallery">
                   {pub.gallery.map((g) => (
-                    <img key={g.src} data-testid="gallery-img" src={g.src} alt={g.alt} loading="lazy" />
+                    <img key={g.src} data-testid="gallery-img" src={resolveGallerySrc(g.src)} alt={g.alt} loading="lazy" />
                   ))}
                 </div>
               </section>

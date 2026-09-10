@@ -72,7 +72,8 @@ async function main() {
       viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
     });
 
-    // default boot: local dev manifest
+    // default boot: pinned production manifest when reachable (M12.7),
+    // local dev manifest as the offline fallback
     const p1 = await ctx.newPage();
     const logs1 = [];
     p1.on("pageerror", (e) => logs1.push(`[pageerror] ${e && e.message}`));
@@ -83,7 +84,8 @@ async function main() {
     await p1.waitForFunction(() => !!window.__wedding?.player, null, { timeout: 60000 });
     await sleep(800);
     const defUrl = await hook(p1, () => window.__wedding.def.manifestUrl);
-    if (defUrl !== "assets/worlds/garden-village-v1/manifest.json") {
+    const prodPinned = "https://wedding-rpg-api.moxsenna.workers.dev/v1/assets/garden-village-v1/v6/manifest.json";
+    if (defUrl !== "/assets/worlds/garden-village-v1/manifest.json" && defUrl !== prodPinned) {
       fail(`default boot used unexpected manifest: ${defUrl}`);
     }
     const hud1 = await p1.textContent('[data-testid="quest-hud"]');
@@ -112,7 +114,7 @@ async function main() {
     if (logs2.length > 0) fail(`page errors on pinned boot: ${logs2.join(" | ").slice(0, 400)}`);
     await p2.close();
 
-    // invalid manifest falls back to local dev (world always boots)
+    // invalid manifest falls back to the pinned/local default (world boots)
     const p3 = await ctx.newPage();
     await p3.addInitScript(() => {
       window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
@@ -123,7 +125,7 @@ async function main() {
     await p3.waitForFunction(() => !!window.__wedding?.player, null, { timeout: 60000 });
     await sleep(800);
     const defUrl3 = await hook(p3, () => window.__wedding.def.manifestUrl);
-    if (defUrl3 !== "assets/worlds/garden-village-v1/manifest.json") {
+    if (defUrl3 !== "/assets/worlds/garden-village-v1/manifest.json" && defUrl3 !== prodPinned) {
       fail(`invalid manifest not rejected: ${defUrl3}`);
     }
     await p3.close();
