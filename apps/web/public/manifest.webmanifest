@@ -1,0 +1,29 @@
+{
+  "name": "YUTEMU",
+  "short_name": "YUTEMU",
+  "description": "Temui kisah mereka.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#191331",
+  "theme_color": "#191331",
+  "icons": [
+    {
+      "src": "/brand/icon/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/brand/icon/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/icon/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

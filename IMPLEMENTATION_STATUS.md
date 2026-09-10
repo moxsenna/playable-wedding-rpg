@@ -729,4 +729,33 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   operator credentials; preview end-to-end and operator-console IA
   stay queued behind that verification.
 
+## YUTEMU Rebrand (DELIVERED 2026-09-10)
+
+- Status: complete. `.unlazy/rebrand/GATES.md` G0..G5 PASS with recorded
+  evidence. Presentation layer only: no gameplay, protocol, schema,
+  quest, NPC, or domain-model changes.
+- Assets (`apps/web/public/brand/`): Y-gateway mark in the approved
+  peach→violet direction. Production icons (192/512/180/ICO) are
+  exports of the supplied tile master `docs/favicon.webp`; the in-app
+  mark (`logo/yutemu-mark.webp`) is exported from the supplied glow
+  master `docs/logo-glow.webp`. Heavy supplied PNGs were replaced by
+  ≤1024px WebP masters (864KB→139KB, 1.3MB→16KB). New
+  `manifest.webmanifest` (YUTEMU, portrait, twilight theme).
+- Shell: central `apps/web/src/config/brand.ts`; YUTEMU boot splash,
+  loading screen, onboarding mark, Wedding Book identity tag,
+  YUTEMU-toned fallback copy, `YUTEMU Studio` admin, twilight design
+  tokens in `globals.css` (restrained gradients, system font stacks).
+- Preserved verbatim: `OUR STORY` HUD, `Undangan` label, fixture couple
+  and venue names, invalid-guest copy, keyless `(dry-run)` label,
+  package names, migrations, API contracts, storage keys.
+- Collateral fix: `finale-reveal` now reads the runtime publication
+  instead of the demo fixture (dev behavior identical, M5 green);
+  M4-D's dead-game kill switch extended to the pinned R2 asset paths
+  (it could no longer kill the game after M13 went live).
+- Tests: `BRAND ICONS VERIFIED`, `BRAND VERIFIED (31)`,
+  `BRAND BROWSER VERIFIED` (390 + 1167 desktop, no overflow),
+  `M161 GUEST VERIFIED`, `M4 BOOK VERIFIED`, `M5 QUEST VERIFIED`,
+  `CI SUBSET VERIFIED (22/22)`.
+- "User-facing product branding is now YUTEMU."
+
 

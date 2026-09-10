@@ -851,3 +851,17 @@ body {
 .guest-entry{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100dvh;padding:24px;text-align:center;color:#f2f4f8;background:#1a2233}
 .guest-notice{padding:10px 14px;font-size:14px;background:rgba(255,217,138,.12);border:1px solid rgba(255,217,138,.4);border-radius:12px}
 
+
+:root{--yutemu-night:#191331;--yutemu-night-2:#221a3d;--yutemu-violet:#8b76c9;--yutemu-purple:#9a7bd0;--yutemu-coral:#e4636f;--yutemu-peach:#ffb37e;--yutemu-cream:#fff6ea;--yutemu-glow:#ffd98a;--yutemu-text:#f2f4f8;--yutemu-muted:#b9b3d4}
+.loading-screen{background:radial-gradient(120% 90% at 50% 0%, #2a2148 0%, var(--yutemu-night) 60%)}
+.loading-mark{width:88px;height:88px}
+.loading-brand{font-family:Georgia,serif;font-size:24px;font-weight:700;letter-spacing:8px;color:var(--yutemu-cream)}
+.loading-tagline{font-size:14px;color:var(--yutemu-peach);margin:-6px 0 6px}
+.onboarding-mark{width:64px;height:64px;display:block;margin:0 auto 4px}
+.onboarding-brand{text-align:center;font-family:Georgia,serif;font-size:15px;font-weight:700;letter-spacing:6px;color:var(--yutemu-peach)}
+.book-brand{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--yutemu-peach)}
+.quest-hud{border-color:rgba(255,217,138,.45);box-shadow:0 2px 12px rgba(25,19,49,.5)}
+.guest-entry{background:radial-gradient(120% 90% at 50% 0%, #2a2148 0%, var(--yutemu-night) 65%)}
+.admin-page{background:var(--yutemu-night)}
+.admin-page h1{letter-spacing:.5px}
+

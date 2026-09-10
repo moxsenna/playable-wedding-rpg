@@ -51,6 +51,8 @@ export function OnboardingPanel({ onDone }: { onDone: (profile: GuestProfile) =>
 
   return (
     <div data-testid="onboarding-panel" className="onboarding-sheet" role="dialog" aria-modal="true" aria-label="Selamat datang">
+      <img className="onboarding-mark" src="brand/logo/yutemu-mark.webp" alt="" aria-hidden="true" />
+      <div className="onboarding-brand">YUTEMU</div>
       <h2 className="onboarding-title">Selamat Datang!</h2>
       <p className="onboarding-sub">Isi namamu dan pilih karakter untuk masuk ke taman.</p>
       <label className="onboarding-label">

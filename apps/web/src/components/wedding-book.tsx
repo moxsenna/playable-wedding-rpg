@@ -166,6 +166,7 @@ export function WeddingBook() {
           <div data-testid="wedding-book" className="book-sheet" role="dialog" aria-modal="true" aria-label="Undangan">
             <div className="book-header">
               <strong>Undangan</strong>
+              <span className="book-brand">YUTEMU</span>
             <button data-testid="wedding-book-close" className="book-close" onClick={closeBook} autoFocus>
               Tutup
             </button>

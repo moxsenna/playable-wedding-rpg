@@ -7,11 +7,11 @@ export default function Home() {
     return (
         <>
             <Head>
-                <title>Playable Wedding RPG — Garden Village</title>
-                <meta name="description" content="A portrait-first social 2D wedding RPG: walk the garden village, meet the wedding party, collect our story." />
+                <title>YUTEMU — Temui Kisah Mereka</title>
+                <meta name="description" content="YUTEMU menghadirkan pengalaman undangan pernikahan yang bisa dijelajahi, dimainkan, dan dikenang." />
                 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-                <meta name="theme-color" content="#1a2233" />
-                <link rel="icon" href="/favicon.png" />
+                <meta property="og:title" content="YUTEMU — Temui Kisah Mereka" />
+                <meta name="twitter:title" content="YUTEMU — Temui Kisah Mereka" />
             </Head>
             <main>
                 <AppWithoutSSR />

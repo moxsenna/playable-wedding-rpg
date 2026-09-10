@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { EventBus, BRIDGE_EVENTS } from "@wedding-rpg/game";
-import { DEMO_PUBLICATION } from "../weddings/demo-publication";
+import { useRuntimeWedding } from "../weddings/runtime";
 
 interface ToastPayload {
   heart?: string;
@@ -67,7 +67,9 @@ export function FinaleReveal() {
     };
   }, []);
 
-  const couple = DEMO_PUBLICATION.couple;
+  const runtime = useRuntimeWedding();
+  const couple =
+    runtime.status === "ready" || runtime.status === "fixture" ? runtime.publication.couple : null;
   return (
     <>
       {toast && (
@@ -95,7 +97,7 @@ export function FinaleReveal() {
           ✦ Aula Terbuka — rayakan bersama! ✦
         </div>
       )}
-      {revealed && (
+      {revealed && couple && (
         <div data-testid="finale-reveal" className="finale-sheet" role="dialog" aria-label="Finale">
           <h2>
             {couple.partnerA} &amp; {couple.partnerB}

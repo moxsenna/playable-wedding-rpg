@@ -267,6 +267,8 @@ async function main() {
     const browser2 = await launchBrowser();
     const ctx2 = await browser2.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
     await ctx2.route("**/assets/worlds/**", (route) => route.abort());
+    await ctx2.route("**/v1/assets/**", (route) => route.abort());
+    await ctx2.route("**/manifest.json", (route) => route.abort());
     const p2 = await ctx2.newPage();
     await prepPage(p2);
     await p2.addInitScript(() => {

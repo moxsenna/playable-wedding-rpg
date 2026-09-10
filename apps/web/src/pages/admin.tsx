@@ -346,11 +346,11 @@ export default function Admin() {
   return (
     <>
       <Head>
-        <title>Admin RPG — Wedding Config</title>
+        <title>YUTEMU Studio</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
       </Head>
       <main data-testid="admin-page" className="admin-page">
-        <h1>Admin RPG Config</h1>
+        <h1>YUTEMU Studio</h1>
 
         <section aria-label="Operasional">
           <h2>Weddings (server)</h2>

@@ -46,13 +46,10 @@ export function LoadingScreen() {
   if (ready || failed) return null;
   const pct = Math.round(progress * 100);
   return (
-    <div data-testid="loading-screen" className="loading-screen" role="status" aria-label="Memuat taman">
-      <div className="loading-rings" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="loading-title">Taman Kebahagiaan</div>
+    <div data-testid="loading-screen" className="loading-screen" role="status" aria-label="Membuka YUTEMU">
+      <img data-testid="loading-mark" className="loading-mark" src="brand/logo/yutemu-mark.webp" alt="YUTEMU" />
+      <div className="loading-brand">YUTEMU</div>
+      <div className="loading-tagline">Temui kisah mereka.</div>
       <div className="loading-bar" aria-hidden="true">
         <div className="loading-fill" style={{ width: `${pct}%` }} />
       </div>

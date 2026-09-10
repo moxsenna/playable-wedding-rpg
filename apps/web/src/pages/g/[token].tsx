@@ -88,7 +88,9 @@ export default function GuestEntry() {
   return (
     <>
       <Head>
-        <title>{couple ? `Undangan ${couple}` : "Undangan Pernikahan"}</title>
+        <title>{couple ? `Undangan ${couple} · YUTEMU` : "Undangan Pernikahan · YUTEMU"}</title>
+        <meta name="description" content="Masuk ke YUTEMU dan temui kisah mereka." />
+        <meta property="og:title" content={couple ? `Undangan ${couple} · YUTEMU` : "Undangan Pernikahan · YUTEMU"} />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
       </Head>
       <main>
