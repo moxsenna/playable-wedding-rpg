@@ -13,13 +13,20 @@ import type {
 
 export type QueryRow = Record<string, unknown>;
 
+export interface DbStatement {
+  text: string;
+  params?: unknown[];
+}
+
 export interface DbPool {
   query(text: string, params?: unknown[]): Promise<{ rows: QueryRow[]; rowCount: number }>;
+  transact?(statements: DbStatement[]): Promise<{ rows: QueryRow[] }[]>;
 }
 
 /** Minimal Neon HTTP query function (sql.query(text, params)); full type lives in apps/api. */
 export interface NeonQueryFn {
   query(text: string, params?: unknown[]): Promise<QueryRow[]>;
+  transaction?(fn: (tx: { query(text: string, params?: unknown[]): unknown }) => unknown[]): Promise<unknown>;
 }
 
 /** DbPool over Neon HTTP. No TCP, no node-postgres — works in workerd. */
@@ -28,6 +35,13 @@ export function neonHttpPool(sql: NeonQueryFn): DbPool {
     async query(text: string, params: unknown[] = []) {
       const rows = await sql.query(text, params);
       return { rows, rowCount: rows.length };
+    },
+    async transact(statements: DbStatement[]) {
+      if (typeof sql.transaction !== "function") throw new Error("transactions unsupported");
+      const out = (await sql.transaction((tx) =>
+        statements.map((s) => tx.query(s.text, s.params ?? []))
+      )) as unknown[];
+      return out.map((rows) => ({ rows: rows as QueryRow[] }));
     },
   };
 }
@@ -267,22 +281,47 @@ export class NeonStore implements WeddingStore {
   }
 
   /**
-   * Exclusive activation as ONE statement: the target flips to active and
-   * every other active sibling archives in the same write. If the target is
-   * not published (or missing), zero rows match and NOTHING changes — the
-   * old active is never left archived with no successor. The
-   * pubver_single_active partial unique index stays as the concurrent-race
-   * guard; callers surface a no-row result as a failed activation (409).
+   * Exclusive activation: the target flips to active and the previously
+   * active sibling archives; other published versions stay published
+   * (staging area), matching MemoryStore. A single UPDATE swapping the
+   * flag is order-dependent against the single-active index (transient
+   * duplicate on some physical layouts), so the transactional pool runs
+   * archive-then-activate as one transaction where every statement is
+   * individually consistent; pools without transact() keep the legacy
+   * single statement. If the target is not published (or missing), the
+   * guard matches nothing and the old active is untouched — callers
+   * surface a no-row result as a failed activation (409).
    */
   async activateExclusive(projectId: string, publicationId: string, versionId: string): Promise<PublicationVersion> {
+    if (typeof this.db.transact === "function") {
+      const [, activated] = await this.db.transact([
+        {
+          text: `UPDATE publication_versions SET status = 'archived'::version_status
+                 WHERE project_id = $1 AND publication_id = $2 AND status = 'active'
+                 AND EXISTS (SELECT 1 FROM publication_versions WHERE id = $3 AND project_id = $1 AND publication_id = $2 AND status = 'published')`,
+          params: [projectId, publicationId, versionId],
+        },
+        {
+          text: `UPDATE publication_versions SET status = 'active'::version_status
+                 WHERE id = $3 AND project_id = $1 AND publication_id = $2 AND status = 'published'
+                 RETURNING id, project_id, publication_id, version, status, snapshot, created_at`,
+          params: [projectId, publicationId, versionId],
+        },
+      ]);
+      const active = activated.rows.find((row) => String(row.id) === versionId && row.status === "active");
+      if (!active) {
+        throw new Error("activate-exclusive-no-row");
+      }
+      return rowVersion(active);
+    }
     const r = await this.db.query(
       `WITH target AS (
          SELECT id FROM publication_versions
          WHERE id = $1 AND project_id = $2 AND publication_id = $3 AND status = 'published'
        )
-       UPDATE publication_versions v SET status = CASE WHEN v.id = $1 THEN 'active' ELSE 'archived' END
+       UPDATE publication_versions v SET status = CASE WHEN v.id = $1 THEN 'active'::version_status ELSE 'archived'::version_status END
        FROM target
-       WHERE v.project_id = $2 AND v.publication_id = $3 AND v.status IN ('active', 'published')
+       WHERE v.project_id = $2 AND v.publication_id = $3 AND (v.status = 'active' OR v.id = $1)
        RETURNING v.id, v.project_id, v.publication_id, v.version, v.status, v.snapshot, v.created_at`,
       [versionId, projectId, publicationId]
     );

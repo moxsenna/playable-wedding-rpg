@@ -793,12 +793,29 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   G1 E2E); M4-D kill switch extended to pinned R2 paths; m15 boots the
   local manifest (R2 v6 predates `gate.entry`); m127 accepts the
   intended pinned default.
-- Open production ops (need credentials): publish template v7
-  (`node tooling/publish/publish.mjs garden-village-v1 --driver r2
-  --bucket wedding-templates`) then advance the pin
-  (`DATABASE_URL=… node tooling/db/seed.mjs`); live 50-guest golden
+- Open production ops (need credentials): live 50-guest golden
   (`DATABASE_URL=… node tooling/e2e/m126-neon.mjs` + Studio publish
   flow against production).
+
+## Production Acceptance (2026-09-10, post-M17)
+
+- Template v7 published to R2 (first build containing `gate.entry`;
+  v1..v6 all share hash `93c04567…` and predate it). Neon pin advanced
+  via seed → `world-config` now resolves
+  `garden-village-v1/v7/manifest.json`. Live guests get the Sari entry
+  gate for the first time.
+- `m126-neon` LIVE GOLDEN GREEN: session/rsvp/guestbook round-trips,
+  draft→publish→activate v1→v2 single-active, failed activation atomic.
+- Two real production bugs found and fixed by the golden:
+  1. `activateExclusive` used untyped CASE literals against the
+     `version_status` enum → every live activation 500/409'd (live NEVER
+     had an active publication because of this).
+  2. Single-statement swaps race the single-active partial unique index
+     depending on physical row order (proven: identical swap passes and
+     23505-fails). Activation is now archive-then-activate inside one
+     Neon HTTP transaction (`DbPool.transact`, MemoryStore semantics
+     unchanged); `verify-m127-atomic` extended to 12 assertions covering
+     both paths instead of weakening the old ones.
 
 ## M17.1 — R2 Wedding Media Pipeline (DELIVERED 2026-09-10)
 

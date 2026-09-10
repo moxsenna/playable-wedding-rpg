@@ -73,7 +73,7 @@ try {
   const writes = seen.filter((s) => s.text.includes("publication_versions"));
   ok(writes.length === 1, `exactly one write statement (saw ${writes.length})`);
   ok(writes[0].text.includes("WITH target AS"), "target CTE validates inside the statement");
-  ok(writes[0].text.includes("ELSE 'archived' END"), "siblings archive in the same write");
+  ok(writes[0].text.includes("ELSE 'archived'"), "siblings archive in the same write");
   ok(/status = 'published'/.test(writes[0].text), "target must be published");
 
   // failure path: no matching published target -> zero rows -> throws,
@@ -86,6 +86,81 @@ try {
     threw = String((e && e.message) || e).includes("activate-exclusive-no-row");
   }
   ok(threw, "non-published target throws without changing anything");
+
+  // transactional path: archive-then-activate as one transaction, where
+  // every statement is individually consistent, so no physical row order
+  // can transiently duplicate the single-active flag (single UPDATEs can:
+  // the swap races the partial unique index depending on visit order).
+  // Simulated table honors real unique semantics: duplicate active rows
+  // throw, which is exactly what the legacy shape risks.
+  const table = [
+    { id: "pv-1", project_id: "p1", publication_id: "pub", version: 1, status: "active", snapshot: {}, created_at: 1 },
+    { id: "pv-2", project_id: "p1", publication_id: "pub", version: 2, status: "published", snapshot: {}, created_at: 2 },
+    { id: "pv-3", project_id: "p1", publication_id: "pub", version: 3, status: "published", snapshot: {}, created_at: 3 },
+  ];
+  const txnPool = {
+    async query(text, params = []) {
+      return (await this.transact([{ text, params }]))[0];
+    },
+    async transact(statements) {
+      const backup = JSON.parse(JSON.stringify(table));
+      const results = [];
+      try {
+        for (const s of statements) {
+          results.push(this.apply(s.text, s.params ?? []));
+        }
+      } catch (e) {
+        for (let i = 0; i < table.length; i++) table[i] = backup[i];
+        throw e;
+      }
+      return results;
+    },
+    apply(text, params) {
+      const scoped = table.filter((r) => r.project_id === params[0] && r.publication_id === params[1]);
+      if (/SET status = 'archived'/.test(text)) {
+        const targetPublished = table.some((r) => r.id === params[2] && r.status === "published");
+        if (targetPublished) {
+          for (const r of scoped) {
+            if (r.status === "active") r.status = "archived";
+          }
+        }
+        this.checkUnique();
+        return { rows: scoped.map((r) => ({ ...r })) };
+      }
+      if (/SET status = 'active'/.test(text)) {
+        const target = scoped.find((r) => r.id === params[2] && r.status === "published");
+        if (!target) return { rows: [] };
+        target.status = "active";
+        this.checkUnique();
+        return { rows: [{ ...target }] };
+      }
+      return { rows: [] };
+    },
+    checkUnique() {
+      const seen = new Set();
+      for (const r of table) {
+        if (r.status !== "active") continue;
+        const k = `${r.project_id}/${r.publication_id}`;
+        if (seen.has(k)) throw new Error('duplicate key value violates unique constraint "pubver_single_active"');
+        seen.add(k);
+      }
+    },
+  };
+  const db3 = new store.NeonStore(txnPool);
+  const a = await db3.activateExclusive("p1", "pub", "pv-2");
+  ok(a.id === "pv-2" && a.status === "active", "transactional path activates the target");
+  ok(table.find((r) => r.id === "pv-1").status === "archived", "old active archived");
+  ok(table.find((r) => r.id === "pv-3").status === "published", "staged versions preserved");
+  const b = await db3.activateExclusive("p1", "pub", "pv-3");
+  ok(b.id === "pv-3" && b.status === "active", "re-activation swaps cleanly");
+  let threw3 = false;
+  try {
+    await db3.activateExclusive("p1", "pub", "pv-1");
+  } catch (e) {
+    threw3 = String((e && e.message) || e).includes("activate-exclusive-no-row");
+  }
+  ok(threw3, "archived target throws");
+  ok(table.find((r) => r.id === "pv-3").status === "active", "failed activation keeps current active");
 
   console.log(`M127 ATOMIC VERIFIED (${n} assertions)`);
 } finally {
