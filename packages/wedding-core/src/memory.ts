@@ -270,14 +270,14 @@ export class MemoryStore implements WeddingStore {
 
   async findLiveClaimByProject(projectId: string, now: number): Promise<OwnerClaimRow | null> {
     const live = this.ownerClaims
-      .filter((c) => c.projectId === projectId && c.usedAt === null && c.revokedAt === null && c.expiresAt > now)
+      .filter((c) => c.projectId === projectId && c.revokedAt === null && c.expiresAt > now)
       .sort((a, b) => b.createdAt - a.createdAt);
     return live[0] ?? null;
   }
 
   async consumeOwnerClaim(token: string, now: number): Promise<OwnerClaimRow | null> {
     const c = this.ownerClaims.find((x) => x.token === token) ?? null;
-    if (!c || c.usedAt !== null || c.revokedAt !== null || c.expiresAt <= now) return null;
+    if (!c || c.revokedAt !== null || c.expiresAt <= now) return null;
     c.usedAt = now;
     return { ...c };
   }

@@ -188,7 +188,7 @@ export interface WeddingStore {
   getOwnerClaim(token: string): Promise<OwnerClaimRow | null>;
   /** Live (unused, unexpired, unrevoked) claim for a project, if any. */
   findLiveClaimByProject(projectId: string, now: number): Promise<OwnerClaimRow | null>;
-  /** Atomically marks a live claim used; null when unknown, expired, revoked, or already used. */
+  /** Reusable claim exchange: marks use but never invalidates; null when unknown, expired, or revoked. */
   consumeOwnerClaim(token: string, now: number): Promise<OwnerClaimRow | null>;
   revokeOwnerClaim(token: string, now: number): Promise<boolean>;
   createOwnerSession(row: OwnerSessionRow): Promise<void>;
@@ -681,7 +681,7 @@ export class NeonStore implements WeddingStore {
 
   async findLiveClaimByProject(projectId: string, now: number): Promise<OwnerClaimRow | null> {
     const r = await this.db.query(
-      `SELECT * FROM owner_claims WHERE project_id = $1 AND used_at IS NULL AND revoked_at IS NULL AND expires_at > $2 ORDER BY created_at DESC LIMIT 1`,
+      `SELECT * FROM owner_claims WHERE project_id = $1 AND revoked_at IS NULL AND expires_at > $2 ORDER BY created_at DESC LIMIT 1`,
       [projectId, now]
     );
     return r.rows.length > 0 ? this.rowClaim(r.rows[0]) : null;
@@ -690,7 +690,7 @@ export class NeonStore implements WeddingStore {
   async consumeOwnerClaim(token: string, now: number): Promise<OwnerClaimRow | null> {
     const r = await this.db.query(
       `UPDATE owner_claims SET used_at = $2
-       WHERE token = $1 AND used_at IS NULL AND revoked_at IS NULL AND expires_at > $2
+       WHERE token = $1 AND revoked_at IS NULL AND expires_at > $2
        RETURNING *`,
       [token, now]
     );
