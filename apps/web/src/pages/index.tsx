@@ -376,20 +376,25 @@ export default function Home() {
                                     <div className={styles.rungAction}>
                                         <a
                                             className={`${styles.btnGold} ${styles.btnCompact}`}
+                                            href={`/mulai?tier=${tier.id}`}
+                                        >
+                                            Buat {tier.name}
+                                        </a>
+                                        <a
+                                            className={`${styles.btnGhost} ${styles.btnCompact}`}
                                             href={waLink(WA_MESSAGES.package(tier.name, tier.price))}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
-                                            Tanya {tier.name}
+                                            Tanya dulu
                                         </a>
                                     </div>
                                 </div>
                             ))}
                         </div>
                         <p className={styles.ladderNote}>
-                            Isi tiap tingkat belum ditetapkan di halaman ini. Tanyakan lewat WhatsApp, kami
-                            kirimkan rinciannya. Atau <a href="/mulai">buat sendiri sekarang</a> — bayar,
-                            isi datamu lewat wizard, langsung terbit.
+                            Isi tiap tingkat belum ditetapkan di halaman ini. Pencet Buat untuk bayar lalu isi
+                            data pernikahanmu sendiri, atau Tanya dulu lewat WhatsApp dan kami kirimkan rinciannya.
                         </p>
                     </div>
                 </section>
