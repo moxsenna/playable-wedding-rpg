@@ -12,7 +12,8 @@ import { createRequire } from "node:module";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const WEB_DIR = join(ROOT, "apps/web");
 const PORT = 8103;
-const URL = `http://localhost:${PORT}/`;
+// The guest experience lives at /demo; `/` is the marketing landing page.
+const URL = `http://localhost:${PORT}/demo`;
 const BIN = process.platform === "win32" ? ".cmd" : "";
 
 const fail = (msg) => { console.error(`M3 NPC check FAILED: ${msg}`); process.exit(1); };

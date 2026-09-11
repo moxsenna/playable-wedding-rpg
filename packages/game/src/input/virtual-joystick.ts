@@ -24,15 +24,24 @@ export class VirtualJoystick {
     this.baseX = x;
     this.baseY = y;
     this.state = new JoystickState({ radius, deadzone: 0.22 });
+    // The base keeps its circular form because it is a radial control: the round
+    // shape is what tells the thumb it can push any direction. Only the material
+    // follows the world's night-and-gold system — flat fill, heavy rule.
+    //
+    // The fill is nearly opaque on purpose. At 0.72 over bright grass it composited
+    // to dark GREEN with its gold rule at 1.33:1, so the control's legibility moved
+    // with whatever terrain sat behind it. At 0.9 it reads as the same night block
+    // as the buttons over any ground.
     this.base = scene.add
-      .circle(x, y, radius, 0xffffff, 0.14)
+      .circle(x, y, radius, 0x151d2e, 0.9)
       .setScrollFactor(0)
       .setDepth(200);
-    this.base.setStrokeStyle(2, 0xffffff, 0.35);
+    this.base.setStrokeStyle(3, 0xffd98a, 1);
     this.thumb = scene.add
-      .circle(x, y, radius * 0.45, 0xffffff, 0.45)
+      .circle(x, y, radius * 0.42, 0xffd98a, 1)
       .setScrollFactor(0)
       .setDepth(201);
+    this.thumb.setStrokeStyle(3, 0x0d1320, 1);
     scene.input.on("pointerdown", this.onDown, this);
     scene.input.on("pointermove", this.onMove, this);
     scene.input.on("pointerup", this.onUp, this);

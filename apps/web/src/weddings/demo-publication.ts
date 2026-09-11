@@ -52,6 +52,8 @@ export const DEMO_PUBLICATION_DATA: Publication = {
     { src: "assets/gallery/demo-1.png", alt: "Foto taman dan dekorasi pernikahan" },
     { src: "assets/gallery/demo-2.png", alt: "Foto kedua mempelai di wishing tree" },
     { src: "assets/gallery/demo-3.png", alt: "Foto plaza utama saat golden hour" },
+    { src: "assets/gallery/demo-4.png", alt: "Kisah pertemuan pertama di kedai kopi" },
+    { src: "assets/gallery/demo-5.png", alt: "Momen lamaran di bawah langit senja" },
   ],
   gift: {
     bankName: "Bank Demo",

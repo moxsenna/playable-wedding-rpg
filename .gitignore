@@ -16,3 +16,10 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+.dev.vars
+.dev.vars.*
+.commandcode/
+.impeccable/*
+!.impeccable/config.json
+!.impeccable/design.json
+apps/web/.impeccable/

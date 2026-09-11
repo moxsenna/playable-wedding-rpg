@@ -6,6 +6,22 @@ export interface UploadIntentResponse {
   expiresIn?: number;
 }
 
+export interface MediaAuth {
+  ownerToken?: string;
+}
+
+function mediaPaths(apiBase: string, auth?: MediaAuth): { base: string; headers: Record<string, string> } {
+  if (auth?.ownerToken) {
+    return { base: `${apiBase}/v1/owner/media`, headers: { "x-owner-token": auth.ownerToken } };
+  }
+  return { base: `${apiBase}/v1/admin/media`, headers: {} };
+}
+
+function adminHeader(adminKey: string, auth?: MediaAuth): Record<string, string> {
+  if (auth?.ownerToken) return {};
+  return { "x-admin-key": adminKey };
+}
+
 export async function fileToWebp(file: File): Promise<{ bytes: ArrayBuffer; contentType: string }> {
   const bitmap = await createImageBitmap(file);
   const scale = Math.min(1, 1920 / Math.max(bitmap.width, bitmap.height));
@@ -28,11 +44,13 @@ export async function requestUploadUrl(
   adminKey: string,
   projectId: string,
   contentType: string,
-  sizeBytes: number
+  sizeBytes: number,
+  auth?: MediaAuth
 ): Promise<UploadIntentResponse> {
-  const res = await fetch(`${apiBase}/v1/admin/media/upload-url`, {
+  const { base, headers } = mediaPaths(apiBase, auth);
+  const res = await fetch(`${base}/upload-url`, {
     method: "POST",
-    headers: { "content-type": "application/json", "x-admin-key": adminKey },
+    headers: { "content-type": "application/json", ...adminHeader(adminKey, auth), ...headers },
     body: JSON.stringify({ projectId, contentType, sizeBytes }),
   });
   if (!res.ok) throw new Error(`upload intent refused (${res.status})`);
@@ -50,30 +68,34 @@ export async function putProxied(
   projectId: string,
   key: string,
   bytes: ArrayBuffer,
-  contentType: string
+  contentType: string,
+  auth?: MediaAuth
 ): Promise<void> {
+  const { base, headers } = mediaPaths(apiBase, auth);
   const qs = new URLSearchParams({ projectId, key, contentType });
-  const res = await fetch(`${apiBase}/v1/admin/media/upload?${qs.toString()}`, {
+  const res = await fetch(`${base}/upload?${qs.toString()}`, {
     method: "POST",
-    headers: { "x-admin-key": adminKey, "content-type": "application/octet-stream" },
+    headers: { ...adminHeader(adminKey, auth), ...headers, "content-type": "application/octet-stream" },
     body: bytes,
   });
   if (!res.ok) throw new Error(`upload failed (${res.status})`);
 }
 
-export async function completeUpload(apiBase: string, adminKey: string, projectId: string, key: string): Promise<void> {
-  const res = await fetch(`${apiBase}/v1/admin/media/complete`, {
+export async function completeUpload(apiBase: string, adminKey: string, projectId: string, key: string, auth?: MediaAuth): Promise<void> {
+  const { base, headers } = mediaPaths(apiBase, auth);
+  const res = await fetch(`${base}/complete`, {
     method: "POST",
-    headers: { "content-type": "application/json", "x-admin-key": adminKey },
+    headers: { "content-type": "application/json", ...adminHeader(adminKey, auth), ...headers },
     body: JSON.stringify({ projectId, key }),
   });
   if (!res.ok) throw new Error(`complete failed (${res.status})`);
 }
 
-export async function deleteMedia(apiBase: string, adminKey: string, projectId: string, key: string): Promise<"deleted" | "referenced"> {
-  const res = await fetch(`${apiBase}/v1/admin/media`, {
+export async function deleteMedia(apiBase: string, adminKey: string, projectId: string, key: string, auth?: MediaAuth): Promise<"deleted" | "referenced"> {
+  const { base, headers } = mediaPaths(apiBase, auth);
+  const res = await fetch(base, {
     method: "DELETE",
-    headers: { "content-type": "application/json", "x-admin-key": adminKey },
+    headers: { "content-type": "application/json", ...adminHeader(adminKey, auth), ...headers },
     body: JSON.stringify({ projectId, key }),
   });
   if (res.status === 409) return "referenced";

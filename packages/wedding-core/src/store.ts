@@ -10,6 +10,7 @@ import type {
   PublicationVersion,
   RsvpRecord,
 } from "@wedding-rpg/contracts";
+import type { BillingOrderRow, OwnerClaimRow, OwnerSessionRow } from "./billing";
 
 export type QueryRow = Record<string, unknown>;
 
@@ -101,6 +102,8 @@ export interface WeddingProjectRow {
   name: string;
   slug: string;
   status: "draft" | "live" | "archived";
+  /** Billing tier id (esensial/signature/bespoke) or null for admin-created full-access projects. */
+  tier: string | null;
   createdAt: number;
   updatedAt: number;
 }
@@ -174,6 +177,23 @@ export interface WeddingStore {
   getWorldConfig(projectId: string): Promise<WeddingWorldConfigRow | null>;
   upsertWorldConfig(row: WeddingWorldConfigRow): Promise<void>;
   listTemplateVersions(): Promise<TemplateVersionRow[]>;
+  createBillingOrder(row: BillingOrderRow): Promise<void>;
+  getBillingOrder(externalOrderId: string): Promise<BillingOrderRow | null>;
+  getBillingOrderByPaycoreId(paycoreOrderId: string): Promise<BillingOrderRow | null>;
+  setBillingPaycoreId(externalOrderId: string, paycoreOrderId: string): Promise<void>;
+  markOrderPaid(externalOrderId: string, projectId: string, paidAt: number): Promise<BillingOrderRow | null>;
+  /** Returns false when the event was already recorded (idempotent replay). */
+  recordPaymentEvent(eventId: string, orderId: string, receivedAt: number): Promise<boolean>;
+  createOwnerClaim(row: OwnerClaimRow): Promise<void>;
+  getOwnerClaim(token: string): Promise<OwnerClaimRow | null>;
+  /** Live (unused, unexpired, unrevoked) claim for a project, if any. */
+  findLiveClaimByProject(projectId: string, now: number): Promise<OwnerClaimRow | null>;
+  /** Atomically marks a live claim used; null when unknown, expired, revoked, or already used. */
+  consumeOwnerClaim(token: string, now: number): Promise<OwnerClaimRow | null>;
+  revokeOwnerClaim(token: string, now: number): Promise<boolean>;
+  createOwnerSession(row: OwnerSessionRow): Promise<void>;
+  resolveOwnerSession(token: string, now: number): Promise<OwnerSessionRow | null>;
+  revokeOwnerSessions(projectId: string, now: number): Promise<void>;
 }
 
 export class NeonStore implements WeddingStore {
@@ -354,6 +374,7 @@ export class NeonStore implements WeddingStore {
       name: String(r.name),
       slug: typeof r.slug === "string" && r.slug.length > 0 ? r.slug : String(r.id),
       status: (r.status as WeddingProjectRow["status"]) ?? "draft",
+      tier: typeof r.tier === "string" && r.tier.length > 0 ? r.tier : null,
       createdAt: Number(r.created_at ?? r.createdAt ?? Date.now()),
       updatedAt: Number(r.updated_at ?? r.updatedAt ?? Date.now()),
     };
@@ -362,7 +383,7 @@ export class NeonStore implements WeddingStore {
   async listProjects(): Promise<WeddingProjectRow[]> {
     try {
       const r = await this.db.query(
-        `SELECT id, name, slug, status, created_at, updated_at FROM wedding_projects ORDER BY created_at`
+        `SELECT id, name, slug, status, tier, created_at, updated_at FROM wedding_projects ORDER BY created_at`
       );
       return r.rows.map((row) => this.rowProject(row));
     } catch {
@@ -374,7 +395,7 @@ export class NeonStore implements WeddingStore {
   async getProject(id: string): Promise<WeddingProjectRow | null> {
     try {
       const r = await this.db.query(
-        `SELECT id, name, slug, status, created_at, updated_at FROM wedding_projects WHERE id = $1`,
+        `SELECT id, name, slug, status, tier, created_at, updated_at FROM wedding_projects WHERE id = $1`,
         [id]
       );
       return r.rows.length > 0 ? this.rowProject(r.rows[0]) : null;
@@ -387,8 +408,8 @@ export class NeonStore implements WeddingStore {
   async createProject(row: WeddingProjectRow): Promise<void> {
     try {
       await this.db.query(
-        `INSERT INTO wedding_projects (id, name, slug, status, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)`,
-        [row.id, row.name, row.slug, row.status, row.createdAt, row.updatedAt]
+        `INSERT INTO wedding_projects (id, name, slug, status, tier, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [row.id, row.name, row.slug, row.status, row.tier, row.createdAt, row.updatedAt]
       );
     } catch (e) {
       if (isUniqueViolation(e)) throw new Error("slug-taken");
@@ -552,6 +573,154 @@ export class NeonStore implements WeddingStore {
       version: Number(row.version),
       manifestRef: String(row.ref),
     }));
+  }
+
+  private rowBillingOrder(r: QueryRow): BillingOrderRow {
+    return {
+      externalOrderId: String(r.external_order_id),
+      paycoreOrderId: r.paycore_order_id == null ? null : String(r.paycore_order_id),
+      tier: String(r.tier),
+      amount: Number(r.amount),
+      currency: String(r.currency),
+      customerName: String(r.customer_name),
+      customerWhatsapp: String(r.customer_whatsapp),
+      customerEmail: String(r.customer_email),
+      status: r.status === "paid" ? "paid" : r.status === "failed" ? "failed" : "pending",
+      projectId: r.project_id == null ? null : String(r.project_id),
+      createdAt: Number(r.created_at),
+      paidAt: r.paid_at == null ? null : Number(r.paid_at),
+    };
+  }
+
+  async createBillingOrder(row: BillingOrderRow): Promise<void> {
+    await this.db.query(
+      `INSERT INTO billing_orders (external_order_id, paycore_order_id, tier, amount, currency,
+        customer_name, customer_whatsapp, customer_email, status, project_id, created_at, paid_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+      [row.externalOrderId, row.paycoreOrderId, row.tier, row.amount, row.currency, row.customerName,
+        row.customerWhatsapp, row.customerEmail, row.status, row.projectId, row.createdAt, row.paidAt]
+    );
+  }
+
+  async getBillingOrder(externalOrderId: string): Promise<BillingOrderRow | null> {
+    const r = await this.db.query(`SELECT * FROM billing_orders WHERE external_order_id = $1`, [externalOrderId]);
+    return r.rows.length > 0 ? this.rowBillingOrder(r.rows[0]) : null;
+  }
+
+  async getBillingOrderByPaycoreId(paycoreOrderId: string): Promise<BillingOrderRow | null> {
+    const r = await this.db.query(`SELECT * FROM billing_orders WHERE paycore_order_id = $1`, [paycoreOrderId]);
+    return r.rows.length > 0 ? this.rowBillingOrder(r.rows[0]) : null;
+  }
+
+  async setBillingPaycoreId(externalOrderId: string, paycoreOrderId: string): Promise<void> {
+    await this.db.query(`UPDATE billing_orders SET paycore_order_id = $2 WHERE external_order_id = $1`, [
+      externalOrderId,
+      paycoreOrderId,
+    ]);
+  }
+
+  async markOrderPaid(externalOrderId: string, projectId: string, paidAt: number): Promise<BillingOrderRow | null> {
+    const cur = await this.getBillingOrder(externalOrderId);
+    if (!cur || cur.status === "paid") return cur;
+    await this.db.query(
+      `UPDATE billing_orders SET status = 'paid', project_id = $2, paid_at = $3 WHERE external_order_id = $1`,
+      [externalOrderId, projectId, paidAt]
+    );
+    return this.getBillingOrder(externalOrderId);
+  }
+
+  async recordPaymentEvent(eventId: string, orderId: string, receivedAt: number): Promise<boolean> {
+    try {
+      await this.db.query(
+        `INSERT INTO payment_events (event_id, order_id, received_at) VALUES ($1, $2, $3)`,
+        [eventId, orderId, receivedAt]
+      );
+      return true;
+    } catch (e) {
+      if (isUniqueViolation(e)) return false;
+      throw e;
+    }
+  }
+
+  private rowClaim(r: QueryRow): OwnerClaimRow {
+    return {
+      token: String(r.token),
+      projectId: String(r.project_id),
+      tier: String(r.tier),
+      createdAt: Number(r.created_at),
+      expiresAt: Number(r.expires_at),
+      usedAt: r.used_at == null ? null : Number(r.used_at),
+      revokedAt: r.revoked_at == null ? null : Number(r.revoked_at),
+    };
+  }
+
+  async createOwnerClaim(row: OwnerClaimRow): Promise<void> {
+    await this.db.query(
+      `INSERT INTO owner_claims (token, project_id, tier, created_at, expires_at, used_at, revoked_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      [row.token, row.projectId, row.tier, row.createdAt, row.expiresAt, row.usedAt, row.revokedAt]
+    );
+  }
+
+  async getOwnerClaim(token: string): Promise<OwnerClaimRow | null> {
+    const r = await this.db.query(`SELECT * FROM owner_claims WHERE token = $1`, [token]);
+    return r.rows.length > 0 ? this.rowClaim(r.rows[0]) : null;
+  }
+
+  async findLiveClaimByProject(projectId: string, now: number): Promise<OwnerClaimRow | null> {
+    const r = await this.db.query(
+      `SELECT * FROM owner_claims WHERE project_id = $1 AND used_at IS NULL AND revoked_at IS NULL AND expires_at > $2 ORDER BY created_at DESC LIMIT 1`,
+      [projectId, now]
+    );
+    return r.rows.length > 0 ? this.rowClaim(r.rows[0]) : null;
+  }
+
+  async consumeOwnerClaim(token: string, now: number): Promise<OwnerClaimRow | null> {
+    const r = await this.db.query(
+      `UPDATE owner_claims SET used_at = $2
+       WHERE token = $1 AND used_at IS NULL AND revoked_at IS NULL AND expires_at > $2
+       RETURNING *`,
+      [token, now]
+    );
+    if (r.rows.length === 0) return null;
+    return this.rowClaim(r.rows[0]);
+  }
+
+  async revokeOwnerClaim(token: string, now: number): Promise<boolean> {
+    const r = await this.db.query(`UPDATE owner_claims SET revoked_at = $2 WHERE token = $1 AND revoked_at IS NULL`, [
+      token,
+      now,
+    ]);
+    return r.rowCount > 0;
+  }
+
+  async createOwnerSession(row: OwnerSessionRow): Promise<void> {
+    await this.db.query(
+      `INSERT INTO owner_sessions (token, project_id, created_at, expires_at, revoked_at)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [row.token, row.projectId, row.createdAt, row.expiresAt, row.revokedAt]
+    );
+  }
+
+  async resolveOwnerSession(token: string, now: number): Promise<OwnerSessionRow | null> {
+    const r = await this.db.query(`SELECT * FROM owner_sessions WHERE token = $1`, [token]);
+    if (r.rows.length === 0) return null;
+    const row = r.rows[0];
+    if (row.revoked_at != null || Number(row.expires_at) <= now) return null;
+    return {
+      token: String(row.token),
+      projectId: String(row.project_id),
+      createdAt: Number(row.created_at),
+      expiresAt: Number(row.expires_at),
+      revokedAt: null,
+    };
+  }
+
+  async revokeOwnerSessions(projectId: string, now: number): Promise<void> {
+    await this.db.query(`UPDATE owner_sessions SET revoked_at = $2 WHERE project_id = $1 AND revoked_at IS NULL`, [
+      projectId,
+      now,
+    ]);
   }
 }
 

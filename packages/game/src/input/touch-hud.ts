@@ -5,19 +5,39 @@ import { VirtualJoystick } from "./virtual-joystick";
 
 const STICK_RADIUS = 56;
 
+// Palette for the on-canvas chrome, matching the night side of the design system
+// (apps/web/src/styles/guest.css). Phaser colours are 0xRRGGBB; alpha is passed
+// separately. Kept here rather than imported so packages/game stays free of any
+// web-app dependency.
+const C = {
+  gold: 0xffd98a,
+  nightFill: 0x151d2e,
+  nightDeep: 0x0d1320,
+  inkLight: 0xf2f4f8,
+  goldDeep: 0xf2c46a,
+} as const;
+
 /**
  * Touch HUD: analog stick (bottom-left) + contextual Interact (bottom-right)
  * + Emote button above it (opens the React emoji picker). All Phaser-canvas,
  * camera-fixed, shown only on touch-capable devices. M3 drives the Interact
  * label; M10 sends the selected emote to the room.
+ *
+ * The buttons are drawn as hard-edged blocks with heavy gold rules, in the same
+ * language as the DOM chrome around them; soft translucent circles read as a
+ * different, older product sitting on top of the world.
+ *
+ * The joystick base stays CIRCULAR on purpose: it is a radial control and the
+ * round form is what tells the thumb "push any direction". Squaring it would
+ * make the control worse to teach, so only its material changes.
  */
 export class TouchHud {
   readonly touchCapable: boolean;
   private readonly scene: Scene;
   private joystick: VirtualJoystick | null = null;
-  private interactVisual: Phaser.GameObjects.Arc | null = null;
+  private interactVisual: Phaser.GameObjects.Rectangle | null = null;
   private interactLabel: Phaser.GameObjects.Text | null = null;
-  private emoteVisual: Phaser.GameObjects.Arc | null = null;
+  private emoteVisual: Phaser.GameObjects.Rectangle | null = null;
   private emoteLabel: Phaser.GameObjects.Text | null = null;
   private suspended = false;
   private suspendReasons = new Set<string>();
@@ -104,13 +124,20 @@ export class TouchHud {
     this.ix = ix;
     this.iy = iy;
     if (!this.interactVisual) {
+      // A solid block with a heavy gold rule. Hit testing is unchanged: it stays
+      // a radius check around (ix, iy), which is more forgiving than the square.
       this.interactVisual = this.scene.add
-        .circle(ix, iy, 40, 0xffffff, 0.14)
+        .rectangle(ix, iy, 84, 84, C.nightFill, 0.94)
         .setScrollFactor(0)
         .setDepth(200);
-      this.interactVisual.setStrokeStyle(2, 0xffffff, 0.4);
+      this.interactVisual.setStrokeStyle(3, C.gold, 1);
       this.interactLabel = this.scene.add
-        .text(ix, iy, "Aksi", { fontSize: "15px", color: "#ffffff" })
+        .text(ix, iy, "Aksi", {
+          fontFamily: "Arial, Helvetica, sans-serif",
+          fontSize: "14px",
+          fontStyle: "900",
+          color: "#ffd98a",
+        })
         .setOrigin(0.5)
         .setScrollFactor(0)
         .setDepth(201);
@@ -124,12 +151,17 @@ export class TouchHud {
     this.ey = ey;
     if (!this.emoteVisual) {
       this.emoteVisual = this.scene.add
-        .circle(ex, ey, 26, 0xffffff, 0.12)
+        .rectangle(ex, ey, 60, 60, C.nightFill, 0.94)
         .setScrollFactor(0)
         .setDepth(200);
-      this.emoteVisual.setStrokeStyle(2, 0xffffff, 0.35);
+      this.emoteVisual.setStrokeStyle(3, C.gold, 1);
       this.emoteLabel = this.scene.add
-        .text(ex, ey, "☺", { fontSize: "18px", color: "#ffffff" })
+        .text(ex, ey, "EMO", {
+          fontFamily: "Arial, Helvetica, sans-serif",
+          fontSize: "12px",
+          fontStyle: "900",
+          color: "#ffd98a",
+        })
         .setOrigin(0.5)
         .setScrollFactor(0)
         .setDepth(201);
@@ -151,13 +183,24 @@ export class TouchHud {
 
   private onInteractDown(): void {
     if (this.suspended || !this.touchCapable) return;
-    this.interactVisual?.setScale(1.12);
-    this.scene.time.delayedCall(110, () => this.interactVisual?.setScale(1));
+    // Press feedback matches the DOM controls: the block sinks into the page.
+    this.interactVisual?.setFillStyle(C.gold, 1);
+    this.interactLabel?.setColor("#0d1320");
+    this.scene.time.delayedCall(110, () => {
+      this.interactVisual?.setFillStyle(C.nightFill, 0.94);
+      this.interactLabel?.setColor("#ffd98a");
+    });
     EventBus.emit(BRIDGE_EVENTS.interactPressed);
   }
 
   private onEmoteDown(): void {
     if (this.suspended || !this.touchCapable) return;
+    this.emoteVisual?.setFillStyle(C.goldDeep, 1);
+    this.emoteLabel?.setColor("#0d1320");
+    this.scene.time.delayedCall(110, () => {
+      this.emoteVisual?.setFillStyle(C.nightFill, 0.94);
+      this.emoteLabel?.setColor("#ffd98a");
+    });
     EventBus.emit(BRIDGE_EVENTS.emoteMenuRequested);
   }
 

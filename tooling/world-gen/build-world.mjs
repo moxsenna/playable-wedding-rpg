@@ -51,7 +51,10 @@ const { registry: avatarRegistry } = await buildRegistry({});
 
 // Demo gallery placeholders (wedding media arrives versioned with M8/R2).
 for (const g of buildGalleryImages()) {
-  writeFileSync(join(PUB_GALLERY, `${g.id}.png`), g.png);
+  const target = join(PUB_GALLERY, `${g.id}.png`);
+  if (!existsSync(target)) {
+    writeFileSync(target, g.png);
+  }
 }
 
 // 3. logical layout -> atlas placements -> painted map + merged collision

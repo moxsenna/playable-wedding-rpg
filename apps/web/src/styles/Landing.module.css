@@ -1,0 +1,773 @@
+/* Marketing landing page (`/`) — the paper world.
+   Light neo-brutalism: cream ground, heavy ink rules, zero radius, hard offset
+   shadows. It shares one world with YUTEMU Studio (see DESIGN.md, "Ruang
+   Kerja"): the operator's console and the public front door are the same
+   workbench, so a wedding organizer meets the same hand in both.
+
+   The game world and the Wedding Book keep their own dusky identity and are
+   deliberately NOT restyled — a guest's invitation is atmosphere, an
+   operator's tool is legibility.
+
+   The hero is the one dark place on purpose: it is the screen itself, holding
+   the actual rendered world behind the title, framed by the same ink rule.
+   Everything around it is paper.
+
+   The document-level unlock this route needs (`body.landing-page`) lives in
+   globals.css; `_document.tsx` applies the class before first paint. */
+
+/* One self-hosted display face for the landing's headline voice. A system face
+   cannot be the display voice of an own-world Persuade surface, and neo-
+   brutalism is largely defined by its lettering. Archivo Black carries the
+   headings and the price figures; Arial still carries every control, label and
+   paragraph, so nothing about using the tool becomes unfamiliar.
+   SIL Open Font License 1.1 — see public/fonts/. */
+@font-face {
+    font-family: "Archivo Black";
+    src: url("/fonts/archivo-black-latin.woff2") format("woff2");
+    font-weight: 400 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+.page {
+    --paper: #fff6ea;
+    --card: #ffffff;
+    --ink: #171719;
+    --muted: #5c5a55;
+    --gold: #ffd98a;
+    --gold-deep: #f2c46a;
+    --coral: #e4636f;
+    --leaf: #3e9b73;
+    --rule: 3px solid var(--ink);
+    --lift: 6px 6px 0 var(--ink);
+    --lift-sm: 3px 3px 0 var(--ink);
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --display: "Archivo Black", Arial, Helvetica, sans-serif;
+    --wrap: 1180px;
+    --bar: 62px;
+
+    overflow-x: clip;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+.page *,
+.page *::before,
+.page *::after {
+    box-sizing: border-box;
+}
+
+.page img {
+    max-width: 100%;
+}
+
+.page ::selection {
+    background: var(--gold);
+    color: var(--ink);
+}
+
+.page :focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+}
+
+.wrap {
+    width: 100%;
+    max-width: var(--wrap);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ---------- chrome: static, ink-ruled, never animated ---------- */
+
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--paper);
+    border-bottom: var(--rule);
+}
+
+.topbarInner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: var(--bar);
+    width: 100%;
+    max-width: var(--wrap);
+    margin: 0 auto;
+    padding: 0 20px;
+    padding-top: env(safe-area-inset-top, 0px);
+}
+
+.wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 46px;
+    font-size: 19px;
+    font-weight: 900;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.wordmarkMark {
+    width: 30px;
+    height: 30px;
+    display: block;
+    border: 2px solid var(--ink);
+    background: var(--gold);
+}
+
+.topCta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 0 18px;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--gold);
+    border: var(--rule);
+    box-shadow: var(--lift-sm);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.topCta:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+}
+
+/* ---------- the screen: the one dark plate on the page ---------- */
+
+.hero {
+    /* On the dark plate the offset shadow has to be light: a black shadow on a
+       near-black field measures 1.53:1 and reads as no shadow at all. The
+       offset stays hard and blur-free, only its colour inverts. */
+    --lift-hero: 6px 6px 0 #fff6ea;
+    --lift-sm-hero: 3px 3px 0 #fff6ea;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100svh - var(--bar));
+    overflow: hidden;
+    isolation: isolate;
+    background: #101014;
+    border-bottom: var(--rule);
+}
+
+.heroMedia {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+}
+
+.heroPicture {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.heroImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* The world's own rendering convention: hard pixel edges, never smoothed. */
+    image-rendering: pixelated;
+}
+
+/* A warm pool of light drifting across the garden, so the still chrome has a
+   moving world to hold still against. */
+.heroWarm {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: radial-gradient(closest-side, rgba(255, 217, 138, 0.42), rgba(255, 217, 138, 0.1) 58%, rgba(255, 217, 138, 0));
+    background-size: 74% 68%;
+    background-repeat: no-repeat;
+    background-position: 20% 26%;
+}
+
+/* Ink, not twilight: the same hard black the rest of the page is ruled with.
+   It must stay above the image — as a negative-z child it never paints. */
+.heroVignette {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background:
+        radial-gradient(80% 66% at 50% 46%, rgba(16, 16, 20, 0) 0%, rgba(16, 16, 20, 0.4) 54%, rgba(16, 16, 20, 0.92) 100%),
+        linear-gradient(
+            180deg,
+            rgba(16, 16, 20, 0.62) 0%,
+            rgba(16, 16, 20, 0.48) 24%,
+            rgba(16, 16, 20, 0.7) 43%,
+            rgba(16, 16, 20, 0.7) 62%,
+            rgba(16, 16, 20, 0.6) 82%,
+            #101014 100%
+        );
+}
+
+.heroInner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+    padding: 44px 20px 30px;
+}
+
+.heroMark {
+    width: 84px;
+    height: 84px;
+    display: block;
+    border: 3px solid #ffffff;
+    background: var(--gold);
+    padding: 6px;
+}
+
+.tagline {
+    margin: 0;
+    max-width: 18ch;
+    font-family: var(--display);
+    font-size: clamp(2.1rem, 6.6vw, 4.2rem);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #fff6ea;
+    text-shadow: 4px 4px 0 rgba(16, 16, 20, 0.9);
+}
+
+.heroLede {
+    margin: 0;
+    max-width: 34ch;
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: 700;
+    color: rgba(255, 246, 234, 0.94);
+}
+
+.start {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 60px;
+    margin-top: 10px;
+    padding: 0 34px;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--gold);
+    border: 3px solid var(--ink);
+    box-shadow: var(--lift-hero);
+    text-decoration: none;
+}
+
+.start:active {
+    transform: translate(6px, 6px);
+    box-shadow: none;
+}
+
+.startArrow {
+    width: 11px;
+    height: 13px;
+    display: block;
+    flex: 0 0 auto;
+}
+
+.startNote {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255, 246, 234, 0.8);
+}
+
+.demoTag {
+    display: inline-block;
+    margin: 2px 0 0;
+    padding: 5px 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--gold);
+    border: 2px solid var(--ink);
+}
+
+/* The menu rows that close the title screen, in the console's own ledger idiom. */
+.menuRows {
+    width: min(100% - 32px, 680px);
+    margin: 0 auto;
+    padding-bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+}
+
+.menuRow {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    min-height: 46px;
+    margin-top: 8px;
+    padding: 11px 15px;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: var(--lift-sm-hero);
+    font-size: 14px;
+}
+
+.menuLabel {
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.menuLeader {
+    flex: 1;
+    min-width: 16px;
+    align-self: center;
+    border-bottom: 2px dotted var(--ink);
+}
+
+.menuValue {
+    font-family: var(--mono);
+    font-weight: 700;
+    text-align: right;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* ---------- shared section furniture ---------- */
+
+.section {
+    padding: 64px 0;
+    border-top: var(--rule);
+}
+
+.sectionHead {
+    max-width: 760px;
+    margin-bottom: 34px;
+}
+
+.sectionTitle {
+    margin: 0 0 14px;
+    font-family: var(--display);
+    font-size: clamp(1.5rem, 3.1vw, 2.2rem);
+    font-weight: 400;
+    line-height: 1.06;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+}
+
+.sectionLede {
+    margin: 0;
+    font-size: 17px;
+    color: var(--muted);
+}
+
+/* ---------- evidence frames ---------- */
+
+.frame {
+    margin: 0;
+    background: var(--card);
+    border: var(--rule);
+    box-shadow: var(--lift);
+}
+
+.frameImg {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: var(--card);
+}
+
+/* ---------- the guest path ---------- */
+
+.rail {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    /* Figures carry a UA default of `margin: 1em 40px`; left standing it steals
+       40px per side from every screenshot and puts the page on three different
+       column widths. */
+    margin: 0;
+}
+
+.stepIndex {
+    margin: 14px 0 4px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+}
+
+.stepTitle {
+    margin: 0 0 6px;
+    font-size: 19px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+}
+
+.stepText {
+    margin: 0;
+    font-size: 15px;
+    color: var(--muted);
+}
+
+.caption {
+    margin: 14px 0 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.narrow {
+    max-width: 380px;
+}
+
+/* ---------- the wedding book ---------- */
+
+.grid3 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+}
+
+/* ---------- the studio ---------- */
+
+.studioFrame .frameImg {
+    aspect-ratio: 1167 / 760;
+    object-fit: cover;
+    object-position: top center;
+}
+
+/* ---------- pricing: a ruled ladder, not three cards ---------- */
+
+.ladder {
+    border-top: var(--rule);
+}
+
+.rung {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    min-height: 46px;
+    padding: 20px 0;
+    border-bottom: 2px solid var(--ink);
+}
+
+.rungName {
+    margin: 0;
+    flex: 1 1 200px;
+    font-family: var(--display);
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+}
+
+.rungPrice {
+    margin: 0;
+    flex: 0 1 auto;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.rungValue {
+    font-family: var(--display);
+    font-size: 26px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.rungAction {
+    flex: 0 0 auto;
+}
+
+/* One honest note for the whole ladder, instead of the same unfinished line
+   repeated on every tier. Tier contents genuinely are not decided. */
+.ladderNote {
+    margin: 18px 0 0;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    border: 2px dashed var(--muted);
+}
+
+/* ---------- buttons ---------- */
+
+.btnGold,
+.btnGhost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 54px;
+    padding: 0 26px;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    border: var(--rule);
+    box-shadow: var(--lift-sm);
+}
+
+.btnGold {
+    color: var(--ink);
+    background: var(--gold);
+}
+
+.btnGhost {
+    color: var(--ink);
+    background: var(--card);
+}
+
+.btnGold:active,
+.btnGhost:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+}
+
+.btnBlock {
+    width: 100%;
+}
+
+/* Sits inside a price rung, where a full-height button would outrank the row. */
+.btnCompact {
+    min-height: 46px;
+    padding: 0 20px;
+    font-size: 14px;
+}
+
+/* ---------- partner block ---------- */
+
+.partner {
+    padding: 26px 24px;
+    background: var(--card);
+    border: var(--rule);
+    box-shadow: var(--lift);
+}
+
+.partnerList {
+    margin: 16px 0 22px;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+    font-size: 15px;
+}
+
+.partnerList li {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+/* Drawn, not a glyph: an ink square, the same vocabulary as the rules. */
+.partnerList li::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 9px;
+    height: 9px;
+    background: var(--ink);
+    transform: translateY(-1px);
+}
+
+/* ---------- closing ---------- */
+
+.closing {
+    padding: 72px 0 60px;
+    text-align: center;
+    border-top: var(--rule);
+    background: var(--gold);
+}
+
+.closingTitle {
+    margin: 0 auto 16px;
+    max-width: 24ch;
+    font-family: var(--display);
+    font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+}
+
+.closingLede {
+    margin: 0 auto 28px;
+    max-width: 46ch;
+    font-weight: 700;
+}
+
+.ctaRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+}
+
+.footer {
+    padding: 28px 0 calc(32px + env(safe-area-inset-bottom, 0px));
+    border-top: var(--rule);
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.footerInner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.footerBrand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.footerBrand img {
+    width: 24px;
+    height: 24px;
+    display: block;
+    border: 2px solid var(--ink);
+    background: var(--gold);
+}
+
+.footerNote {
+    margin: 16px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* ---------- arrival: one orchestrated entrance, then the page holds still ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+    .heroMark,
+    .tagline,
+    .heroLede,
+    .start,
+    .startNote,
+    .demoTag {
+        animation: land 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .tagline { animation-delay: 80ms; }
+    .heroLede { animation-delay: 160ms; }
+    .start { animation-delay: 240ms; }
+    .startNote { animation-delay: 300ms; }
+    .demoTag { animation-delay: 340ms; }
+
+    .menuRows {
+        animation: land 560ms cubic-bezier(0.16, 1, 0.3, 1) 220ms both;
+    }
+
+    /* The single idle motion on the page: the game's own "press start". */
+    .startArrow {
+        animation: blink 1.5s steps(1, end) infinite;
+    }
+
+    /* Light moving across the garden — the only thing in motion behind the
+       chrome, and the reason the chrome's stillness reads. */
+    .heroWarm {
+        animation: lantern 30s ease-in-out infinite alternate;
+    }
+
+    @keyframes land {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes blink {
+        0%, 56% { opacity: 1; }
+        57%, 100% { opacity: 0.28; }
+    }
+
+    @keyframes lantern {
+        from { background-position: 16% 24%; }
+        to { background-position: 84% 64%; }
+    }
+}
+
+/* ---------- wider viewports ---------- */
+
+@media (min-width: 700px) {
+    .rail {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    .grid3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .rung {
+        flex-wrap: nowrap;
+        padding: 22px 0;
+    }
+
+    .section {
+        padding: 84px 0;
+    }
+
+    .heroWarm {
+        background-size: 46% 62%;
+    }
+}
+
+@media (min-width: 1024px) {
+    .page {
+        font-size: 18px;
+    }
+
+    .heroInner {
+        padding: 52px 20px 36px;
+    }
+
+    .closing {
+        padding: 96px 0 78px;
+    }
+}

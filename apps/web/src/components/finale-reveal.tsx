@@ -94,7 +94,7 @@ export function FinaleReveal() {
       )}
       {unlocked && (
         <div data-testid="unlock-banner" className="quest-toast quest-unlocked" role="status">
-          ✦ Aula Terbuka — rayakan bersama! ✦
+          Aula Terbuka — rayakan bersama!
         </div>
       )}
       {revealed && couple && (

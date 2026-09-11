@@ -28,3 +28,28 @@ export type { SnapshotValidation, BindingsStructure, VersionSnapshot, ResolvedSn
 export { mediaKeyFor, parseMediaKey, validateUploadIntent, randomUuid, galleryRefs, keyReferenced, MEDIA_MIME_EXT, MEDIA_MAX_BYTES, PRESIGN_TTL_S } from "./media";
 export type { UploadIntent, S3Credentials } from "./media";
 export { validateProjectCreate, validateProjectUpdate, allowedStatusTransition, slugifyProject } from "./projects";
+export {
+  BILLING_TIERS,
+  tierById,
+  validateCheckoutInput,
+  sha256Hex,
+  hmacSha256Hex,
+  signPayCoreRequest,
+  parseEventSignature,
+  verifyPayCoreEvent,
+  validatePayCoreEvent,
+  mintExternalOrderId,
+  mintClaimToken,
+  mintOwnerToken,
+  CLAIM_TTL_MS,
+  OWNER_SESSION_TTL_MS,
+} from "./billing";
+export type {
+  BillingTier,
+  CheckoutCustomer,
+  BillingOrderStatus,
+  BillingOrderRow,
+  OwnerClaimRow,
+  OwnerSessionRow,
+  PayCoreEventData,
+} from "./billing";

@@ -36,6 +36,13 @@
       "when": 1789009268628,
       "tag": "0004_m17_avatar_pool",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789023600000,
+      "tag": "0005_selfserve_billing",
+      "breakpoints": true
     }
   ]
 }

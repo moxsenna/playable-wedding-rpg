@@ -17,6 +17,7 @@ import type {
   WeddingStore,
   WeddingWorldConfigRow,
 } from "./store";
+import type { BillingOrderRow, OwnerClaimRow, OwnerSessionRow } from "./billing";
 
 export class MemoryStore implements WeddingStore {
   private projects: WeddingProjectRow[] = [];
@@ -216,5 +217,91 @@ export class MemoryStore implements WeddingStore {
 
   async listTemplateVersions(): Promise<TemplateVersionRow[]> {
     return [{ id: "garden-village-v1", templateKey: "garden-village-v1", templateName: "Garden Village", version: 1, manifestRef: "" }];
+  }
+
+  private billingOrders: BillingOrderRow[] = [];
+  private paymentEvents: { eventId: string; orderId: string; receivedAt: number }[] = [];
+  private ownerClaims: OwnerClaimRow[] = [];
+  private ownerSessions: OwnerSessionRow[] = [];
+
+  async createBillingOrder(row: BillingOrderRow): Promise<void> {
+    this.billingOrders.push({ ...row });
+  }
+
+  async getBillingOrder(externalOrderId: string): Promise<BillingOrderRow | null> {
+    return this.billingOrders.find((o) => o.externalOrderId === externalOrderId) ?? null;
+  }
+
+  async getBillingOrderByPaycoreId(paycoreOrderId: string): Promise<BillingOrderRow | null> {
+    return this.billingOrders.find((o) => o.paycoreOrderId === paycoreOrderId) ?? null;
+  }
+
+  async setBillingPaycoreId(externalOrderId: string, paycoreOrderId: string): Promise<void> {
+    const o = this.billingOrders.find((x) => x.externalOrderId === externalOrderId);
+    if (o) o.paycoreOrderId = paycoreOrderId;
+  }
+
+  async markOrderPaid(
+    externalOrderId: string,
+    projectId: string,
+    paidAt: number
+  ): Promise<BillingOrderRow | null> {
+    const o = this.billingOrders.find((x) => x.externalOrderId === externalOrderId) ?? null;
+    if (!o || o.status === "paid") return o;
+    o.status = "paid";
+    o.projectId = projectId;
+    o.paidAt = paidAt;
+    return { ...o };
+  }
+
+  async recordPaymentEvent(eventId: string, orderId: string, receivedAt: number): Promise<boolean> {
+    if (this.paymentEvents.some((e) => e.eventId === eventId)) return false;
+    this.paymentEvents.push({ eventId, orderId, receivedAt });
+    return true;
+  }
+
+  async createOwnerClaim(row: OwnerClaimRow): Promise<void> {
+    this.ownerClaims.push({ ...row });
+  }
+
+  async getOwnerClaim(token: string): Promise<OwnerClaimRow | null> {
+    return this.ownerClaims.find((c) => c.token === token) ?? null;
+  }
+
+  async findLiveClaimByProject(projectId: string, now: number): Promise<OwnerClaimRow | null> {
+    const live = this.ownerClaims
+      .filter((c) => c.projectId === projectId && c.usedAt === null && c.revokedAt === null && c.expiresAt > now)
+      .sort((a, b) => b.createdAt - a.createdAt);
+    return live[0] ?? null;
+  }
+
+  async consumeOwnerClaim(token: string, now: number): Promise<OwnerClaimRow | null> {
+    const c = this.ownerClaims.find((x) => x.token === token) ?? null;
+    if (!c || c.usedAt !== null || c.revokedAt !== null || c.expiresAt <= now) return null;
+    c.usedAt = now;
+    return { ...c };
+  }
+
+  async revokeOwnerClaim(token: string, now: number): Promise<boolean> {
+    const c = this.ownerClaims.find((x) => x.token === token) ?? null;
+    if (!c || c.revokedAt !== null) return false;
+    c.revokedAt = now;
+    return true;
+  }
+
+  async createOwnerSession(row: OwnerSessionRow): Promise<void> {
+    this.ownerSessions.push({ ...row });
+  }
+
+  async resolveOwnerSession(token: string, now: number): Promise<OwnerSessionRow | null> {
+    const s = this.ownerSessions.find((x) => x.token === token) ?? null;
+    if (!s || s.revokedAt !== null || s.expiresAt <= now) return null;
+    return { ...s };
+  }
+
+  async revokeOwnerSessions(projectId: string, now: number): Promise<void> {
+    for (const s of this.ownerSessions) {
+      if (s.projectId === projectId && s.revokedAt === null) s.revokedAt = now;
+    }
   }
 }

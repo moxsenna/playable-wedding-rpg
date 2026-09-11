@@ -283,8 +283,8 @@ export function GallerySection({
 }: {
   gallery: GalleryImage[];
   onChange: (g: GalleryImage[]) => void;
-  media?: { apiBase: string; adminKey: string; projectId: string };
-  onNotice?: (msg: string) => void;
+  media?: { apiBase: string; adminKey: string; projectId: string; ownerToken?: string };
+  onNotice?: (msg: string, kind: "ok" | "error") => void;
 }) {
   const [uploading, setUploading] = useState(false);
   const set = (i: number, patch: Partial<GalleryImage>) => {
@@ -297,18 +297,19 @@ export function GallerySection({
     if (!media) return;
     setUploading(true);
     try {
+      const auth = media.ownerToken ? { ownerToken: media.ownerToken } : undefined;
       const { bytes, contentType } = await fileToWebp(file);
-      const intent = await requestUploadUrl(media.apiBase, media.adminKey, media.projectId, contentType, bytes.byteLength);
+      const intent = await requestUploadUrl(media.apiBase, media.adminKey, media.projectId, contentType, bytes.byteLength, auth);
       if (intent.mode === "presigned" && intent.uploadUrl) {
         await putDirect(intent.uploadUrl, bytes, contentType);
-        await completeUpload(media.apiBase, media.adminKey, media.projectId, intent.key);
+        await completeUpload(media.apiBase, media.adminKey, media.projectId, intent.key, auth);
       } else {
-        await putProxied(media.apiBase, media.adminKey, media.projectId, intent.key, bytes, contentType);
+        await putProxied(media.apiBase, media.adminKey, media.projectId, intent.key, bytes, contentType, auth);
       }
       onChange([...gallery, { src: intent.publicUrl, alt: file.name.replace(/\.[a-z0-9]+$/i, "") || "Foto" }]);
-      onNotice?.("Foto terunggah.");
+      onNotice?.("Foto terunggah.", "ok");
     } catch {
-      onNotice?.("Unggah gagal — coba lagi.");
+      onNotice?.("Unggah gagal — coba lagi.", "error");
     } finally {
       setUploading(false);
     }
@@ -319,13 +320,14 @@ export function GallerySection({
       const key = mediaKeyFromSrc(media.apiBase, target.src);
       if (key) {
         try {
-          const result = await deleteMedia(media.apiBase, media.adminKey, media.projectId, key);
+          const auth = media.ownerToken ? { ownerToken: media.ownerToken } : undefined;
+          const result = await deleteMedia(media.apiBase, media.adminKey, media.projectId, key, auth);
           if (result === "referenced") {
-            onNotice?.("Foto dipakai publikasi aktif — tidak bisa dihapus.");
+            onNotice?.("Foto dipakai publikasi aktif — tidak bisa dihapus.", "error");
             return;
           }
         } catch {
-          onNotice?.("Hapus gagal — coba lagi.");
+          onNotice?.("Hapus gagal — coba lagi.", "error");
           return;
         }
       }
@@ -354,7 +356,13 @@ export function GallerySection({
       {uploading && <p data-testid="admin-gallery-progress">Mengunggah…</p>}
       {gallery.map((g, i) => (
         <details key={`${g.src}-${i}`} data-testid={`admin-gallery-card-${i}`}>
-          <summary>{g.alt || g.src}{g.cover ? " ★" : ""}</summary>
+          <summary>
+            {g.alt || g.src}
+            {/* A word, not a ★ glyph: clearer to read and consistent with the
+                rest of the console, which draws its marks rather than typing
+                symbols. */}
+            {g.cover && <span className="studio-cover-tag">sampul</span>}
+          </summary>
           {/^https?:\/\//i.test(g.src) || g.src.startsWith("/") ? (
             <img data-testid={`admin-gallery-thumb-${i}`} src={g.src} alt="" loading="lazy" className="admin-thumb" />
           ) : null}

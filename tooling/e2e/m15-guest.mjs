@@ -13,7 +13,8 @@ import { createRequire } from "node:module";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const WEB_DIR = join(ROOT, "apps/web");
 const PORT = 8110;
-const URL = `http://localhost:${PORT}/`;
+// The guest experience lives at /demo; `/` is the marketing landing page.
+const URL = `http://localhost:${PORT}/demo`;
 const LOCAL_MANIFEST = `http://localhost:${PORT}/assets/worlds/garden-village-v1/manifest.json`;
 const BIN = process.platform === "win32" ? ".cmd" : "";
 

@@ -849,4 +849,55 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   cycle verified (intent → direct PUT 200 → serve 200 → complete →
   delete → 404, test object removed).
 
+## M18 — Self-Serve Checkout + Owner Wizard (DELIVERED 2026-09-11)
+
+- Status: complete. Second onboarding path alongside the admin route:
+  buyer picks a tier on `/mulai` → pays via PayCore/Duitku → fills the
+  wedding via a guided wizard → publishes alone. Admin full-service
+  path unchanged, plus manual claim minting for WA/manual payments.
+- PayCore contract (docs/external in `D:/Coding/paycore`, integration
+  guide §6/§8): wedding API signs `POST /v1/orders` (HMAC, canonical
+  `{ts}.{METHOD}.{path}.{sha256(body)}`), never touches Duitku;
+  verifies inbound `payment.succeeded` (`{ts}.{rawBody}`, ±5min,
+  timing-safe compare). Amounts are server-side (`BILLING_TIERS`).
+- API (`apps/api/src/api.ts`): `POST /v1/checkout` (tier + name/WA/
+  email validation → billing row → PayCore → `checkoutUrl`);
+  `GET /v1/checkout/:id` (status + live claim token when paid);
+  `POST /internal/payment-events` (verify → event dedup → order
+  resolve → underpay guard → idempotent project create + world/avatar
+  seeding + `markOrderPaid` + single live claim → audit);
+  `POST /v1/owner/claim` (single-use `oc_` → scoped `os_` session,
+  30d TTL); `/v1/owner/*` (me, draft GET/PUT, versions,
+  publish/activate with cross-project version check, preview,
+  guests CRUD + CSV import, guest-links, analytics, media
+  upload-url/upload/complete/delete — projectId always from the
+  session, never the body); `POST /v1/admin/claims` + `/revoke`
+  (manual path). CORS allows `x-owner-token`.
+- Store: `billing_orders`, `payment_events`, `owner_claims`,
+  `owner_sessions` + `wedding_projects.tier` (null = admin-created
+  full access) in `drizzle/schema.ts` + `0005_selfserve_billing.sql`;
+  NeonStore + MemoryStore implement the new methods; old DBs keep
+  working via the existing SELECT fallbacks.
+- Web: `/mulai` (tier + contact → checkout), `/mulai/retur`
+  (polls order → claim link), `/mulai/[token]` (8-step wizard reusing
+  Studio sections + `validatePublication` gate + placeholder
+  warnings + preview + publish/activate; session cached per claim,
+  draft backed up to localStorage). Gallery/media client accepts an
+  owner token (admin path untouched). Landing pricing links to
+  `/mulai`. Wizard inherits `studio.css` via `.admin-page`.
+- Tests: `tooling/e2e/selfserve.mjs` → `SELFSERVE VERIFIED` (12:
+  checkout 400, mock-PayCore HMAC verification of our signature,
+  forged webhook 401, fulfill, replay dedup, status+claim,
+  claim+reuse-404, draft→publish→activate, public publication
+  content, cross-project publish 404, manual claim, wizard boot +
+  invalid-claim screens, screenshot `docs/qa/selfserve-390.png`).
+- Open ops (need credentials, see `docs/paycore-registration.md`):
+  app `yutemu` registered 2026-09-11 (PayCore migration 0015 on
+  production D1, secrets on both PayCore workers + wedding worker,
+  both PayCore workers deployed healthy, live 201 proof order
+  `YWT-20260911-W7FRB`); Neon `0005_selfserve_billing.sql` applied
+  2026-09-11 (tables + `wedding_projects.tier` verified).
+  Remaining: staging E2E with real Duitku sandbox, then announce.
+
+
 

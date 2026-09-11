@@ -73,7 +73,7 @@ async function main() {
   server = spawn(process.execPath, [nextBinJs, "dev", "-p", String(PORT)], { cwd: WEB_DIR, stdio: "pipe" });
   server.on("error", (e) => fail(`could not start dev server: ${e.message}`));
   try {
-    await waitForServer(`http://localhost:${PORT}/`);
+    await waitForServer(`http://localhost:${PORT}/demo`);
     const browser = await launchBrowser();
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
     const page = await ctx.newPage();
@@ -85,7 +85,7 @@ async function main() {
     const body = (await page.textContent("body")) ?? "";
     if (!/tidak valid|Membuka undangan/i.test(body)) fail(`guest route copy missing: ${body.slice(0, 200)}`);
     if (/projectId|publicationId|manifestRef|session token|API URL/i.test(body)) fail("guest leaks technical concepts");
-    await page.goto(`http://localhost:${PORT}/`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await page.goto(`http://localhost:${PORT}/demo`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await sleep(4000);
     if (errors.length > 0) fail(`page errors: ${errors.join(" | ").slice(0, 300)}`);
     await browser.close();

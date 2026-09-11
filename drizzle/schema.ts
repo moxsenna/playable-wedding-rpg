@@ -25,6 +25,7 @@ export const weddingProjects = pgTable("wedding_projects", {
   name: text("name").notNull(),
   slug: text("slug").notNull().default(""),
   status: projectStatus("status").notNull(),
+  tier: text("tier"),
   createdAt: bigint("created_at", { mode: "number" }).notNull().default(0),
   updatedAt: bigint("updated_at", { mode: "number" }).notNull().default(0),
 }, (t) => [uniqueIndex("projects_slug_unique").on(t.slug)]);
@@ -181,4 +182,61 @@ export const projectAvatarPool = pgTable(
     avatarId: text("avatar_id").notNull(),
   },
   (t) => [index("avatar_pool_project_idx").on(t.projectId)]
+);
+
+export const billingOrderStatus = pgEnum("billing_order_status", ["pending", "paid", "failed"]);
+
+export const billingOrders = pgTable(
+  "billing_orders",
+  {
+    externalOrderId: text("external_order_id").primaryKey(),
+    paycoreOrderId: text("paycore_order_id"),
+    tier: text("tier").notNull(),
+    amount: integer("amount").notNull(),
+    currency: text("currency").notNull(),
+    customerName: text("customer_name").notNull(),
+    customerWhatsapp: text("customer_whatsapp").notNull(),
+    customerEmail: text("customer_email").notNull(),
+    status: billingOrderStatus("status").notNull(),
+    projectId: text("project_id").references(() => weddingProjects.id),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    paidAt: bigint("paid_at", { mode: "number" }),
+  },
+  (t) => [index("billing_paycore_idx").on(t.paycoreOrderId)]
+);
+
+export const paymentEvents = pgTable("payment_events", {
+  eventId: text("event_id").primaryKey(),
+  orderId: text("order_id").notNull(),
+  receivedAt: bigint("received_at", { mode: "number" }).notNull(),
+});
+
+export const ownerClaims = pgTable(
+  "owner_claims",
+  {
+    token: text("token").primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => weddingProjects.id),
+    tier: text("tier").notNull(),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
+    usedAt: bigint("used_at", { mode: "number" }),
+    revokedAt: bigint("revoked_at", { mode: "number" }),
+  },
+  (t) => [index("owner_claims_project_idx").on(t.projectId)]
+);
+
+export const ownerSessions = pgTable(
+  "owner_sessions",
+  {
+    token: text("token").primaryKey(),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => weddingProjects.id),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
+    revokedAt: bigint("revoked_at", { mode: "number" }),
+  },
+  (t) => [index("owner_sessions_project_idx").on(t.projectId)]
 );

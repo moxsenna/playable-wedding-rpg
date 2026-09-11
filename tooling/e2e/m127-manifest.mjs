@@ -66,7 +66,7 @@ async function main() {
   });
   server.on("error", (e) => fail(`could not start dev server: ${e.message}`));
   try {
-    await waitForWeb(`http://localhost:${WEB_PORT}/`);
+    await waitForWeb(`http://localhost:${WEB_PORT}/demo`);
     const browser = await launchBrowser();
     const ctx = await browser.newContext({
       viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true,
@@ -80,7 +80,7 @@ async function main() {
     await p1.addInitScript(() => {
       window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
     });
-    await p1.goto(`http://localhost:${WEB_PORT}/`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await p1.goto(`http://localhost:${WEB_PORT}/demo`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await p1.waitForFunction(() => !!window.__wedding?.player, null, { timeout: 60000 });
     await sleep(800);
     const defUrl = await hook(p1, () => window.__wedding.def.manifestUrl);
@@ -102,7 +102,7 @@ async function main() {
       window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
     });
     const pinned = `http://localhost:${WEB_PORT}/assets/worlds/garden-village-v1/manifest.json`;
-    await p2.goto(`http://localhost:${WEB_PORT}/?manifest=${encodeURIComponent(pinned)}`, {
+    await p2.goto(`http://localhost:${WEB_PORT}/demo?manifest=${encodeURIComponent(pinned)}`, {
       waitUntil: "domcontentloaded", timeout: 60000,
     });
     await p2.waitForFunction(() => !!window.__wedding?.player, null, { timeout: 60000 });
@@ -119,7 +119,7 @@ async function main() {
     await p3.addInitScript(() => {
       window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
     });
-    await p3.goto(`http://localhost:${WEB_PORT}/?manifest=${encodeURIComponent("javascript:alert(1)")}`, {
+    await p3.goto(`http://localhost:${WEB_PORT}/demo?manifest=${encodeURIComponent("javascript:alert(1)")}`, {
       waitUntil: "domcontentloaded", timeout: 60000,
     });
     await p3.waitForFunction(() => !!window.__wedding?.player, null, { timeout: 60000 });

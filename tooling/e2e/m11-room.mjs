@@ -147,7 +147,7 @@ async function main() {
       }, name);
       const netUrl = encodeURIComponent(`ws://localhost:${RT_PORT}/room?room=demo-ayu-bima`);
       const session = await mintSession("demo-ayu-bima", name);
-      await page.goto(`http://localhost:${WEB_PORT}/?net=${netUrl}&session=${encodeURIComponent(session)}`, {
+      await page.goto(`http://localhost:${WEB_PORT}/demo?net=${netUrl}&session=${encodeURIComponent(session)}`, {
         waitUntil: "domcontentloaded", timeout: 60000,
       });
       await page.waitForFunction(() => !!window.__wedding?.player && !!window.__wedding?.net, null, { timeout: 60000 });

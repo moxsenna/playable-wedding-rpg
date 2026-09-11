@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { EventBus, BRIDGE_EVENTS } from "@wedding-rpg/game";
 import { dispatchSemanticAction } from "@wedding-rpg/game";
 import { loadProfile } from "../weddings/profile";
-import { useRuntimeWedding } from "../weddings/runtime";
+import { resolveApiBase, useRuntimeWedding } from "../weddings/runtime";
+import { resolveWeddingId } from "../weddings/select";
 import {
   validatePublication,
   visibleSections,
@@ -47,20 +48,22 @@ interface DialogueActionPayload {
 
 const WISHES_KEY = "wedding-rpg:wishes";
 
-// Sends a guest wish to the couple. Online (api + session in the URL),
-// the message posts to the durable guestbook; otherwise it is kept in a
-// local outbox on the device. Resolves true when the couple received it.
-async function sendWish(name: string, message: string): Promise<boolean> {
+export interface WishEntry {
+  name: string;
+  message: string;
+  createdAt: number;
+}
+
+// Posts to the shared guestbook when a session exists (memory on clean
+// URLs, ?session= on dev URLs); otherwise keeps a local outbox.
+async function sendWish(name: string, message: string, session: string | null): Promise<boolean> {
   if (typeof window === "undefined") return false;
-  const q = new URLSearchParams(window.location.search);
-  const apiBase = q.get("api");
-  const session = q.get("session") ?? "";
-  if (apiBase && session) {
+  if (session) {
     try {
-      const res = await fetch(`${apiBase.replace(/\/$/, "")}/v1/guestbook`, {
+      const res = await fetch(`${resolveApiBase().replace(/\/$/, "")}/v1/guestbook`, {
         method: "POST",
         headers: { "content-type": "application/json", "x-session": session },
-        body: JSON.stringify({ message: `${name}: ${message}`.slice(0, 280) }),
+        body: JSON.stringify({ message: message.slice(0, 280) }),
       });
       if (res.ok) return true;
     } catch {
@@ -78,6 +81,24 @@ async function sendWish(name: string, message: string): Promise<boolean> {
   return false;
 }
 
+async function loadWishes(projectId: string): Promise<WishEntry[]> {
+  try {
+    const res = await fetch(
+      `${resolveApiBase().replace(/\/$/, "")}/v1/guestbook?project=${encodeURIComponent(projectId)}`
+    );
+    if (!res.ok) return [];
+    const body = (await res.json()) as { entries?: { name: string; message: string; createdAt: number }[] };
+    const entries = Array.isArray(body.entries) ? body.entries : [];
+    return entries.slice(-30).reverse().map((e) => ({
+      name: String(e.name ?? "").slice(0, 40),
+      message: String(e.message ?? "").slice(0, 280),
+      createdAt: Number(e.createdAt ?? 0),
+    }));
+  } catch {
+    return [];
+  }
+}
+
 // Canonical wedding information, React-owned (D-012/D-017). Usable before,
 // during, and without Phaser: it never reads game state, only the validated
 // publication fixture (durable backend replaces the source in M8).
@@ -91,6 +112,29 @@ export function WeddingBook() {
   const [wishMessage, setWishMessage] = useState("");
   const [wishDone, setWishDone] = useState(false);
   const [wishSent, setWishSent] = useState(false);
+  const [wishes, setWishes] = useState<WishEntry[]>([]);
+
+  const session =
+    runtime.status === "ready" && runtime.session
+      ? runtime.session
+      : typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search).get("session") ??
+          (window as unknown as { __weddingSession?: string }).__weddingSession ??
+          null
+        : null;
+  const wishesProject =
+    runtime.status === "ready" ? runtime.projectId : resolveWeddingId();
+
+  useEffect(() => {
+    if (!open || section !== "rsvp") return;
+    let cancelled = false;
+    void loadWishes(wishesProject).then((list) => {
+      if (!cancelled) setWishes(list);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, section, wishesProject, wishDone]);
 
   const openBook = (s: BookSection) => {
     setSection(s);
@@ -261,7 +305,10 @@ export function WeddingBook() {
             {section === "rsvp" && (
               <section data-testid="book-section-rsvp">
                 <h2>Pesan untuk Mempelai</h2>
-                <p className="book-demo-tag">Tulis doa dan ucapan terbaikmu — langsung terkirim ke mempelai.</p>
+                {/* Not the demo sticker: that is reserved for the synthetic-data
+                    label. And the copy does not promise instant delivery, because
+                    an offline guest's wish lands in a local outbox first. */}
+                <p className="book-helper">Tulis doa dan ucapan terbaikmu untuk mereka.</p>
                 {!wishDone ? (
                   <div className="book-rsvp-form">
                     <label>
@@ -289,7 +336,7 @@ export function WeddingBook() {
                       data-testid="rsvp-submit"
                       disabled={guestName.trim().length === 0 || wishMessage.trim().length === 0}
                       onClick={() => {
-                        void sendWish(guestName.trim(), wishMessage.trim()).then((sent) => {
+                        void sendWish(guestName.trim(), wishMessage.trim(), session).then((sent) => {
                           setWishSent(sent);
                           setWishDone(true);
                         });
@@ -306,6 +353,21 @@ export function WeddingBook() {
                       : "Pesanmu tersimpan di perangkat ini dan akan terkirim saat online."}
                   </p>
                 )}
+                <div className="book-wishes">
+                  <h3>Doa & Ucapan Tamu</h3>
+                  {wishes.length === 0 ? (
+                    <p className="book-wishes-empty">Jadilah yang pertama menulis ucapan.</p>
+                  ) : (
+                    <ul data-testid="wishes-list">
+                      {wishes.map((w, i) => (
+                        <li key={`${w.createdAt}-${i}`}>
+                          <strong>{w.name}</strong>
+                          <p>{w.message}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </section>
             )}
             {section === "gift" && pub.gift && (

@@ -51,7 +51,7 @@ export function LoadingScreen() {
       <div className="loading-brand">YUTEMU</div>
       <div className="loading-tagline">Temui kisah mereka.</div>
       <div className="loading-bar" aria-hidden="true">
-        <div className="loading-fill" style={{ width: `${pct}%` }} />
+        <div className="loading-fill" style={{ transform: `scaleX(${progress})` }} />
       </div>
       <div data-testid="loading-status" className="loading-status">
         {TIPS[tip]} {pct}%

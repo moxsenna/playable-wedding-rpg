@@ -247,7 +247,7 @@ async function main() {
       window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
     });
     const deadUrl = encodeURIComponent("ws://localhost:9/?name=Offline");
-    await page.goto(`http://localhost:${WEB_PORT}/?net=${deadUrl}`, {
+    await page.goto(`http://localhost:${WEB_PORT}/demo?net=${deadUrl}`, {
       waitUntil: "domcontentloaded", timeout: 60000,
     });
     await page.waitForFunction(() => !!window.__wedding?.player && !!window.__wedding?.net, null, { timeout: 60000 });

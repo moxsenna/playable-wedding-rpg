@@ -76,7 +76,7 @@ async function main() {
         await page.addInitScript(() => {
           window.localStorage.setItem("wedding-rpg:profile", JSON.stringify({ name: "Dinda", avatarId: "guest_01" }));
         });
-        await page.goto(`${WEB}/?wedding=demo-ayu-bima&api=${encodeURIComponent(API)}`, {
+        await page.goto(`${WEB}/demo?wedding=demo-ayu-bima&api=${encodeURIComponent(API)}`, {
           waitUntil: "domcontentloaded", timeout: 60000,
         });
         try {

@@ -1,0 +1,1099 @@
+/* YUTEMU Studio — the operator's workbench.
+   Light neo-brutalism: paper ground, heavy ink borders, zero radius, hard
+   offset shadows, blocks that physically depress. Deliberately a different
+   world from the guest invitation (see DESIGN.md, "Ruang Kerja"): an operator
+   is doing a job for an hour, and legibility beats atmosphere.
+
+   Every state is a printed mark, borrowed from the reference-setting
+   challenger: rest is a rule, hover lifts, pressed sinks into the page,
+   disabled is hatched, blocked takes the hazard stripe. Nothing is conveyed by
+   a colour shift alone.
+
+   Loaded only by apps/web/src/pages/admin.tsx. The guest routes and the game
+   shell are untouched by this file. */
+
+/* ---------- document ---------- */
+
+body.studio-page {
+    position: static;
+    inset: auto;
+    height: auto;
+    overflow: visible;
+    overscroll-behavior: auto;
+    -webkit-user-select: auto;
+    user-select: auto;
+    background-color: #fff6ea;
+}
+
+body.studio-page #boot-splash {
+    display: none;
+}
+
+.admin-page {
+    --paper: #fff6ea;
+    --card: #ffffff;
+    --ink: #171719;
+    --muted: #5c5a55;
+    --gold: #ffd98a;
+    --gold-deep: #f2c46a;
+    --coral: #e4636f;
+    --leaf: #3e9b73;
+    --line: 3px solid var(--ink);
+    --lift: 6px 6px 0 var(--ink);
+    --lift-sm: 3px 3px 0 var(--ink);
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+    min-height: 100dvh;
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+.admin-page *,
+.admin-page *::before,
+.admin-page *::after {
+    box-sizing: border-box;
+}
+
+.admin-page :focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+}
+
+/* Browser surfaces ship with defaults that belong to no design system. These
+   are the cheapest signal that a page was built rather than assembled. */
+.admin-page {
+    caret-color: var(--ink);
+}
+
+.admin-page input,
+.admin-page textarea {
+    caret-color: var(--ink);
+}
+
+/* The two scroll containers: the rail and the activity log. A ruled scrollbar in
+   the page's own vocabulary instead of the OS default inside the hand-ruled
+   rail. */
+.studio-rail,
+.studio-log {
+    scrollbar-width: thin;
+    scrollbar-color: var(--ink) transparent;
+}
+
+.studio-rail::-webkit-scrollbar,
+.studio-log::-webkit-scrollbar {
+    width: 10px;
+}
+
+.studio-rail::-webkit-scrollbar-track,
+.studio-log::-webkit-scrollbar-track {
+    background: var(--paper);
+    border-left: 2px solid var(--ink);
+}
+
+.studio-rail::-webkit-scrollbar-thumb,
+.studio-log::-webkit-scrollbar-thumb {
+    background: var(--ink);
+}
+
+.admin-page ::selection {
+    background: var(--gold);
+    color: var(--ink);
+}
+
+/* ---------- type ---------- */
+
+.admin-page h1,
+.admin-page h2,
+.admin-page h3 {
+    margin: 0;
+    /* Family is inherited from .admin-page; only the treatment is set here. */
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    line-height: 1.05;
+    color: var(--ink);
+}
+
+.admin-page h1 {
+    font-size: 20px;
+    letter-spacing: 0.02em;
+}
+
+.admin-page h2 {
+    font-size: 21px;
+}
+
+.admin-page h3 {
+    font-size: 15px;
+}
+
+.admin-page a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+}
+
+.admin-page a:hover {
+    background: var(--gold);
+}
+
+/* The mono face is reserved for identifiers, versions, counts and metrics —
+   things that are data. Never prose, never a heading. */
+.mono,
+.field-hint + .mono {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+}
+
+.field-hint {
+    margin: 6px 0 0;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--muted);
+}
+
+.empty-note {
+    margin: 10px 0 0;
+    padding: 14px;
+    font-size: 14px;
+    color: var(--muted);
+    background: var(--paper);
+    border: 2px dashed var(--muted);
+}
+
+/* ==========================================================================
+   Shell: sticky header, sticky rail, scrolling work area
+   ========================================================================== */
+
+.studio-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: var(--paper);
+    border-bottom: var(--line);
+}
+
+.studio-header-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 12px 20px;
+}
+
+.studio-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.studio-brand-mark {
+    width: 26px;
+    height: 26px;
+    display: block;
+    border: 2px solid var(--ink);
+    background: var(--gold);
+}
+
+.studio-context {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.studio-token {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+    padding: 4px 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.studio-header-status {
+    margin-left: auto;
+}
+
+.studio-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 20px 96px;
+}
+
+/* ---------- rail ---------- */
+
+.studio-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-self: start;
+}
+
+.studio-card {
+    padding: 14px;
+    background: var(--card);
+    border: var(--line);
+    box-shadow: var(--lift);
+}
+
+.studio-card h2 {
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    margin-bottom: 10px;
+}
+
+.studio-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    word-break: break-word;
+}
+
+.studio-pill {
+    display: inline-block;
+    padding: 3px 9px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+}
+
+/* Ink on both fills, never white: white on coral measures 3.33:1 and white on
+   leaf 3.42:1, both under 4.5:1 at these sizes. Ink clears 5.2:1 on each, which
+   is why the draft pill already puts ink on gold. One rule for every fill. */
+.studio-pill-live {
+    background: var(--leaf);
+    color: var(--ink);
+}
+
+.studio-pill-draft {
+    background: var(--gold);
+    color: var(--ink);
+}
+
+.studio-pill-archived {
+    background: var(--coral);
+    color: var(--ink);
+}
+
+/* Validation reads as a stamp: the rail's most important single word. */
+.studio-valid-ok,
+.studio-valid-bad {
+    display: block;
+    margin-top: 12px;
+    padding: 10px 12px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 2px solid var(--ink);
+}
+
+.studio-valid-ok {
+    background: var(--gold);
+}
+
+.studio-valid-bad {
+    background: var(--coral);
+    color: var(--ink);
+}
+
+.studio-valid-bad a {
+    color: var(--ink);
+}
+
+.studio-stamp-ok {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.studio-check {
+    width: 15px;
+    height: 13px;
+    flex: 0 0 auto;
+    display: block;
+}
+
+/* Nav: numbered, in document order, with a live count per destination. */
+.studio-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: var(--line);
+    background: var(--card);
+    box-shadow: var(--lift);
+}
+
+.studio-nav a {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    min-height: 46px;
+    padding: 11px 12px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    border-bottom: 2px solid var(--ink);
+    background: var(--card);
+}
+
+.studio-nav a:last-child {
+    border-bottom: none;
+}
+
+.studio-nav a:hover {
+    background: var(--gold);
+}
+
+.studio-nav a[aria-current="true"] {
+    background: var(--ink);
+    color: var(--paper);
+}
+
+.studio-nav-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    opacity: 0.65;
+}
+
+.studio-nav-label {
+    flex: 1;
+}
+
+.studio-nav-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    opacity: 0.65;
+}
+
+/* Activity log: the operator's receipt trail. */
+.studio-log {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.studio-log li {
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.45;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    word-break: break-word;
+}
+
+.studio-log li:first-child {
+    color: var(--ink);
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   Work area
+   ========================================================================== */
+
+.studio-main {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    min-width: 0;
+}
+
+/* The receipt. It sits in the sticky rail, so it is visible from every
+   destination without floating over the work area. */
+.studio-note {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0 0 12px;
+    padding: 11px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.45;
+    background: var(--card);
+    border: 2px solid var(--ink);
+    word-break: break-word;
+}
+
+.studio-note-idle {
+    font-weight: 400;
+    color: var(--muted);
+    border-style: dashed;
+}
+
+.studio-note-kind {
+    flex: 0 0 auto;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+}
+
+.studio-note-ok {
+    background: var(--gold);
+}
+
+.studio-note-error {
+    background: var(--coral);
+    color: var(--ink);
+}
+
+.studio-note-error .studio-note-kind {
+    background: var(--paper);
+    color: var(--ink);
+}
+
+.studio-note-info {
+    background: var(--card);
+}
+
+/* ---------- groups: the eight nav destinations ---------- */
+
+.studio-group {
+    padding: 0;
+    margin: 0;
+}
+
+.studio-group-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px 14px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 4px solid var(--ink);
+}
+
+.studio-group-num {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    background: var(--ink);
+    color: var(--paper);
+}
+
+.studio-group-head h2 {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.studio-group-meta {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.studio-group-intro {
+    flex: 1 1 100%;
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.studio-group-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Sub-sections inside a group keep the ink rule but drop the weight, so the
+   group header still owns the hierarchy. */
+.admin-page section section {
+    padding: 18px;
+    background: var(--card);
+    border: 2px solid var(--ink);
+}
+
+.admin-page section section h2 {
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--ink);
+}
+
+/* Top-level sections that are not inside a group (the dev fixtures block). */
+.studio-main > section {
+    padding: 18px;
+    background: var(--card);
+    border: var(--line);
+}
+
+/* ---------- forms ---------- */
+
+.admin-page label {
+    display: block;
+    margin: 0 0 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.admin-page input,
+.admin-page select,
+.admin-page textarea {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 6px;
+    padding: 12px 13px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--card);
+    border: var(--line);
+    border-radius: 0;
+}
+
+.admin-page textarea {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.admin-page input::placeholder,
+.admin-page textarea::placeholder {
+    color: var(--muted);
+    font-weight: 400;
+    opacity: 1;
+}
+
+.admin-page input:focus,
+.admin-page select:focus,
+.admin-page textarea:focus {
+    background: var(--gold);
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+}
+
+.admin-page select {
+    cursor: pointer;
+    appearance: none;
+    padding-right: 40px;
+    background-image: linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+        linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+    background-position: calc(100% - 20px) 22px, calc(100% - 13px) 22px;
+    background-size: 7px 7px, 7px 7px;
+    background-repeat: no-repeat;
+}
+
+.admin-page select option {
+    background: var(--card);
+    color: var(--ink);
+}
+
+/* Checkboxes are blocks, not ticks: checked fills with ink. */
+.admin-page input[type="checkbox"] {
+    width: 26px;
+    height: 26px;
+    min-height: 26px;
+    margin: 0;
+    padding: 0;
+    appearance: none;
+    background: var(--card);
+    border: 3px solid var(--ink);
+    cursor: pointer;
+}
+
+.admin-page input[type="checkbox"]:checked {
+    background: var(--ink);
+    box-shadow: inset 0 0 0 4px var(--card), inset 0 0 0 20px var(--ink);
+}
+
+.admin-page input[type="file"] {
+    padding: 9px 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: var(--paper);
+}
+
+/* ---------- buttons: rest, hover, pressed, disabled, blocked ---------- */
+
+.admin-page button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    margin: 0 8px 8px 0;
+    padding: 11px 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--card);
+    border: var(--line);
+    border-radius: 0;
+    box-shadow: var(--lift-sm);
+    cursor: pointer;
+    transition: transform 90ms ease-out, box-shadow 90ms ease-out;
+}
+
+.admin-page button:hover {
+    background: var(--gold);
+}
+
+/* Pressed sinks into the page: the shadow collapses by exactly the offset. */
+.admin-page button:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--ink);
+}
+
+.admin-page button.admin-btn {
+    background: var(--card);
+}
+
+.admin-page button.admin-btn:hover {
+    background: var(--gold);
+}
+
+.admin-page button.admin-btn-primary {
+    background: var(--gold);
+}
+
+.admin-page button.admin-btn-primary:hover {
+    background: var(--gold-deep);
+}
+
+/* Disabled is a printed mark, not a fade: hatched, flat, no shadow. */
+.admin-page button:disabled {
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+    color: var(--muted);
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent 0 5px,
+        rgba(23, 23, 25, 0.22) 5px 10px
+    );
+}
+
+.admin-page button:disabled:hover {
+    background-color: var(--card);
+}
+
+.admin-pick-active {
+    background: var(--ink) !important;
+    color: var(--paper) !important;
+}
+
+/* A row of related actions. */
+.admin-page [role="group"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0;
+    margin-top: 6px;
+}
+
+.admin-page [role="group"] > input,
+.admin-page [role="group"] > select {
+    flex: 1 1 220px;
+    min-width: 0;
+    margin: 0 8px 8px 0;
+}
+
+/* ---------- disclosure editors (events, venues, story, npc, gallery) ---------- */
+
+.admin-page details {
+    margin-bottom: 12px;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+}
+
+.admin-page summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 11px 13px;
+    font-size: 14px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    list-style: none;
+    border-bottom: 2px solid transparent;
+}
+
+.admin-page summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Disclosures carry no glyph: the marker is drawn from two borders, the same
+   geometry vocabulary as every rule on the page. */
+.admin-page summary::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 9px;
+    height: 9px;
+    border-right: 3px solid var(--ink);
+    border-bottom: 3px solid var(--ink);
+    transform: rotate(-45deg) translate(-1px, -1px);
+    transform-origin: center;
+}
+
+.admin-page details[open] > summary {
+    background: var(--gold);
+    border-bottom: 2px solid var(--ink);
+}
+
+.admin-page details[open] > summary::before {
+    transform: rotate(45deg) translate(-1px, -2px);
+}
+
+.admin-page details > *:not(summary) {
+    margin-left: 13px;
+    margin-right: 13px;
+}
+
+.admin-page details > *:last-child {
+    margin-bottom: 13px;
+}
+
+.admin-page details > label:first-of-type,
+.admin-page details > p:first-of-type {
+    margin-top: 13px;
+}
+
+/* ---------- status colour, used sparingly and always with a mark ---------- */
+
+.admin-valid,
+.studio-valid-ok {
+    color: var(--ink);
+}
+
+.admin-invalid {
+    color: var(--ink);
+}
+
+.admin-page ul {
+    margin: 10px 0 0;
+    padding-left: 20px;
+    font-size: 14px;
+}
+
+.admin-page ul li {
+    margin-bottom: 5px;
+}
+
+.reject-list {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--coral);
+    font-weight: 700;
+}
+
+.admin-note {
+    margin: 10px 0 0;
+    padding: 11px 13px;
+    font-size: 14px;
+    font-weight: 700;
+    background: var(--gold);
+    border: 2px solid var(--ink);
+}
+
+.admin-note-error {
+    background: var(--coral);
+    color: var(--ink);
+}
+
+/* ---------- guests ---------- */
+
+.guest-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 6px 12px;
+    padding: 12px 0;
+    border-top: 2px solid var(--ink);
+}
+
+.guest-row:first-child {
+    border-top: none;
+}
+
+.guest-name {
+    font-weight: 900;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+}
+
+.guest-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    word-break: break-all;
+}
+
+.guest-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* RSVP state is a drawn square, not a bullet glyph. */
+.guest-meta::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 6px;
+    background: var(--leaf);
+    border: 2px solid var(--ink);
+    vertical-align: baseline;
+}
+
+/* ---------- analytics metrics ---------- */
+
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.metric {
+    padding: 12px;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+}
+
+.metric b {
+    display: block;
+    font-family: var(--mono);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+.metric span {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* ---------- gallery ---------- */
+
+.admin-thumb {
+    display: block;
+    width: 100%;
+    max-width: 240px;
+    height: 130px;
+    margin: 8px 0;
+    object-fit: cover;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+}
+
+/* Marks the cover photo inside a gallery summary. A word rather than a star:
+   a symbol has to be learned, a label does not. */
+.studio-cover-tag {
+    flex: 0 0 auto;
+    /* No margin: the summary is a flex row with a gap, and the text node before
+       this is an anonymous flex item, so the gap already separates them. */
+    padding: 2px 7px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--gold);
+    border: 2px solid var(--ink);
+}
+
+/* ---------- the publish pipeline ---------- */
+
+/* Three steps with the waiting one lit, borrowed from the drum machine
+   challenger: the next move is never a guess. */
+.studio-pipeline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 0 0 16px;
+    padding: 0;
+    list-style: none;
+    border: var(--line);
+    background: var(--card);
+}
+
+.studio-pipeline li {
+    flex: 1 1 140px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 48px;
+    padding: 10px 13px;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-right: 2px solid var(--ink);
+}
+
+.studio-pipeline li:last-child {
+    border-right: none;
+}
+
+.studio-pipeline li span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+    font-family: var(--mono);
+    font-size: 11px;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+}
+
+/* Done: filled ink. Now: gold, and it owns the eye. Waiting: hatched. */
+.studio-step-done {
+    background: var(--ink);
+    color: var(--paper);
+}
+
+.studio-step-done span {
+    background: var(--paper);
+    color: var(--ink);
+}
+
+.studio-step-now {
+    background: var(--gold);
+    color: var(--ink);
+}
+
+/* Blocked: the hazard stripe, borrowed from the industrial-streetwear
+   challenger. A barriered action reads as barriered. */
+.studio-blocked {
+    margin: 4px 0 0;
+    padding: 10px 13px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    border: 2px solid var(--ink);
+    background-color: var(--paper);
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent 0 7px,
+        rgba(23, 23, 25, 0.16) 7px 14px
+    );
+}
+
+/* ---------- dev fixtures, outside the operator's eight steps ---------- */
+
+.studio-dev {
+    padding: 16px;
+    background: var(--paper);
+    border: 2px dashed var(--muted);
+}
+
+.studio-dev h2 {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 8px;
+}
+
+/* ==========================================================================
+   Adapting: rail beside the work from 1000px up
+   ========================================================================== */
+
+@media (min-width: 1000px) {
+    .studio-body {
+        grid-template-columns: 296px minmax(0, 1fr);
+        gap: 32px;
+    }
+
+    .studio-rail {
+        position: sticky;
+        top: 84px;
+        max-height: calc(100dvh - 108px);
+        overflow-y: auto;
+    }
+
+    .admin-page label {
+        font-size: 12px;
+    }
+
+    .metric-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Reduced motion: the depress is feedback, so it survives as an instant change
+   rather than a transition. */
+@media (prefers-reduced-motion: reduce) {
+    .admin-page button {
+        transition: none;
+    }
+}

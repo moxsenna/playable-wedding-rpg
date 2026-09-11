@@ -23,6 +23,18 @@ import {
   validateProjectUpdate,
   validateVersionSnapshot,
   verifySession,
+  BILLING_TIERS,
+  tierById,
+  validateCheckoutInput,
+  signPayCoreRequest,
+  verifyPayCoreEvent,
+  validatePayCoreEvent,
+  slugifyProject,
+  mintExternalOrderId,
+  mintClaimToken,
+  mintOwnerToken,
+  CLAIM_TTL_MS,
+  OWNER_SESSION_TTL_MS,
   type SessionClaims,
   type WeddingStore,
 } from "@wedding-rpg/wedding-core";
@@ -48,6 +60,12 @@ interface Env {
   DEV_MEMORY_STORE?: string;
   PROJECT_AVATARS_JSON?: string;
   ALLOW_DEV_TOKENS?: string;
+  PAYCORE_BASE_URL?: string;
+  PAYCORE_APP_ID?: string;
+  PAYCORE_KEY_ID?: string;
+  PAYCORE_APP_SECRET?: string;
+  PAYCORE_WEBHOOK_SECRET?: string;
+  PAYCORE_RETURN_URL?: string;
   ASSETS?: R2BucketLike;
   MEDIA?: R2BucketLike;
   R2_ACCOUNT_ID?: string;
@@ -114,7 +132,7 @@ async function storeFor(env: Env): Promise<WeddingStore> {
 const CORS: Record<string, string> = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-  "access-control-allow-headers": "content-type, x-session, x-admin-key",
+  "access-control-allow-headers": "content-type, x-session, x-admin-key, x-owner-token",
   "access-control-max-age": "86400",
 };
 
@@ -491,6 +509,7 @@ export default {
           name: checked.name ?? "Untitled",
           slug: checked.slug ?? "wedding",
           status: "draft" as const,
+          tier: null as string | null,
           createdAt: now,
           updatedAt: now,
         };
@@ -866,7 +885,512 @@ export default {
           return json({ error: "activation conflict — retry" }, 409);
         }
       }
+      if (url.pathname === "/v1/admin/claims" && request.method === "POST") {
+        const projectId = String(body.projectId ?? "");
+        if (!projectIdSchema.safeParse(projectId).success) return json({ error: "bad project" }, 400);
+        const project = await store.getProject(projectId);
+        if (!project) return json({ error: "unknown project" }, 404);
+        const now = Date.now();
+        const token = mintClaimToken();
+        await store.createOwnerClaim({
+          token,
+          projectId,
+          tier: project.tier ?? "bespoke",
+          createdAt: now,
+          expiresAt: now + CLAIM_TTL_MS,
+          usedAt: null,
+          revokedAt: null,
+        });
+        await store.recordAudit(projectId, "admin", "claim.create", token.slice(0, 12), now);
+        return json({ claimToken: token }, 201);
+      }
+      if (url.pathname === "/v1/admin/claims/revoke" && request.method === "POST") {
+        const token = String(body.token ?? "");
+        if (!token) return json({ error: "token required" }, 400);
+        const ok = await store.revokeOwnerClaim(token, Date.now());
+        if (!ok) return json({ error: "unknown claim" }, 404);
+        return json({ ok: true });
+      }
       return json({ error: "unknown admin action" }, 404);
+    }
+
+    if (url.pathname === "/v1/checkout" && request.method === "POST") {
+      let input: unknown;
+      try {
+        input = await request.json();
+      } catch {
+        return json({ error: "bad request" }, 400);
+      }
+      const checked = validateCheckoutInput(input);
+      if (!checked.ok || !checked.tier || !checked.customer) {
+        return json({ error: checked.error ?? "bad request" }, 400);
+      }
+      if (
+        !env.PAYCORE_BASE_URL ||
+        !env.PAYCORE_APP_ID ||
+        !env.PAYCORE_KEY_ID ||
+        !env.PAYCORE_APP_SECRET ||
+        !env.PAYCORE_RETURN_URL
+      ) {
+        return json({ error: "checkout unavailable" }, 501);
+      }
+      const now = Date.now();
+      const externalOrderId = mintExternalOrderId();
+      await store.createBillingOrder({
+        externalOrderId,
+        paycoreOrderId: null,
+        tier: checked.tier.id,
+        amount: checked.tier.amount,
+        currency: checked.tier.currency,
+        customerName: checked.customer.name,
+        customerWhatsapp: checked.customer.whatsapp,
+        customerEmail: checked.customer.email,
+        status: "pending",
+        projectId: null,
+        createdAt: now,
+        paidAt: null,
+      });
+      const paycoreBody = JSON.stringify({
+        external_order_id: externalOrderId,
+        product_key: checked.tier.productKey,
+        description: `YUTEMU ${checked.tier.id} — undangan playable`,
+        amount: checked.tier.amount,
+        currency: checked.tier.currency,
+        customer: {
+          name: checked.customer.name,
+          email: checked.customer.email,
+          phone: checked.customer.whatsapp,
+        },
+        return_url: `${env.PAYCORE_RETURN_URL}?order=${encodeURIComponent(externalOrderId)}`,
+        fulfillment_data: {
+          tier: checked.tier.id,
+          customer_name: checked.customer.name,
+          customer_whatsapp: checked.customer.whatsapp,
+          customer_email: checked.customer.email,
+        },
+      });
+      const timestamp = new Date(now).toISOString();
+      const signature = await signPayCoreRequest({
+        appSecret: env.PAYCORE_APP_SECRET,
+        timestamp,
+        method: "POST",
+        path: "/v1/orders",
+        rawBody: paycoreBody,
+      });
+      let created: { order_id?: string; checkout_url?: string };
+      try {
+        const res = await fetch(`${env.PAYCORE_BASE_URL.replace(/\/$/, "")}/v1/orders`, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "X-PayCore-App": env.PAYCORE_APP_ID,
+            "X-PayCore-Key-Id": env.PAYCORE_KEY_ID,
+            "X-PayCore-Timestamp": timestamp,
+            "X-PayCore-Signature": `sha256=${signature}`,
+            "Idempotency-Key": externalOrderId,
+          },
+          body: paycoreBody,
+        });
+        created = (await res.json()) as { order_id?: string; checkout_url?: string };
+        if (!res.ok || !created.order_id || !created.checkout_url) {
+          throw new Error(`paycore ${res.status}`);
+        }
+      } catch {
+        return json({ error: "payment provider unavailable" }, 502);
+      }
+      await store.setBillingPaycoreId(externalOrderId, created.order_id);
+      return json(
+        { checkoutUrl: created.checkout_url, externalOrderId },
+        201
+      );
+    }
+
+    if (url.pathname.startsWith("/v1/checkout/") && request.method === "GET") {
+      const externalOrderId = decodeURIComponent(url.pathname.slice("/v1/checkout/".length));
+      const order = await store.getBillingOrder(externalOrderId);
+      if (!order) return json({ error: "unknown order" }, 404);
+      const now = Date.now();
+      let claimToken: string | null = null;
+      if (order.status === "paid" && order.projectId) {
+        const live = await store.findLiveClaimByProject(order.projectId, now);
+        claimToken = live ? live.token : null;
+      }
+      return json({
+        status: order.status,
+        tier: order.tier,
+        projectId: order.projectId,
+        claimToken,
+      });
+    }
+
+    if (url.pathname === "/internal/payment-events" && request.method === "POST") {
+      if (!env.PAYCORE_WEBHOOK_SECRET) return json({ error: "payment events not configured" }, 501);
+      const rawBody = await request.text();
+      const verified = await verifyPayCoreEvent({
+        webhookSecret: env.PAYCORE_WEBHOOK_SECRET,
+        timestampHeader: request.headers.get("X-PayCore-Event-Timestamp"),
+        rawBody,
+        signatureHeader: request.headers.get("X-PayCore-Event-Signature"),
+      });
+      if (!verified) return json({ error: "bad signature" }, 401);
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(rawBody);
+      } catch {
+        return json({ error: "bad request" }, 400);
+      }
+      const evt = validatePayCoreEvent(parsed);
+      if (!evt.ok || !evt.eventId || !evt.data) return json({ error: evt.error ?? "bad event" }, 400);
+      const now = Date.now();
+      const firstSeen = await store.recordPaymentEvent(evt.eventId, evt.data.order_id, now);
+      if (!firstSeen) return json({ ok: true, deduped: true });
+      const order =
+        (await store.getBillingOrder(evt.data.external_order_id)) ??
+        (await store.getBillingOrderByPaycoreId(evt.data.order_id));
+      if (!order) return json({ ok: true, unknownOrder: true });
+      if (order.status === "paid" && order.projectId) return json({ ok: true, projectId: order.projectId });
+      if (evt.data.amount < order.amount || evt.data.currency !== order.currency) {
+        await store.recordAudit(null, "billing", "underpaid", evt.data.order_id, now);
+        return json({ ok: true, underpaid: true });
+      }
+      const projectId = `w-${order.externalOrderId.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}`;
+      const slugBase = `${slugifyProject(order.customerName)}-${order.tier}`.slice(0, 48);
+      try {
+        await store.createProject({
+          id: projectId,
+          name: `Wedding ${order.customerName}`,
+          slug: `${slugBase}-${now.toString(36)}`,
+          status: "draft",
+          tier: order.tier,
+          createdAt: now,
+          updatedAt: now,
+        });
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "";
+        if (!/slug-taken|project exists|duplicate/i.test(msg)) throw e;
+      }
+      const project = await store.getProject(projectId);
+      if (!project) return json({ error: "fulfillment failed" }, 500);
+      try {
+        const templates = await store.listTemplateVersions();
+        const garden = [...templates].reverse().find((t) => /garden/i.test(t.templateKey)) ?? templates[0];
+        if (garden && !(await store.getWorldConfig(projectId))) {
+          await store.upsertWorldConfig({
+            id: `worldcfg-${projectId}`,
+            projectId,
+            templateVersionId: garden.id,
+            ambientPreset: "garden-day",
+            musicRef: null,
+          });
+        }
+        if ((await store.getAvatarPool(projectId)).length === 0) {
+          await store.setAvatarPool(projectId, ["guest_01"]);
+        }
+      } catch {
+        // Seeding defaults is best-effort; the wizard surfaces explicit setup when missing.
+      }
+      await store.markOrderPaid(order.externalOrderId, projectId, now);
+      if (!(await store.findLiveClaimByProject(projectId, now))) {
+        await store.createOwnerClaim({
+          token: mintClaimToken(),
+          projectId,
+          tier: order.tier,
+          createdAt: now,
+          expiresAt: now + CLAIM_TTL_MS,
+          usedAt: null,
+          revokedAt: null,
+        });
+      }
+      await store.recordAudit(projectId, "billing", "fulfill", evt.data.order_id, now);
+      return json({ ok: true, projectId });
+    }
+
+    if (url.pathname === "/v1/owner/claim" && request.method === "POST") {
+      let body: { token?: unknown };
+      try {
+        body = (await request.json()) as { token?: unknown };
+      } catch {
+        return json({ error: "bad request" }, 400);
+      }
+      const token = typeof body.token === "string" ? body.token : "";
+      if (!token) return json({ error: "token required" }, 400);
+      const now = Date.now();
+      const claim = await store.consumeOwnerClaim(token, now);
+      if (!claim) return json({ error: "invalid or expired claim" }, 404);
+      const project = await store.getProject(claim.projectId);
+      if (!project) return json({ error: "unknown project" }, 404);
+      const ownerToken = mintOwnerToken();
+      await store.createOwnerSession({
+        token: ownerToken,
+        projectId: claim.projectId,
+        createdAt: now,
+        expiresAt: now + OWNER_SESSION_TTL_MS,
+        revokedAt: null,
+      });
+      await store.recordAudit(claim.projectId, "owner", "claim", claim.tier, now);
+      return json({
+        ownerToken,
+        projectId: claim.projectId,
+        projectName: project.name,
+        tier: claim.tier,
+        expiresAt: now + OWNER_SESSION_TTL_MS,
+      });
+    }
+
+    if (url.pathname.startsWith("/v1/owner/")) {
+      const now = Date.now();
+      const session = await store
+        .resolveOwnerSession(request.headers.get("x-owner-token") ?? "", now)
+        .catch(() => null);
+      if (!session) return unauthorized();
+      const project = await store.getProject(session.projectId);
+      if (!project) return json({ error: "unknown project" }, 404);
+      const projectId = project.id;
+      const readBody = async (): Promise<Record<string, unknown>> => {
+        try {
+          return (await request.json()) as Record<string, unknown>;
+        } catch {
+          return {};
+        }
+      };
+      const ownVersion = async (versionId: string) => {
+        const v = await store.findVersion(versionId);
+        return v && v.projectId === projectId ? v : null;
+      };
+      if (url.pathname === "/v1/owner/me" && request.method === "GET") {
+        return json({ project: { id: project.id, name: project.name, slug: project.slug, status: project.status, tier: project.tier } });
+      }
+      if (url.pathname === "/v1/owner/versions" && request.method === "GET") {
+        return json({ versions: await store.listVersions(projectId) });
+      }
+      if (url.pathname === "/v1/owner/draft" && request.method === "GET") {
+        const versions = await store.listVersions(projectId);
+        const draft = [...versions].reverse().find((v) => v.publicationId === "main" && v.status === "draft") ?? null;
+        return json({ version: draft });
+      }
+      if (url.pathname === "/v1/owner/draft" && request.method === "PUT") {
+        const body = await readBody();
+        const checked = validateVersionSnapshot(body.snapshot);
+        if (!checked.ok || !checked.snapshot) return json({ error: checked.errors[0] }, 400);
+        const n = await store.maxVersionNumber(projectId, "main");
+        const version = {
+          id: `pv-${now}-${Math.floor(Math.random() * 1e6).toString(36)}`,
+          projectId,
+          publicationId: "main",
+          version: n + 1,
+          status: "draft" as const,
+          snapshot: checked.snapshot,
+          createdAt: now,
+        };
+        await store.insertVersion(version);
+        await store.recordAudit(projectId, "owner", "draft", version.id, now);
+        return json({ version });
+      }
+      if (url.pathname === "/v1/owner/publish" && request.method === "POST") {
+        const body = await readBody();
+        const v = await ownVersion(String(body.versionId ?? ""));
+        if (!v) return json({ error: "unknown version" }, 404);
+        if (v.status !== "draft") return json({ error: "only drafts publish" }, 400);
+        const checked = validateVersionSnapshot(v.snapshot);
+        if (!checked.ok) return json({ error: checked.errors[0] }, 400);
+        await store.updateVersionStatus(v.id, "published");
+        await store.recordAudit(projectId, "owner", "publish", v.id, now);
+        return json({ version: { ...v, status: "published" } });
+      }
+      if (url.pathname === "/v1/owner/activate" && request.method === "POST") {
+        const body = await readBody();
+        const v = await ownVersion(String(body.versionId ?? ""));
+        if (!v) return json({ error: "unknown version" }, 404);
+        if (v.status !== "published") return json({ error: "only published versions activate" }, 400);
+        if (project.status === "archived") return json({ error: "project archived — contact support" }, 400);
+        try {
+          const active = await store.activateExclusive(projectId, "main", v.id);
+          if (project.status !== "live") await store.updateProject(projectId, { status: "live" }, now);
+          await store.recordAudit(projectId, "owner", "activate", v.id, now);
+          return json({ version: active });
+        } catch {
+          return json({ error: "activation conflict — retry" }, 409);
+        }
+      }
+      if (url.pathname === "/v1/owner/preview" && request.method === "POST") {
+        const body = await readBody();
+        const v = await ownVersion(String(body.versionId ?? ""));
+        if (!v) return json({ error: "unknown version" }, 404);
+        const token = mintPreviewToken();
+        await store.createPreviewToken(token, projectId, v.id, now + 1000 * 60 * 60 * 24);
+        return json({ previewToken: token });
+      }
+      if (url.pathname === "/v1/owner/guests" && request.method === "GET") {
+        const guests = await store.listGuests(projectId);
+        const rsvps = await store.listRsvps(projectId).catch(() => []);
+        const byToken = new Map(rsvps.map((r) => [r.token, r]));
+        return json({
+          guests: guests.map((g) => ({
+            id: g.id,
+            projectId: g.projectId,
+            name: g.name,
+            token: g.token,
+            createdAt: g.createdAt,
+            rsvp: byToken.get(g.token)?.attending ?? null,
+          })),
+        });
+      }
+      if (url.pathname === "/v1/owner/guests" && request.method === "POST") {
+        const body = await readBody();
+        const name = String(body.name ?? "").trim();
+        if (!name || name.length > 80) return json({ error: "guest name must be 1..80 characters" }, 400);
+        for (let attempt = 0; attempt < 5; attempt++) {
+          const token = mintGuestToken();
+          if (await store.findGuestByToken(token)) continue;
+          const id = `guest-${now.toString(36)}-${Math.floor(Math.random() * 1e6).toString(36)}`;
+          try {
+            await store.insertGuest({ id, projectId, name, token, createdAt: now });
+          } catch (e) {
+            const msg = e instanceof Error ? e.message : "";
+            if (/token-taken|duplicate/i.test(msg)) continue;
+            throw e;
+          }
+          await store.recordAudit(projectId, "owner", "guest.create", id, now);
+          return json({ guest: { id, projectId, name, token, createdAt: now } }, 201);
+        }
+        return json({ error: "token collision — retry" }, 409);
+      }
+      if (url.pathname === "/v1/owner/guests/import" && request.method === "POST") {
+        const body = await readBody();
+        const csvText = typeof body.csv === "string" ? body.csv : "";
+        const parsed = parseGuestCsv(csvText);
+        let created = 0;
+        let skipped = 0;
+        const rejected: { rowNumber: number; reason: string }[] = [];
+        const existing = new Set((await store.listGuests(projectId)).map((g) => g.name.toLowerCase()));
+        for (const item of parsed.valid) {
+          if (existing.has(item.row.name.toLowerCase())) {
+            skipped++;
+            continue;
+          }
+          const token = mintGuestToken();
+          if (await store.findGuestByToken(token)) {
+            rejected.push({ rowNumber: item.rowNumber, reason: "token collision — retry" });
+            continue;
+          }
+          await store.insertGuest({
+            id: `guest-${now.toString(36)}-${item.rowNumber}-${Math.floor(Math.random() * 1e4).toString(36)}`,
+            projectId,
+            name: item.row.name,
+            token,
+            createdAt: now,
+            phone: item.row.phone,
+            email: item.row.email,
+            group: item.row.group,
+            notes: item.row.notes,
+          });
+          existing.add(item.row.name.toLowerCase());
+          created++;
+        }
+        for (const r of parsed.rejected) rejected.push({ rowNumber: r.rowNumber, reason: r.reason });
+        skipped += parsed.skippedBlank;
+        await store.recordAudit(projectId, "owner", "guests.import", `created=${created} skipped=${skipped} rejected=${rejected.length}`, now);
+        return json({ created, skipped, rejected });
+      }
+      if (url.pathname.startsWith("/v1/owner/guests/") && (request.method === "PATCH" || request.method === "DELETE")) {
+        const id = decodeURIComponent(url.pathname.slice("/v1/owner/guests/".length));
+        if (request.method === "DELETE") {
+          const ok = await store.deleteGuest(projectId, id);
+          if (!ok) return json({ error: "unknown guest" }, 404);
+          await store.recordAudit(projectId, "owner", "guest.delete", id, now);
+          return json({ ok: true });
+        }
+        const body = await readBody();
+        const name = typeof body.name === "string" ? body.name : "";
+        try {
+          const next = await store.updateGuest(projectId, id, { name });
+          if (!next) return json({ error: "unknown guest" }, 404);
+          return json({ guest: next });
+        } catch {
+          return json({ error: "bad guest name" }, 400);
+        }
+      }
+      if (url.pathname === "/v1/owner/guest-links" && request.method === "GET") {
+        const guests = await store.listGuests(projectId);
+        return json({
+          links: guests.map((g) => ({ name: g.name, token: g.token, createdAt: g.createdAt })),
+        });
+      }
+      if (url.pathname === "/v1/owner/analytics" && request.method === "GET") {
+        const guests = await store.listGuests(projectId).catch(() => []);
+        const events = await store.listAnalyticsEvents(projectId).catch(() => []);
+        const rsvps = await store.listRsvps(projectId).catch(() => []);
+        const wishes = await store.listGuestbook(projectId).catch(() => []);
+        const summary = summarizeAnalytics(
+          events.map((e) => ({ projectId: e.projectId, guestId: e.guestId, type: e.type, at: e.at })),
+          guests.length
+        );
+        return json({ summary: { ...summary, rsvps: rsvps.length, wishes: wishes.length } });
+      }
+      if (url.pathname === "/v1/owner/media/upload-url" && request.method === "POST") {
+        const body = await readBody();
+        const intent = validateUploadIntent({
+          projectId,
+          contentType: body.contentType,
+          sizeBytes: body.sizeBytes,
+        });
+        if (!intent.ok) return json({ error: intent.error }, 400);
+        const key = mediaKeyFor(projectId, randomUuid(), intent.ext as string);
+        const publicUrl = `${new URL(request.url).origin}/v1/media/${key}`;
+        const signed = await signMediaUpload(env, key, intent.contentType as string).catch(() => null);
+        if (signed) {
+          return json({ mode: "presigned", key, publicUrl, uploadUrl: signed.uploadUrl, expiresIn: signed.expiresIn });
+        }
+        if (!env.MEDIA) return json({ error: "media storage not configured" }, 500);
+        return json({ mode: "proxy", key, publicUrl });
+      }
+      if (url.pathname === "/v1/owner/media/upload" && request.method === "POST") {
+        if (!env.MEDIA) return json({ error: "media storage not configured" }, 500);
+        const key = decodeURIComponent(url.searchParams.get("key") ?? "");
+        const contentType = url.searchParams.get("contentType") ?? "";
+        const parsed = parseMediaKey(key);
+        if (!parsed || parsed.projectId !== projectId) return json({ error: "bad media key" }, 400);
+        const ext = MEDIA_MIME_EXT[contentType];
+        if (!ext || !key.endsWith(`.${ext}`)) return json({ error: "unsupported content type" }, 400);
+        const bytes = await request.arrayBuffer();
+        if (bytes.byteLength < 1 || bytes.byteLength > MEDIA_MAX_BYTES) {
+          return json({ error: "size out of range" }, 400);
+        }
+        await env.MEDIA.put(key, bytes, { httpMetadata: { contentType } });
+        await store.recordAudit(projectId, "owner", "media.upload", key, now);
+        return json({ key, size: bytes.byteLength });
+      }
+      if (url.pathname === "/v1/owner/media/complete" && request.method === "POST") {
+        if (!env.MEDIA) return json({ error: "media storage not configured" }, 500);
+        const body = await readBody();
+        const key = String(body.key ?? "");
+        const parsed = parseMediaKey(key);
+        if (!parsed || parsed.projectId !== projectId) return json({ error: "bad media key" }, 400);
+        const head = await env.MEDIA.head(key);
+        if (!head) return json({ error: "object missing" }, 404);
+        if (head.size < 1 || head.size > MEDIA_MAX_BYTES) {
+          await env.MEDIA.delete(key).catch(() => undefined);
+          return json({ error: "size out of range" }, 400);
+        }
+        await store.recordAudit(projectId, "owner", "media.complete", key, now);
+        return json({ ok: true, size: head.size });
+      }
+      if (url.pathname === "/v1/owner/media" && request.method === "DELETE") {
+        if (!env.MEDIA) return json({ error: "media storage not configured" }, 500);
+        const body = await readBody();
+        const key = String(body.key ?? "");
+        const parsed = parseMediaKey(key);
+        if (!parsed || parsed.projectId !== projectId) return json({ error: "bad media key" }, 400);
+        const versions = await store.listVersions(projectId);
+        const active = versions.find((v) => v.status === "active");
+        if (active && keyReferenced(galleryRefs(active.snapshot), key)) {
+          return json({ error: "referenced by active publication" }, 409);
+        }
+        await env.MEDIA.delete(key);
+        await store.recordAudit(projectId, "owner", "media.delete", key, now);
+        return json({ ok: true });
+      }
+      return json({ error: "unknown owner action" }, 404);
     }
 
     return json({ error: "not found" }, 404);

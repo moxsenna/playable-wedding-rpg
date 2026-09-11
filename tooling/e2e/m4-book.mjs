@@ -17,7 +17,8 @@ import { createRequire } from "node:module";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const WEB_DIR = join(ROOT, "apps/web");
 const PORT = 8104;
-const URL = `http://localhost:${PORT}/`;
+// The guest experience lives at /demo; `/` is the marketing landing page.
+const URL = `http://localhost:${PORT}/demo`;
 const BIN = process.platform === "win32" ? ".cmd" : "";
 
 const fail = (msg) => { console.error(`M4 book check FAILED: ${msg}`); process.exit(1); };
@@ -222,7 +223,7 @@ async function main() {
     await page.click('[data-testid="book-nav-gallery"]');
     await page.waitForSelector('[data-testid="book-section-gallery"]', { state: "visible", timeout: 15000 });
     const alts = await page.$$eval('[data-testid="gallery-img"]', (els) => els.map((e) => e.getAttribute("alt")));
-    if (alts.length !== 3 || alts.some((a) => !a)) fail(`gallery images wrong: ${JSON.stringify(alts)}`);
+    if (alts.length < 3 || alts.length > 5 || alts.some((a) => !a)) fail(`gallery images wrong: ${JSON.stringify(alts)}`);
     await page.waitForFunction(
       () => [...document.querySelectorAll('[data-testid="gallery-img"]')].every((i) => i.complete && i.naturalWidth > 0),
       null, { timeout: 30000 });

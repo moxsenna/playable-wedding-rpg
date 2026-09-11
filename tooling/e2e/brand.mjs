@@ -61,24 +61,38 @@ async function main() {
     await waitForServer(`http://localhost:${PORT}/`);
     const browser = await launchBrowser();
 
+    // The brand surface is now two routes: `/` is the marketing landing page and
+    // `/demo` is where a guest actually enters. Both must carry YUTEMU identity,
+    // so both are checked rather than moving the old assertions to one of them.
     const mobile = await (await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true })).newPage();
     const logs = [];
     mobile.on("pageerror", (e) => logs.push(String(e && e.message)));
+
     await mobile.goto(`http://localhost:${PORT}/`, { waitUntil: "domcontentloaded", timeout: 60000 });
     const title = await mobile.title();
     if (!title.includes("YUTEMU")) fail(`home title not YUTEMU: ${title}`);
-    await mobile.waitForSelector('[data-testid="onboarding-panel"]', { state: "visible", timeout: 30000 });
-    await sleep(500);
+    await sleep(1200);
+    const homeText = (await mobile.textContent("body")) ?? "";
+    if (!homeText.includes("YUTEMU")) fail("landing page missing YUTEMU identity");
     if ((await mobile.evaluate(() => document.querySelectorAll("#boot-splash").length)) !== 0) {
       fail("boot splash stuck on home");
     }
-    const onboarding = (await mobile.textContent('[data-testid="onboarding-panel"]')) ?? "";
-    if (!onboarding.includes("YUTEMU")) fail("onboarding missing YUTEMU identity");
     const iconHref = await mobile.evaluate(() => document.querySelector('link[rel="icon"]')?.getAttribute("href"));
     if (!iconHref || !iconHref.includes("brand/")) fail(`favicon not YUTEMU: ${iconHref}`);
     await mobile.screenshot({ path: join(ROOT, "docs/qa/brand-home-390.png") });
     const overflowMobile = await mobile.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (overflowMobile > 1) fail(`home horizontal overflow: ${overflowMobile}px`);
+
+    await mobile.goto(`http://localhost:${PORT}/demo`, { waitUntil: "domcontentloaded", timeout: 60000 });
+    await mobile.waitForSelector('[data-testid="onboarding-panel"]', { state: "visible", timeout: 60000 });
+    await sleep(500);
+    if ((await mobile.evaluate(() => document.querySelectorAll("#boot-splash").length)) !== 0) {
+      fail("boot splash stuck on the guest entry");
+    }
+    const onboarding = (await mobile.textContent('[data-testid="onboarding-panel"]')) ?? "";
+    if (!onboarding.includes("YUTEMU")) fail("onboarding missing YUTEMU identity");
+    const overflowDemo = await mobile.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    if (overflowDemo > 1) fail(`guest entry horizontal overflow: ${overflowDemo}px`);
 
     const desktop = await (await browser.newContext({ viewport: { width: 1167, height: 743 } })).newPage();
     desktop.on("pageerror", (e) => logs.push(String(e && e.message)));
