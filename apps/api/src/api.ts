@@ -1138,7 +1138,7 @@ export default {
       if (!token) return json({ error: "token required" }, 400);
       const now = Date.now();
       const claim = await store.consumeOwnerClaim(token, now);
-      if (!claim) return json({ error: "invalid or expired claim" }, 404);
+      if (!claim) return json({ error: "invalid, expired, or revoked claim" }, 404);
       const project = await store.getProject(claim.projectId);
       if (!project) return json({ error: "unknown project" }, 404);
       const ownerToken = mintOwnerToken();
@@ -1157,6 +1157,32 @@ export default {
         tier: claim.tier,
         expiresAt: now + OWNER_SESSION_TTL_MS,
       });
+    }
+
+    if (url.pathname === "/v1/owner/recover" && request.method === "POST") {
+      let body: { orderId?: unknown; contact?: unknown };
+      try {
+        body = (await request.json()) as { orderId?: unknown; contact?: unknown };
+      } catch {
+        return json({ error: "bad request" }, 400);
+      }
+      const orderId = typeof body.orderId === "string" ? body.orderId.trim() : "";
+      const contactRaw = typeof body.contact === "string" ? body.contact.trim().toLowerCase() : "";
+      if (!orderId || !contactRaw) return json({ error: "orderId + contact required" }, 400);
+      const now = Date.now();
+      const order = await store.getBillingOrder(orderId);
+      if (!order || order.status !== "paid" || !order.projectId) {
+        return json({ error: "order not found or unpaid" }, 404);
+      }
+      const contact = contactRaw.replace(/[\s-]/g, "");
+      const wa = order.customerWhatsapp.replace(/[\s-]/g, "").toLowerCase();
+      if (contact !== order.customerEmail.toLowerCase() && contact !== wa) {
+        return json({ error: "order not found or unpaid" }, 404);
+      }
+      const live = await store.findLiveClaimByProject(order.projectId, now);
+      if (!live) return json({ error: "claim unavailable — contact support" }, 404);
+      await store.recordAudit(order.projectId, "owner", "recover", orderId.slice(0, 24), now);
+      return json({ claimToken: live.token, projectId: order.projectId, tier: order.tier });
     }
 
     if (url.pathname.startsWith("/v1/owner/")) {
