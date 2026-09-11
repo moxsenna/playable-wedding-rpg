@@ -1,4 +1,4 @@
 {
-  "prompt": "Source docs/qa/brand-admin-1167.png, captured by tooling/e2e/brand.mjs at /admin (YUTEMU Studio), 1167px desktop width, keyless state; re-encoded to WebP by .impeccable/scripts/pull-qa-assets.mjs.",
-  "createdAt": "2026-09-11T00:35:18.136Z"
+  "prompt": "Captured from the built export by .impeccable/scripts/capture-studio.mjs (tag \"shipped\"): apps/web /admin at a 1167x760 viewport with no admin key, so the console is in its dry-run state. Encoded lossless WebP with no resample to match the frame's own aspect ratio. This is the operator console as it actually ships.",
+  "createdAt": "2026-09-11T16:37:54.816Z"
 }
