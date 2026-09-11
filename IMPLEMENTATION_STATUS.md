@@ -897,7 +897,25 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   both PayCore workers deployed healthy, live 201 proof order
   `YWT-20260911-W7FRB`); Neon `0005_selfserve_billing.sql` applied
   2026-09-11 (tables + `wedding_projects.tier` verified).
-  Remaining: staging E2E with real Duitku sandbox, then announce.
+- Sandbox mode (LIVE 2026-09-12, test tanpa uang asli): `/mulai?sandbox=1`
+  menampilkan banner "Mode test" dan merutekan order ke PayCore staging
+  (`pay-staging.appvibe.biz.id`) + Duitku sandbox. API memilih kredensial
+  per `sandbox` flag di body (`PAYCORE_STAGING_*` vs `PAYCORE_*`);
+  webhook `/internal/payment-events` menerima kedua secret; order dicap
+  `sandbox` di `billing_orders` (migrasi `0006_billing_sandbox.sql`,
+  terverifikasi ada di Neon); `/mulai/retur` ikut menampilkan penanda
+  test. PayCore staging: row `yutemu` active + worker healthy; 5 secret
+  `PAYCORE_STAGING_*` live di worker wedding; API worker + web Pages
+  redeployed. Bukti live: `POST /v1/checkout {sandbox:true}` → 201
+  `YWT-20260911-XV2L` dengan `checkoutUrl`
+  `app-sandbox.duitku.com/redirect_checkout?reference=DS32111…`;
+  order status `{"status":"pending","sandbox":true}`;
+  banner `/mulai?sandbox=1` terverifikasi render di browser
+  (`mulai-sandbox` testid visible). Probe `selfserve.mjs` +1 asersi:
+  sandbox tanpa staging creds → 501 (tidak bocor ke prod).
+  Cara test: buka `/mulai?sandbox=1`, isi data, bayar via Duitku
+  sandbox (QRIS/VA dummy yang selalu sukses), kembali ke `/mulai/retur`
+  → link klaim → wizard → terbitkan; hapus project test sesudahnya.
 
 
 

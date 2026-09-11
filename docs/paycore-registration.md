@@ -1,4 +1,4 @@
-# PayCore registration — YUTEMU (self-serve checkout) — REGISTERED 2026-09-11
+# PayCore registration — YUTEMU (self-serve checkout) — REGISTERED 2026-09-11, SANDBOX LIVE 2026-09-12
 
 Self-serve checkout (`/mulai` → PayCore → Duitku) needs two things that
 live outside this repo. Secrets are NEVER committed — set them with
@@ -20,12 +20,13 @@ App slug: `yutemu`, order prefix: `YWT-`.
 
 Registered in PayCore as maintainer: `src/config/env.ts` +
 `src/types/env.ts` resolvers, `migrations/0015_app_yutemu.sql`
-(applied to **production D1 only** — no staging wedding worker
-exists yet, see migration header), secrets in PayCore
-`.staging.vars` / `.production.vars`, staging + production workers
-deployed and healthy. Live proof: signed `POST /v1/orders`
-→ 201 `YWT-20260911-W7FRB` with real Duitku prod checkout URL
-(test reference `YWT-REGCHECK-01`, expires unpaid — no money moved).
+(applied to **production D1 2026-09-11 and staging D1 2026-09-12**;
+row `yutemu` active on both, worker staging + production healthy),
+secrets in PayCore `.staging.vars` / `.production.vars`, staging +
+production workers deployed and healthy. Live proof: signed
+`POST /v1/orders` → 201 `YWT-20260911-W7FRB` with real Duitku prod
+checkout URL (test reference `YWT-REGCHECK-01`, expires unpaid —
+no money moved).
 
 Give the maintainer the staging/production `PAYCORE_APP_SECRET` and
 `PAYCORE_WEBHOOK_SECRET` values (generated locally, see §2). Staging
