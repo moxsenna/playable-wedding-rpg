@@ -43,6 +43,13 @@
       "when": 1789023600000,
       "tag": "0005_selfserve_billing",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789030000000,
+      "tag": "0006_billing_sandbox",
+      "breakpoints": true
     }
   ]
 }

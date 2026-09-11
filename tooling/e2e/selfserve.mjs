@@ -147,6 +147,18 @@ async function main() {
     });
     ok(bad.status === 400, "checkout should reject unknown tier");
 
+    // 1b. Sandbox checkout without staging creds is refused, not routed to prod.
+    const sb = await fetch(`${API}/v1/checkout`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        tier: "esensial",
+        customer: { name: "Uji Coba", whatsapp: "081234567890", email: "uji@example.com" },
+        sandbox: true,
+      }),
+    });
+    ok(sb.status === 501, "sandbox checkout without staging creds should be 501");
+
     // 2. Real checkout against the signature-verifying mock.
     const co = await fetch(`${API}/v1/checkout`, {
       method: "POST",

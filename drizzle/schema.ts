@@ -5,6 +5,7 @@
 // generation here; live migrate needs DATABASE_URL).
 import {
   bigint,
+  boolean,
   index,
   integer,
   jsonb,
@@ -198,6 +199,7 @@ export const billingOrders = pgTable(
     customerWhatsapp: text("customer_whatsapp").notNull(),
     customerEmail: text("customer_email").notNull(),
     status: billingOrderStatus("status").notNull(),
+    sandbox: boolean("sandbox").notNull().default(false),
     projectId: text("project_id").references(() => weddingProjects.id),
     createdAt: bigint("created_at", { mode: "number" }).notNull(),
     paidAt: bigint("paid_at", { mode: "number" }),

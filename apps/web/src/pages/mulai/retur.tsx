@@ -12,6 +12,7 @@ export default function Retur() {
   const [externalId, setExternalId] = useState("");
   const [status, setStatus] = useState<Status>("menunggu");
   const [claimToken, setClaimToken] = useState<string | null>(null);
+  const [sandbox, setSandbox] = useState(false);
 
   useEffect(() => {
     const q = typeof router.query.order === "string" ? router.query.order : "";
@@ -37,8 +38,9 @@ export default function Retur() {
           if (!stop) setStatus("tidak-dikenal");
           return;
         }
-        const body = (await res.json()) as { status?: string; claimToken?: string | null };
+        const body = (await res.json()) as { status?: string; claimToken?: string | null; sandbox?: boolean };
         if (stop) return;
+        if (body.sandbox === true) setSandbox(true);
         if (body.status === "paid") {
           setStatus("paid");
           setClaimToken(body.claimToken ?? null);
@@ -69,6 +71,9 @@ export default function Retur() {
       </Head>
       <p><a href="/">← YUTEMU</a></p>
       <h1>Status pembayaran</h1>
+      {sandbox && (
+        <p data-testid="retur-sandbox" role="note">Mode test — pembayaran via Duitku sandbox, bukan uang asli.</p>
+      )}
       {status === "menunggu" && (
         <p data-testid="retur-menunggu">Menunggu konfirmasi pembayaran{externalId ? ` (${externalId})` : ""}… halaman ini memeriksa otomatis.</p>
       )}

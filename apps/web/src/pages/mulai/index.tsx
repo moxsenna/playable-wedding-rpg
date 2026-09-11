@@ -41,13 +41,17 @@ export default function Mulai() {
   const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [sandbox, setSandbox] = useState(false);
 
   useEffect(() => {
     const q = router.query.tier;
     if (router.isReady && typeof q === "string" && (TIER_IDS as string[]).includes(q)) {
       setTier(q as TierId);
     }
-  }, [router.isReady, router.query.tier]);
+    if (router.isReady && router.query.sandbox === "1") {
+      setSandbox(true);
+    }
+  }, [router.isReady, router.query.tier, router.query.sandbox]);
 
   const submit = async () => {
     setBusy(true);
@@ -56,13 +60,15 @@ export default function Mulai() {
       const res = await fetch(`${resolveApiBase()}/v1/checkout`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ tier, customer: { name, whatsapp, email } }),
+        body: JSON.stringify({ tier, customer: { name, whatsapp, email }, sandbox }),
       });
       const body = (await res.json()) as { checkoutUrl?: string; externalOrderId?: string; error?: string };
       if (!res.ok || !body.checkoutUrl || !body.externalOrderId) {
         setError(body.error === "payment provider unavailable"
           ? "Pembayaran sedang tidak bisa dijangkau — coba lagi sebentar."
-          : body.error === "checkout unavailable"
+          : body.error === "checkout sandbox unavailable"
+            ? "Mode test belum dikonfigurasi — hubungi admin."
+            : body.error === "checkout unavailable"
             ? "Checkout belum dikonfigurasi — hubungi kami via WhatsApp."
             : "Data belum valid — periksa nama, nomor WhatsApp, dan email.");
         return;
@@ -83,7 +89,7 @@ export default function Mulai() {
   return (
     <div className={styles.page}>
       <Head>
-        <title>YUTEMU — Buat undangan playable</title>
+        <title>{sandbox ? "YUTEMU — Coba checkout (TEST)" : "YUTEMU — Buat undangan playable"}</title>
         <meta name="description" content="Pilih paket, bayar, lalu isi data pernikahanmu sendiri lewat wizard terpandu." />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
@@ -120,6 +126,16 @@ export default function Mulai() {
                 Pilih paket, bayar, lalu isi data pernikahanmu sendiri — tanpa coding, tanpa menunggu admin.
               </p>
             </div>
+
+            {sandbox && (
+              <p
+                data-testid="mulai-sandbox"
+                role="note"
+                style={{ margin: "0 0 18px", padding: "12px 14px", fontSize: 14, fontWeight: 900, letterSpacing: "0.04em", textTransform: "uppercase", color: "#171719", background: "#ffd98a", border: "3px solid #171719", boxShadow: "3px 3px 0 #171719" }}
+              >
+                Mode test — bayar via Duitku sandbox, bukan uang asli.
+              </p>
+            )}
 
             <p className={styles.stepIndex}>01</p>
             <h2 className={styles.stepTitle}>Pilih paket</h2>
@@ -181,7 +197,7 @@ export default function Mulai() {
                   disabled={busy}
                   style={{ fontFamily: "inherit", cursor: "pointer" }}
                 >
-                  {busy ? "Menyiapkan pembayaran…" : "Bayar & lanjut isi data"}
+                  {busy ? "Menyiapkan pembayaran…" : sandbox ? "Bayar TEST & lanjut isi data" : "Bayar & lanjut isi data"}
                 </button>
               </div>
               <p className={styles.caption}>
