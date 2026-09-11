@@ -231,7 +231,8 @@ async function main() {
     const st = await fetch(`${API}/v1/checkout/${encodeURIComponent(co.externalOrderId)}`).then((r) => r.json());
     ok(st.status === "paid" && st.claimToken, `status should be paid with claim: ${JSON.stringify(st)}`);
 
-    // 7. Claim exchange mints a scoped owner session; reuse is refused.
+    // 7. Claim exchange mints a scoped owner session; claims are reusable
+    // until expiry/revoke so buyers can return and continue filling in.
     const claim = await fetch(`${API}/v1/owner/claim`, {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -244,8 +245,22 @@ async function main() {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ token: st.claimToken }),
+    }).then((r) => r.json());
+    ok(reuse.ownerToken && reuse.projectId === projectId, `claim reuse failed: ${JSON.stringify(reuse)}`);
+
+    // 7b. Recover returns the live claim via order id + buyer contact.
+    const recovered = await fetch(`${API}/v1/owner/recover`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ orderId: co.externalOrderId, contact: "uji@example.com" }),
+    }).then((r) => r.json());
+    ok(recovered.claimToken === st.claimToken, `recover failed: ${JSON.stringify(recovered)}`);
+    const recoverWrong = await fetch(`${API}/v1/owner/recover`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ orderId: co.externalOrderId, contact: "orang@lain.com" }),
     });
-    ok(reuse.status === 404, "claim reuse should be refused");
+    ok(recoverWrong.status === 404, "recover with wrong contact should be 404");
 
     // 8. Owner writes a draft, publishes, and activates it.
     const snapshot = {

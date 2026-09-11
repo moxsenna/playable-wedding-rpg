@@ -89,6 +89,12 @@ export default function Wizard() {
     "content-type": "application/json",
     "x-owner-token": token,
   });
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const saveTimer = useRef<number | null>(null);
+  const pubRef = useRef(pub);
+  pubRef.current = pub;
+  const ownerTokenRef = useRef(ownerToken);
+  ownerTokenRef.current = ownerToken;
 
   useEffect(() => {
     if (!router.isReady || !claimToken || exchanged.current) return;
@@ -170,6 +176,38 @@ export default function Wizard() {
     } catch {
       // Backup is best-effort; the server draft is the source of truth.
     }
+    if (saveTimer.current !== null) window.clearTimeout(saveTimer.current);
+    setSaveState("saving");
+    saveTimer.current = window.setTimeout(() => {
+      const snapshot = pubRef.current;
+      const token = ownerTokenRef.current;
+      if (!token) {
+        setSaveState("idle");
+        return;
+      }
+      void fetch(`${resolveApiBase()}/v1/owner/draft`, {
+        method: "PUT",
+        headers: { "content-type": "application/json", "x-owner-token": token },
+        body: JSON.stringify({ snapshot }),
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            setSaveState("error");
+            return;
+          }
+          const body = (await res.json()) as { version?: { id: string } };
+          if (body.version) {
+            setDraftId(body.version.id);
+            setSaveState("saved");
+          } else {
+            setSaveState("error");
+          }
+        })
+        .catch(() => setSaveState("error"));
+    }, 2000);
+    return () => {
+      if (saveTimer.current !== null) window.clearTimeout(saveTimer.current);
+    };
   }, [pub, phase, claimToken]);
 
   const patch = (p: Partial<Publication>) => setPub((prev) => ({ ...prev, ...p }));
@@ -306,7 +344,8 @@ export default function Wizard() {
       <div style={{ maxWidth: 560, margin: "0 auto", padding: "32px 20px" }}>
         <Head><title>YUTEMU — Link tidak valid</title></Head>
         <h1>Link tidak valid</h1>
-        <p data-testid="wizard-invalid">Link isi data ini sudah dipakai, kedaluwarsa, atau salah. Minta link baru via WhatsApp kami.</p>
+        <p data-testid="wizard-invalid">Link isi data ini kedaluwarsa, dicabut, atau salah. Buka lagi dari halaman status pembayaranmu, atau minta link baru via WhatsApp kami.</p>
+        <p><a href="/mulai/retur">Cari link isi dataku →</a></p>
         <p><a href="/">← Kembali</a></p>
       </div>
     );
@@ -325,6 +364,17 @@ export default function Wizard() {
       </Head>
       <p><small data-testid="wizard-project">{projectName}{tier ? ` · ${tier}` : ""}</small></p>
       <h1>Isi data pernikahan</h1>
+      <p data-testid="wizard-savestate" role="status" style={{ margin: "0 0 12px" }}>
+        <small>
+          {saveState === "saving"
+            ? "Menyimpan…"
+            : saveState === "saved"
+              ? "Semua perubahan tersimpan — aman ditutup kapan saja."
+              : saveState === "error"
+                ? "Gagal menyimpan otomatis — periksa koneksi, lalu pencet Simpan & lanjut."
+                : " "}
+        </small>
+      </p>
       <ol style={{ display: "flex", flexWrap: "wrap", gap: 8, padding: 0, listStyle: "none" }}>
         {STEPS.map((s, i) => (
           <li key={s}>
