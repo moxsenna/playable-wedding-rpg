@@ -66,6 +66,11 @@ interface Env {
   PAYCORE_APP_SECRET?: string;
   PAYCORE_WEBHOOK_SECRET?: string;
   PAYCORE_RETURN_URL?: string;
+  PAYCORE_STAGING_BASE_URL?: string;
+  PAYCORE_STAGING_APP_ID?: string;
+  PAYCORE_STAGING_KEY_ID?: string;
+  PAYCORE_STAGING_APP_SECRET?: string;
+  PAYCORE_STAGING_WEBHOOK_SECRET?: string;
   ASSETS?: R2BucketLike;
   MEDIA?: R2BucketLike;
   R2_ACCOUNT_ID?: string;
@@ -925,14 +930,13 @@ export default {
       if (!checked.ok || !checked.tier || !checked.customer) {
         return json({ error: checked.error ?? "bad request" }, 400);
       }
-      if (
-        !env.PAYCORE_BASE_URL ||
-        !env.PAYCORE_APP_ID ||
-        !env.PAYCORE_KEY_ID ||
-        !env.PAYCORE_APP_SECRET ||
-        !env.PAYCORE_RETURN_URL
-      ) {
-        return json({ error: "checkout unavailable" }, 501);
+      const sandbox = checked.sandbox === true;
+      const pcBase = sandbox ? env.PAYCORE_STAGING_BASE_URL : env.PAYCORE_BASE_URL;
+      const pcAppId = sandbox ? env.PAYCORE_STAGING_APP_ID : env.PAYCORE_APP_ID;
+      const pcKeyId = sandbox ? env.PAYCORE_STAGING_KEY_ID : env.PAYCORE_KEY_ID;
+      const pcSecret = sandbox ? env.PAYCORE_STAGING_APP_SECRET : env.PAYCORE_APP_SECRET;
+      if (!pcBase || !pcAppId || !pcKeyId || !pcSecret || !env.PAYCORE_RETURN_URL) {
+        return json({ error: sandbox ? "checkout sandbox unavailable" : "checkout unavailable" }, 501);
       }
       const now = Date.now();
       const externalOrderId = mintExternalOrderId();
@@ -946,6 +950,7 @@ export default {
         customerWhatsapp: checked.customer.whatsapp,
         customerEmail: checked.customer.email,
         status: "pending",
+        sandbox,
         projectId: null,
         createdAt: now,
         paidAt: null,
@@ -953,7 +958,9 @@ export default {
       const paycoreBody = JSON.stringify({
         external_order_id: externalOrderId,
         product_key: checked.tier.productKey,
-        description: `YUTEMU ${checked.tier.id} — undangan playable`,
+        description: sandbox
+          ? `YUTEMU ${checked.tier.id} — undangan playable (TEST, bukan uang asli)`
+          : `YUTEMU ${checked.tier.id} — undangan playable`,
         amount: checked.tier.amount,
         currency: checked.tier.currency,
         customer: {
@@ -964,6 +971,7 @@ export default {
         return_url: `${env.PAYCORE_RETURN_URL}?order=${encodeURIComponent(externalOrderId)}`,
         fulfillment_data: {
           tier: checked.tier.id,
+          sandbox,
           customer_name: checked.customer.name,
           customer_whatsapp: checked.customer.whatsapp,
           customer_email: checked.customer.email,
@@ -971,7 +979,7 @@ export default {
       });
       const timestamp = new Date(now).toISOString();
       const signature = await signPayCoreRequest({
-        appSecret: env.PAYCORE_APP_SECRET,
+        appSecret: pcSecret,
         timestamp,
         method: "POST",
         path: "/v1/orders",
@@ -979,12 +987,12 @@ export default {
       });
       let created: { order_id?: string; checkout_url?: string };
       try {
-        const res = await fetch(`${env.PAYCORE_BASE_URL.replace(/\/$/, "")}/v1/orders`, {
+        const res = await fetch(`${pcBase.replace(/\/$/, "")}/v1/orders`, {
           method: "POST",
           headers: {
             "content-type": "application/json",
-            "X-PayCore-App": env.PAYCORE_APP_ID,
-            "X-PayCore-Key-Id": env.PAYCORE_KEY_ID,
+            "X-PayCore-App": pcAppId,
+            "X-PayCore-Key-Id": pcKeyId,
             "X-PayCore-Timestamp": timestamp,
             "X-PayCore-Signature": `sha256=${signature}`,
             "Idempotency-Key": externalOrderId,
@@ -1018,20 +1026,34 @@ export default {
       return json({
         status: order.status,
         tier: order.tier,
+        sandbox: order.sandbox,
         projectId: order.projectId,
         claimToken,
       });
     }
 
     if (url.pathname === "/internal/payment-events" && request.method === "POST") {
-      if (!env.PAYCORE_WEBHOOK_SECRET) return json({ error: "payment events not configured" }, 501);
+      const webhookSecrets = [env.PAYCORE_WEBHOOK_SECRET, env.PAYCORE_STAGING_WEBHOOK_SECRET].filter(
+        (s): s is string => typeof s === "string" && s.length > 0
+      );
+      if (webhookSecrets.length === 0) return json({ error: "payment events not configured" }, 501);
       const rawBody = await request.text();
-      const verified = await verifyPayCoreEvent({
-        webhookSecret: env.PAYCORE_WEBHOOK_SECRET,
-        timestampHeader: request.headers.get("X-PayCore-Event-Timestamp"),
-        rawBody,
-        signatureHeader: request.headers.get("X-PayCore-Event-Signature"),
-      });
+      const tsHeader = request.headers.get("X-PayCore-Event-Timestamp");
+      const sigHeader = request.headers.get("X-PayCore-Event-Signature");
+      let verified = false;
+      for (const secret of webhookSecrets) {
+        if (
+          await verifyPayCoreEvent({
+            webhookSecret: secret,
+            timestampHeader: tsHeader,
+            rawBody,
+            signatureHeader: sigHeader,
+          })
+        ) {
+          verified = true;
+          break;
+        }
+      }
       if (!verified) return json({ error: "bad signature" }, 401);
       let parsed: unknown;
       try {
