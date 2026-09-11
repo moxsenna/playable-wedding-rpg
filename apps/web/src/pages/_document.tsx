@@ -43,6 +43,7 @@ export default function Document() {
                             "(function(){try{var p=location.pathname.replace(/index\\.html$/,'').replace(/\\/+$/,'');" +
                             "if(p===''){document.body.classList.add('landing-page');}" +
                             "else if(p==='/admin'){document.body.classList.add('studio-page');}" +
+                            "else if(p==='/mulai'||p.indexOf('/mulai/')===0){document.body.classList.add('mulai-page');}" +
                             "else{var m=document.getElementById('theme-color');if(m)m.setAttribute('content','#191331');}" +
                             "}catch(e){}})();",
                     }}

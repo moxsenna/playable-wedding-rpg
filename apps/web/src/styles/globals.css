@@ -91,7 +91,8 @@ body {
    each releases it. `_document.tsx` applies the class before first paint, so
    neither ever renders unscrollable while it waits for hydration. */
 body.landing-page,
-body.studio-page {
+body.studio-page,
+body.mulai-page {
     position: static;
     inset: auto;
     height: auto;
@@ -103,8 +104,10 @@ body.studio-page {
 
 body.landing-page { background-color: #fff6ea; }
 body.studio-page { background-color: #fff6ea; }
+body.mulai-page { background-color: #fff6ea; }
 
 /* The boot splash covers Phaser's start on the game routes; on a scrolling page
    it would only sit on top of the content, so it is never shown there. */
 body.landing-page #boot-splash,
-body.studio-page #boot-splash { display: none; }
+body.studio-page #boot-splash,
+body.mulai-page #boot-splash { display: none; }
