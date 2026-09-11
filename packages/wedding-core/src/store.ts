@@ -586,6 +586,7 @@ export class NeonStore implements WeddingStore {
       customerWhatsapp: String(r.customer_whatsapp),
       customerEmail: String(r.customer_email),
       status: r.status === "paid" ? "paid" : r.status === "failed" ? "failed" : "pending",
+      sandbox: r.sandbox === true || r.sandbox === 1 || r.sandbox === "t" || r.sandbox === "true",
       projectId: r.project_id == null ? null : String(r.project_id),
       createdAt: Number(r.created_at),
       paidAt: r.paid_at == null ? null : Number(r.paid_at),
@@ -593,13 +594,24 @@ export class NeonStore implements WeddingStore {
   }
 
   async createBillingOrder(row: BillingOrderRow): Promise<void> {
-    await this.db.query(
-      `INSERT INTO billing_orders (external_order_id, paycore_order_id, tier, amount, currency,
+    try {
+      await this.db.query(
+        `INSERT INTO billing_orders (external_order_id, paycore_order_id, tier, amount, currency,
+        customer_name, customer_whatsapp, customer_email, status, sandbox, project_id, created_at, paid_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+        [row.externalOrderId, row.paycoreOrderId, row.tier, row.amount, row.currency, row.customerName,
+          row.customerWhatsapp, row.customerEmail, row.status, row.sandbox, row.projectId, row.createdAt, row.paidAt]
+      );
+    } catch (e) {
+      if (!isUndefinedColumn(e)) throw e;
+      await this.db.query(
+        `INSERT INTO billing_orders (external_order_id, paycore_order_id, tier, amount, currency,
         customer_name, customer_whatsapp, customer_email, status, project_id, created_at, paid_at)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
-      [row.externalOrderId, row.paycoreOrderId, row.tier, row.amount, row.currency, row.customerName,
-        row.customerWhatsapp, row.customerEmail, row.status, row.projectId, row.createdAt, row.paidAt]
-    );
+        [row.externalOrderId, row.paycoreOrderId, row.tier, row.amount, row.currency, row.customerName,
+          row.customerWhatsapp, row.customerEmail, row.status, row.projectId, row.createdAt, row.paidAt]
+      );
+    }
   }
 
   async getBillingOrder(externalOrderId: string): Promise<BillingOrderRow | null> {

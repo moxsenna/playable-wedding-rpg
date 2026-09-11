@@ -34,9 +34,10 @@ export function validateCheckoutInput(input: unknown): {
   ok: boolean;
   tier?: BillingTier;
   customer?: CheckoutCustomer;
+  sandbox?: boolean;
   error?: string;
 } {
-  const body = (input ?? {}) as { tier?: unknown; customer?: unknown };
+  const body = (input ?? {}) as { tier?: unknown; customer?: unknown; sandbox?: unknown };
   const tier = typeof body.tier === "string" ? tierById(body.tier) : null;
   if (!tier) return { ok: false, error: "unknown tier" };
   const c = (body.customer ?? {}) as Partial<CheckoutCustomer>;
@@ -49,7 +50,7 @@ export function validateCheckoutInput(input: unknown): {
   if (!EMAIL_RE.test(email) || email.length > 160) {
     return { ok: false, error: "bad email" };
   }
-  return { ok: true, tier, customer: { name, whatsapp, email } };
+  return { ok: true, tier, customer: { name, whatsapp, email }, sandbox: body.sandbox === true };
 }
 
 // --- PayCore request signing (outbound: wedding API -> PayCore) ---
@@ -251,6 +252,7 @@ export interface BillingOrderRow {
   customerWhatsapp: string;
   customerEmail: string;
   status: BillingOrderStatus;
+  sandbox: boolean;
   projectId: string | null;
   createdAt: number;
   paidAt: number | null;
