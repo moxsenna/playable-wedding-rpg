@@ -242,3 +242,23 @@ export const ownerSessions = pgTable(
   },
   (t) => [index("owner_sessions_project_idx").on(t.projectId)]
 );
+
+export const adminUsers = pgTable("admin_users", {
+  email: text("email").primaryKey(),
+  passwordHash: text("password_hash").notNull(),
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+});
+
+export const adminSessions = pgTable(
+  "admin_sessions",
+  {
+    token: text("token").primaryKey(),
+    email: text("email")
+      .notNull()
+      .references(() => adminUsers.email),
+    createdAt: bigint("created_at", { mode: "number" }).notNull(),
+    expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
+    revokedAt: bigint("revoked_at", { mode: "number" }),
+  },
+  (t) => [index("admin_sessions_email_idx").on(t.email)]
+);

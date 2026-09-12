@@ -44,6 +44,14 @@ export {
   CLAIM_TTL_MS,
   OWNER_SESSION_TTL_MS,
 } from "./billing";
+export {
+  ADMIN_SESSION_TTL_MS,
+  mintAdminToken,
+  validateAdminEmail,
+  hashAdminPassword,
+  verifyAdminPassword,
+} from "./admin-auth";
+export type { AdminSessionRow, AdminUserRow } from "./admin-auth";
 export type {
   BillingTier,
   CheckoutCustomer,

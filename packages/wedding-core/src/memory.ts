@@ -18,6 +18,7 @@ import type {
   WeddingWorldConfigRow,
 } from "./store";
 import type { BillingOrderRow, OwnerClaimRow, OwnerSessionRow } from "./billing";
+import type { AdminSessionRow, AdminUserRow } from "./admin-auth";
 
 export class MemoryStore implements WeddingStore {
   private projects: WeddingProjectRow[] = [];
@@ -303,5 +304,35 @@ export class MemoryStore implements WeddingStore {
     for (const s of this.ownerSessions) {
       if (s.projectId === projectId && s.revokedAt === null) s.revokedAt = now;
     }
+  }
+
+  private adminUsers: AdminUserRow[] = [];
+  private adminSessions: AdminSessionRow[] = [];
+
+  async getAdminUser(email: string): Promise<AdminUserRow | null> {
+    return this.adminUsers.find((u) => u.email === email) ?? null;
+  }
+
+  async upsertAdminUser(row: AdminUserRow): Promise<void> {
+    const i = this.adminUsers.findIndex((u) => u.email === row.email);
+    if (i < 0) this.adminUsers.push({ ...row });
+    else this.adminUsers[i] = { ...row };
+  }
+
+  async createAdminSession(row: AdminSessionRow): Promise<void> {
+    this.adminSessions.push({ ...row });
+  }
+
+  async resolveAdminSession(token: string, now: number): Promise<AdminSessionRow | null> {
+    const s = this.adminSessions.find((x) => x.token === token) ?? null;
+    if (!s || s.revokedAt !== null || s.expiresAt <= now) return null;
+    return { ...s };
+  }
+
+  async revokeAdminSession(token: string, now: number): Promise<boolean> {
+    const s = this.adminSessions.find((x) => x.token === token) ?? null;
+    if (!s || s.revokedAt !== null) return false;
+    s.revokedAt = now;
+    return true;
   }
 }

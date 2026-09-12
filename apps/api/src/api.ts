@@ -35,6 +35,10 @@ import {
   mintOwnerToken,
   CLAIM_TTL_MS,
   OWNER_SESSION_TTL_MS,
+  ADMIN_SESSION_TTL_MS,
+  mintAdminToken,
+  validateAdminEmail,
+  verifyAdminPassword,
   type SessionClaims,
   type WeddingStore,
 } from "@wedding-rpg/wedding-core";
@@ -57,6 +61,7 @@ interface Env {
   DATABASE_URL?: string;
   ROOM_SECRET?: string;
   ADMIN_KEY?: string;
+  ADMIN_PEPPER?: string;
   DEV_MEMORY_STORE?: string;
   PROJECT_AVATARS_JSON?: string;
   ALLOW_DEV_TOKENS?: string;
@@ -112,6 +117,16 @@ const ASSET_CONTENT_TYPES: Record<string, string> = {
 };
 
 const MEMORY = new Map<string, WeddingStore>();
+const LOGIN_ATTEMPTS = new Map<string, number[]>();
+
+function loginAllowed(key: string, now: number): boolean {
+  const windowStart = now - 60_000;
+  const hits = (LOGIN_ATTEMPTS.get(key) ?? []).filter((t) => t > windowStart);
+  if (hits.length >= 10) return false;
+  hits.push(now);
+  LOGIN_ATTEMPTS.set(key, hits);
+  return true;
+}
 
 async function storeFor(env: Env): Promise<WeddingStore> {
   if (env.DATABASE_URL) {
@@ -137,7 +152,7 @@ async function storeFor(env: Env): Promise<WeddingStore> {
 const CORS: Record<string, string> = {
   "access-control-allow-origin": "*",
   "access-control-allow-methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
-  "access-control-allow-headers": "content-type, x-session, x-admin-key, x-owner-token",
+  "access-control-allow-headers": "content-type, x-session, x-admin-key, x-admin-token, x-owner-token",
   "access-control-max-age": "86400",
 };
 
@@ -150,6 +165,14 @@ function json(data: unknown, status = 200): Response {
 
 function unauthorized(): Response {
   return json({ error: "unauthorized" }, 401);
+}
+
+async function adminOf(request: Request, env: Env, store: WeddingStore): Promise<string | null> {
+  if (env.ADMIN_KEY && request.headers.get("x-admin-key") === env.ADMIN_KEY) return "key";
+  const token = request.headers.get("x-admin-token") ?? "";
+  if (!token) return null;
+  const session = await store.resolveAdminSession(token, Date.now()).catch(() => null);
+  return session ? session.email : null;
 }
 
 async function claimsOf(request: Request, env: Env): Promise<SessionClaims | null> {
@@ -486,10 +509,60 @@ export default {
       });
     }
 
-    if (url.pathname.startsWith("/v1/admin/")) {
-      if (!env.ADMIN_KEY || request.headers.get("x-admin-key") !== env.ADMIN_KEY) {
-        return unauthorized();
+    if (url.pathname === "/v1/admin/login" && request.method === "POST") {
+      let body: { email?: unknown; password?: unknown };
+      try {
+        body = (await request.json()) as { email?: unknown; password?: unknown };
+      } catch {
+        return json({ error: "bad request" }, 400);
       }
+      const email = validateAdminEmail(body.email);
+      if (!email) return json({ error: "invalid credentials" }, 401);
+      const now = Date.now();
+      if (!loginAllowed(`admin:${email}`, now)) {
+        return json({ error: "too many attempts — try again later" }, 429);
+      }
+      const user = await store.getAdminUser(email).catch(() => null);
+      const pepper = env.ADMIN_PEPPER ?? "";
+      const ok =
+        user !== null &&
+        typeof body.password === "string" &&
+        (await verifyAdminPassword(body.password, pepper, user.passwordHash).catch(() => false));
+      if (!ok) {
+        await store.recordAudit(null, "admin", "login.failed", email.slice(0, 40), now).catch(() => undefined);
+        return json({ error: "invalid credentials" }, 401);
+      }
+      const token = mintAdminToken();
+      await store.createAdminSession({
+        token,
+        email,
+        createdAt: now,
+        expiresAt: now + ADMIN_SESSION_TTL_MS,
+        revokedAt: null,
+      });
+      await store.recordAudit(null, "admin", "login", email.slice(0, 40), now).catch(() => undefined);
+      return json({ token, email, expiresAt: now + ADMIN_SESSION_TTL_MS });
+    }
+
+    if (url.pathname === "/v1/admin/me" && request.method === "GET") {
+      const now = Date.now();
+      const session = await store
+        .resolveAdminSession(request.headers.get("x-admin-token") ?? "", now)
+        .catch(() => null);
+      if (!session) return unauthorized();
+      return json({ email: session.email, expiresAt: session.expiresAt });
+    }
+
+    if (url.pathname === "/v1/admin/logout" && request.method === "POST") {
+      await store
+        .revokeAdminSession(request.headers.get("x-admin-token") ?? "", Date.now())
+        .catch(() => false);
+      return json({ ok: true });
+    }
+
+    if (url.pathname.startsWith("/v1/admin/")) {
+      const actor = await adminOf(request, env, store);
+      if (!actor) return unauthorized();
       const readBody = async (): Promise<Record<string, unknown>> => {
         try {
           return (await request.json()) as Record<string, unknown>;

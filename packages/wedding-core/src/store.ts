@@ -11,6 +11,7 @@ import type {
   RsvpRecord,
 } from "@wedding-rpg/contracts";
 import type { BillingOrderRow, OwnerClaimRow, OwnerSessionRow } from "./billing";
+import type { AdminSessionRow, AdminUserRow } from "./admin-auth";
 
 export type QueryRow = Record<string, unknown>;
 
@@ -194,6 +195,11 @@ export interface WeddingStore {
   createOwnerSession(row: OwnerSessionRow): Promise<void>;
   resolveOwnerSession(token: string, now: number): Promise<OwnerSessionRow | null>;
   revokeOwnerSessions(projectId: string, now: number): Promise<void>;
+  getAdminUser(email: string): Promise<AdminUserRow | null>;
+  upsertAdminUser(row: AdminUserRow): Promise<void>;
+  createAdminSession(row: AdminSessionRow): Promise<void>;
+  resolveAdminSession(token: string, now: number): Promise<AdminSessionRow | null>;
+  revokeAdminSession(token: string, now: number): Promise<boolean>;
 }
 
 export class NeonStore implements WeddingStore {
@@ -733,6 +739,56 @@ export class NeonStore implements WeddingStore {
       projectId,
       now,
     ]);
+  }
+
+  async getAdminUser(email: string): Promise<AdminUserRow | null> {
+    const r = await this.db.query(`SELECT * FROM admin_users WHERE email = $1`, [email]);
+    if (r.rows.length === 0) return null;
+    const row = r.rows[0];
+    return {
+      email: String(row.email),
+      passwordHash: String(row.password_hash),
+      createdAt: Number(row.created_at),
+    };
+  }
+
+  async upsertAdminUser(row: AdminUserRow): Promise<void> {
+    await this.db.query(
+      `INSERT INTO admin_users (email, password_hash, created_at)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash`,
+      [row.email, row.passwordHash, row.createdAt]
+    );
+  }
+
+  async createAdminSession(row: AdminSessionRow): Promise<void> {
+    await this.db.query(
+      `INSERT INTO admin_sessions (token, email, created_at, expires_at, revoked_at)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [row.token, row.email, row.createdAt, row.expiresAt, row.revokedAt]
+    );
+  }
+
+  async resolveAdminSession(token: string, now: number): Promise<AdminSessionRow | null> {
+    const r = await this.db.query(`SELECT * FROM admin_sessions WHERE token = $1`, [token]);
+    if (r.rows.length === 0) return null;
+    const row = r.rows[0];
+    if (row.revoked_at != null || Number(row.expires_at) <= now) return null;
+    return {
+      token: String(row.token),
+      email: String(row.email),
+      createdAt: Number(row.created_at),
+      expiresAt: Number(row.expires_at),
+      revokedAt: null,
+    };
+  }
+
+  async revokeAdminSession(token: string, now: number): Promise<boolean> {
+    const r = await this.db.query(
+      `UPDATE admin_sessions SET revoked_at = $2 WHERE token = $1 AND revoked_at IS NULL`,
+      [token, now]
+    );
+    return r.rowCount > 0;
   }
 }
 
