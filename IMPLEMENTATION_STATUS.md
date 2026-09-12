@@ -917,5 +917,44 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   sandbox (QRIS/VA dummy yang selalu sukses), kembali ke `/mulai/retur`
   → link klaim → wizard → terbitkan; hapus project test sesudahnya.
 
+## M18.1 — Sandbox Fulfillment + Retur Rework (DELIVERED 2026-09-12)
+
+- Latar: Duitku sandbox sukses tapi halaman retur stuck di "menunggu"
+  dan teks tak terbaca. Root cause ganda: (1) PayCore→API wedding
+  dijawab 404 `error code: 1042` — Cloudflare memblokir fetch
+  worker→worker lewat `*.workers.dev`; (2) `/mulai/retur` belum masuk
+  paper world (teks terang di atas body gelap), tanpa auto-redirect;
+  (3) claim sekali pakai sehingga link mati setelah dibuka; (4) belum
+  ada akses ulang maupun auto-save untuk isi cicilan.
+- PayCore (repo `D:/Coding/paycore`): `compatibility_flags +=
+  global_fetch_strictly_public` di `wrangler.toml` agar delivery
+  server-to-server mencapai `wedding-rpg-api…workers.dev`; deploy ke
+  staging (fix diverifikasi) + production. Staging D1: order user
+  `YWT-20260911-CBCDG` (external `YWT-20260911-HA8V`, signature,
+  sandbox) tercatat `paid` tapi `fulfillment failed`; setelah fix,
+  retry admin → `delivered` 200 `{"projectId":"w-ywt-20260911-ha8v"}`;
+  retry cron ikut jalan dan ter-dedup (`{"deduped":true}`).
+- Wedding API: `POST /internal/payment-events` menerima kedua secret
+  (prod + staging); claim jadi reusable sampai expired 7 hari/revoked
+  (`consumeOwnerClaim` + `findLiveClaimByProject` tanpa syarat
+  `used_at IS NULL`); baru `POST /v1/owner/recover` (orderId + email/WA
+  pembeli → claimToken live; kontak salah → 404 yang sama dengan order
+  tak dikenal agar tak bisa di-enumerasi); pesan error claim
+  diperjelas. Probe: claim-reuse 404 → reuse OK + recover OK/404.
+- Web: `/mulai/retur` ditulis ulang ke paper world (topbar, section,
+  kartu partner — teks gelap di kertas, bukan sebaliknya); auto-redirect
+  2,5 dtk ke wizard setelah paid; tombol salin link; blok "Buka lagi
+  nanti" (order + kontak → recover). Wizard `[token]`: auto-save
+  debounce 2 dtk ke `PUT /v1/owner/draft` + indikator
+  Menyimpan/tersimpan/gagal (`wizard-savestate`); pesan invalid
+  mengarah ke `/mulai/retur`; draft server selalu dimuat sehingga
+  isi cicilan berhari-hari aman (localStorage hanya backup).
+- Bukti live 2026-09-12: recover order user → 200 claimToken
+  `oc_37e5…`; `/mulai/retur?order=YWT-20260911-HA8V` menampilkan paid +
+  link klaim (screenshot `docs/qa/retur-390.png`).
+  Cara akses ulang: buka link klaim kapan saja (reusable), atau
+  `/mulai/retur` → isi order ID + email/WA → masuk wizard dan
+  lanjutkan draft.
+
 
 
