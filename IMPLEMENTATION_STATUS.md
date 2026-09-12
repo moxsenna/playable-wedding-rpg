@@ -956,5 +956,36 @@ Gates live in `.unlazy/wedding-rpg-v1/GATES.md` + `gates/leaf-*.md`.
   `/mulai/retur` → isi order ID + email/WA → masuk wizard dan
   lanjutkan draft.
 
+## M19 — Admin Email Login (DELIVERED 2026-09-12)
+
+- Status: complete. `/admin` tidak lagi meminta Admin Key — form
+  email + kata sandi menerbitkan sesi admin 24 jam (disimpan di tab,
+  dicabut saat Keluar). Keputusan arsitektur: bukan Better Auth —
+  runtime Workers + Next static export + Neon-over-HTTP tidak cocok
+  dengan adapter Node/route server-nya; token sesi HMAC-pepper di
+  worker sendiri memberi hasil akhir yang sama dengan jejak yang jauh
+  lebih kecil.
+- Store: `admin_users` (email + peppered SHA-256/HMAC hash, tanpa
+  plaintext) + `admin_sessions` (token `as_`, TTL 24 jam, revocable)
+  di `drizzle/schema.ts` + `0007_admin_login.sql`; NeonStore +
+  MemoryStore. Pepper `ADMIN_PEPPER` di worker secrets (gitignored
+  `.dev.vars.production`), bukan di DB.
+- API: `POST /v1/admin/login` (email dinormalisasi, hash
+  timing-safe, pesan error generik agar tak bisa di-enumerasi,
+  rate-limit 10/menit per email, audit login.failed/login),
+  `GET /v1/admin/me`, `POST /v1/admin/logout` (revoke). Gate
+  `/v1/admin/*` menerima `x-admin-token` ATAU `x-admin-key` lama
+  (probes + tooling tak tersentuh); CORS mengizinkan header baru.
+- Web: form login menggantikan input key (Enter untuk masuk, sesi
+  dipulihkan per tab, tombol Keluar mencabut sesi); upload media
+  admin memakai `adminToken` via `MediaAuth` (jalur owner untouched).
+  Probe `selfserve.mjs` +1 asersi login negatif 401.
+- Akun: `moxsenna@gmail.com` di-seed ke Neon via skrip sekali pakai
+  (dihapus sesudahnya); password hanya di chat, tidak di repo/file.
+- Bukti live 2026-09-12: `POST /v1/admin/login` → 200 token `as_…`;
+  browser `/admin` → form → login sukses → logout kembali ke form
+  (screenshot `docs/qa/admin-login-390.png`); sesi uji dicabut.
+  API + web deploy.
+
 
 
