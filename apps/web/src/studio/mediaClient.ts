@@ -8,11 +8,15 @@ export interface UploadIntentResponse {
 
 export interface MediaAuth {
   ownerToken?: string;
+  adminToken?: string;
 }
 
 function mediaPaths(apiBase: string, auth?: MediaAuth): { base: string; headers: Record<string, string> } {
   if (auth?.ownerToken) {
     return { base: `${apiBase}/v1/owner/media`, headers: { "x-owner-token": auth.ownerToken } };
+  }
+  if (auth?.adminToken) {
+    return { base: `${apiBase}/v1/admin/media`, headers: { "x-admin-token": auth.adminToken } };
   }
   return { base: `${apiBase}/v1/admin/media`, headers: {} };
 }

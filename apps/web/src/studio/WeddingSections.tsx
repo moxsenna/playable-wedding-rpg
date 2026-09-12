@@ -283,7 +283,7 @@ export function GallerySection({
 }: {
   gallery: GalleryImage[];
   onChange: (g: GalleryImage[]) => void;
-  media?: { apiBase: string; adminKey: string; projectId: string; ownerToken?: string };
+  media?: { apiBase: string; adminKey: string; projectId: string; ownerToken?: string; adminToken?: string };
   onNotice?: (msg: string, kind: "ok" | "error") => void;
 }) {
   const [uploading, setUploading] = useState(false);
@@ -297,7 +297,11 @@ export function GallerySection({
     if (!media) return;
     setUploading(true);
     try {
-      const auth = media.ownerToken ? { ownerToken: media.ownerToken } : undefined;
+      const auth = media.ownerToken
+        ? { ownerToken: media.ownerToken }
+        : media.adminToken
+          ? { adminToken: media.adminToken }
+          : undefined;
       const { bytes, contentType } = await fileToWebp(file);
       const intent = await requestUploadUrl(media.apiBase, media.adminKey, media.projectId, contentType, bytes.byteLength, auth);
       if (intent.mode === "presigned" && intent.uploadUrl) {
@@ -320,7 +324,11 @@ export function GallerySection({
       const key = mediaKeyFromSrc(media.apiBase, target.src);
       if (key) {
         try {
-          const auth = media.ownerToken ? { ownerToken: media.ownerToken } : undefined;
+          const auth = media.ownerToken
+            ? { ownerToken: media.ownerToken }
+            : media.adminToken
+              ? { adminToken: media.adminToken }
+              : undefined;
           const result = await deleteMedia(media.apiBase, media.adminKey, media.projectId, key, auth);
           if (result === "referenced") {
             onNotice?.("Foto dipakai publikasi aktif — tidak bisa dihapus.", "error");

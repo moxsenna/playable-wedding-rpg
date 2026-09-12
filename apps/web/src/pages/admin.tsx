@@ -116,7 +116,10 @@ export default function Admin() {
   const [log, setLog] = useState<string[]>([]);
   const audit = useRef(createAuditStore());
   const storeRef = useRef<VersionStore>(versions);
-  const [adminKey, setAdminKey] = useState("");
+  const [adminToken, setAdminToken] = useState("");
+  const [adminEmail, setAdminEmail] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
+  const [adminLoginBusy, setAdminLoginBusy] = useState(false);
   const [projects, setProjects] = useState<OpsProject[]>([]);
   const [activeProject, setActiveProject] = useState("");
   const [guests, setGuests] = useState<OpsGuest[]>([]);
@@ -183,8 +186,8 @@ export default function Admin() {
 
   const api = useMemo(() => resolveApiBase(), []);
   const headers = useMemo(
-    () => ({ "content-type": "application/json", "x-admin-key": adminKey }),
-    [adminKey]
+    () => ({ "content-type": "application/json", "x-admin-token": adminToken }),
+    [adminToken]
   );
 
   const pick = (id: WeddingId) => {
@@ -227,7 +230,7 @@ export default function Admin() {
     setLog((l) => [`${new Date().toLocaleTimeString()} ${line}`, ...l].slice(0, 20));
   };
 
-  const serverConfigured = adminKey.length > 0 && activeProject.length > 0;
+  const serverConfigured = adminToken.length > 0 && activeProject.length > 0;
 
   // What the lifecycle can actually do right now, so a blocked action can be
   // disabled and say why instead of accepting a click and doing nothing.
@@ -354,11 +357,99 @@ export default function Admin() {
     URL.revokeObjectURL(url);
   };
 
-  const loadProjects = async () => {
-    if (!adminKey) {
-      noteError("Isi Admin Key dulu.");
+  const loginAdmin = async () => {
+    const email = adminEmail.trim();
+    if (!email || !adminPassword) {
+      noteError("Isi email dan kata sandi admin dulu.");
       return;
-    }    const res = await fetch(`${api}/v1/admin/projects`, { headers: { "x-admin-key": adminKey } });
+    }
+    setAdminLoginBusy(true);
+    try {
+      const res = await fetch(`${api}/v1/admin/login`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, password: adminPassword }),
+      });
+      if (res.status === 429) {
+        noteError("Terlalu banyak percobaan — tunggu sebentar lalu coba lagi.");
+        return;
+      }
+      if (!res.ok) {
+        noteError("Email atau kata sandi salah.");
+        return;
+      }
+      const body = (await res.json()) as { token?: string; email?: string };
+      if (!body.token) {
+        noteError("Login gagal — coba lagi.");
+        return;
+      }
+      setAdminToken(body.token);
+      setAdminPassword("");
+      try {
+        sessionStorage.setItem("yutemu-admin-token", body.token);
+      } catch {
+        // Private mode: login lasts for this tab only.
+      }
+      noteOk(`Masuk sebagai ${body.email ?? email}.`);
+      await loadProjects();
+    } catch {
+      noteError("Jaringan bermasalah — coba lagi.");
+    } finally {
+      setAdminLoginBusy(false);
+    }
+  };
+
+  const logoutAdmin = async () => {
+    try {
+      await fetch(`${api}/v1/admin/logout`, {
+        method: "POST",
+        headers: { "x-admin-token": adminToken },
+      });
+    } catch {
+      // Session already unusable; clearing locally is enough.
+    }
+    setAdminToken("");
+    setAdminEmail("");
+    setAdminPassword("");
+    setProjects([]);
+    setActiveProject("");
+    try {
+      sessionStorage.removeItem("yutemu-admin-token");
+    } catch {
+      // Nothing to clean.
+    }
+    noteInfo("Keluar. Sesi admin dicabut.");
+  };
+
+  useEffect(() => {
+    const saved = (() => {
+      try {
+        return sessionStorage.getItem("yutemu-admin-token") ?? "";
+      } catch {
+        return "";
+      }
+    })();
+    if (!saved) return;
+    setAdminToken(saved);
+    fetch(`${resolveApiBase()}/v1/admin/me`, { headers: { "x-admin-token": saved } })
+      .then((res) => {
+        if (res.ok) return;
+        setAdminToken("");
+        try {
+          sessionStorage.removeItem("yutemu-admin-token");
+        } catch {
+          // Nothing to clean.
+        }
+      })
+      .catch(() => undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadProjects = async () => {
+    if (!adminToken) {
+      noteError("Masuk dulu dengan email + kata sandi admin.");
+      return;
+    }    const res = await fetch(`${api}/v1/admin/projects`, { headers: { "x-admin-token": adminToken } });
     if (!res.ok) {
       noteError(`Gagal memuat weddings (${res.status}).`);
       return;
@@ -371,8 +462,8 @@ export default function Admin() {
 
   const createProject = async () => {
     const name = newProjectName.trim();
-    if (!name || !adminKey) {
-      noteError("Isi nama wedding dan Admin Key dulu.");
+    if (!name || !adminToken) {
+      noteError("Isi nama wedding dan masuk sebagai admin dulu.");
       return;
     }
     const res = await fetch(`${api}/v1/admin/projects`, {
@@ -396,9 +487,9 @@ export default function Admin() {
   };
 
   const loadGuests = async (projectId: string) => {
-    if (!adminKey || !projectId) return;
+    if (!adminToken || !projectId) return;
     const res = await fetch(`${api}/v1/admin/guests?project=${encodeURIComponent(projectId)}`, {
-      headers: { "x-admin-key": adminKey },
+      headers: { "x-admin-token": adminToken },
     });
     if (!res.ok) {
       noteError(`Gagal memuat daftar tamu (${res.status}).`);
@@ -409,9 +500,9 @@ export default function Admin() {
   };
 
   const loadServerVersions = async () => {
-    if (!adminKey || !activeProject) return;
+    if (!adminToken || !activeProject) return;
     const res = await fetch(`${api}/v1/admin/versions?project=${encodeURIComponent(activeProject)}`, {
-      headers: { "x-admin-key": adminKey },
+      headers: { "x-admin-token": adminToken },
     });
     if (!res.ok) {
       noteError(`Gagal memuat versi server (${res.status}).`);
@@ -423,8 +514,8 @@ export default function Admin() {
   };
 
   const loadServerSnapshot = async () => {
-    if (!adminKey || !activeProject) {
-      noteError("Pilih wedding dan isi Admin Key dulu.");
+    if (!adminToken || !activeProject) {
+      noteError("Pilih wedding dan masuk sebagai admin dulu.");
       return;
     }
     const list = (await loadServerVersions()) ?? [];
@@ -436,7 +527,7 @@ export default function Admin() {
       return;
     }
     const res = await fetch(`${api}/v1/admin/versions/${encodeURIComponent(target.id)}`, {
-      headers: { "x-admin-key": adminKey },
+      headers: { "x-admin-token": adminToken },
     });
     if (!res.ok) {
       noteError(`Gagal memuat versi server (${res.status}).`);
@@ -455,8 +546,8 @@ export default function Admin() {
 
   const [previewLink, setPreviewLink] = useState("");
   const makePreview = async () => {
-    if (!adminKey || !activeProject) {
-      noteError("Pilih wedding dan isi Admin Key dulu.");
+    if (!adminToken || !activeProject) {
+      noteError("Pilih wedding dan masuk sebagai admin dulu.");
       return;
     }
     const list = serverVersions.length > 0 ? serverVersions : (await loadServerVersions()) ?? [];
@@ -481,14 +572,14 @@ export default function Admin() {
   };
 
   const loadWorld = async () => {
-    if (!adminKey || !activeProject) return;
+    if (!adminToken || !activeProject) return;
     const [tRes, cRes, pRes] = await Promise.all([
-      fetch(`${api}/v1/admin/templates`, { headers: { "x-admin-key": adminKey } }),
+      fetch(`${api}/v1/admin/templates`, { headers: { "x-admin-token": adminToken } }),
       fetch(`${api}/v1/admin/world-config?project=${encodeURIComponent(activeProject)}`, {
-        headers: { "x-admin-key": adminKey },
+        headers: { "x-admin-token": adminToken },
       }),
       fetch(`${api}/v1/admin/avatar-pool?project=${encodeURIComponent(activeProject)}`, {
-        headers: { "x-admin-key": adminKey },
+        headers: { "x-admin-token": adminToken },
       }),
     ]);
     if (tRes.ok) {
@@ -516,8 +607,8 @@ export default function Admin() {
   };
 
   const saveWorld = async () => {
-    if (!adminKey || !activeProject || !worldCfg.templateVersionId) {
-      noteError("Pilih world dan isi Admin Key dulu.");
+    if (!adminToken || !activeProject || !worldCfg.templateVersionId) {
+      noteError("Pilih world dan masuk sebagai admin dulu.");
       return;
     }
     const res = await fetch(`${api}/v1/admin/world-config`, {
@@ -533,8 +624,8 @@ export default function Admin() {
   };
 
   const savePool = async () => {
-    if (!adminKey || !activeProject) {
-      noteError("Pilih wedding dan isi Admin Key dulu.");
+    if (!adminToken || !activeProject) {
+      noteError("Pilih wedding dan masuk sebagai admin dulu.");
       return;
     }
     const res = await fetch(`${api}/v1/admin/avatar-pool`, {
@@ -550,12 +641,12 @@ export default function Admin() {
   };
 
   const loadAnalytics = async () => {
-    if (!adminKey || !activeProject) {
-      noteError("Pilih wedding dan isi Admin Key dulu.");
+    if (!adminToken || !activeProject) {
+      noteError("Pilih wedding dan masuk sebagai admin dulu.");
       return;
     }
     const res = await fetch(`${api}/v1/admin/analytics?project=${encodeURIComponent(activeProject)}`, {
-      headers: { "x-admin-key": adminKey },
+      headers: { "x-admin-token": adminToken },
     });
     if (!res.ok) {
       noteError(`Gagal memuat analitik (${res.status}).`);
@@ -566,7 +657,7 @@ export default function Admin() {
   };
 
   useEffect(() => {
-    if (adminKey && activeProject) {
+    if (adminToken && activeProject) {
       void loadGuests(activeProject);
       void loadAnalytics();
       void loadServerVersions();
@@ -581,8 +672,8 @@ export default function Admin() {
       noteError("Isi nama tamu dulu.");
       return;
     }
-    if (!activeProject || !adminKey) {
-      noteError("Pilih wedding dan isi Admin Key dulu.");
+    if (!activeProject || !adminToken) {
+      noteError("Pilih wedding dan masuk sebagai admin dulu.");
       return;
     }
     const res = await fetch(`${api}/v1/admin/guests`, {
@@ -601,8 +692,8 @@ export default function Admin() {
   };
 
   const runImport = async () => {
-    if (!activeProject || !adminKey) {
-      noteError("Pilih wedding dan isi Admin Key dulu.");
+    if (!activeProject || !adminToken) {
+      noteError("Pilih wedding dan masuk sebagai admin dulu.");
       return;
     }
     if (!csvText.trim()) {
@@ -780,25 +871,60 @@ export default function Admin() {
                 <h2>Wedding</h2>
                 <span className="studio-group-meta">langkah pertama</span>
                 <p className="studio-group-intro">
-                  Sambungkan ke server dengan Admin Key, lalu pilih wedding yang mau dikerjakan. Tanpa
+                  Masuk sebagai admin, lalu pilih wedding yang mau dikerjakan. Tanpa
                   keduanya Studio berjalan sebagai dry-run lokal, hanya di browser ini.
                 </p>
               </header>
 
-              <label>
-                Admin Key
-                <input
-                  data-testid="admin-key"
-                  type="password"
-                  value={adminKey}
-                  onChange={(e) => setAdminKey(e.target.value)}
-                  placeholder="tempel kunci operator di sini"
-                  autoComplete="off"
-                />
-              </label>
-              <p className="field-hint">
-                Kunci operator dari Cloudflare. Tidak tersimpan di mana pun selain browser ini.
-              </p>
+              {adminToken ? (
+                <div role="group" aria-label="Sesi admin">
+                  <p className="field-hint">Masuk sebagai admin. Sesi berlaku 24 jam di tab ini.</p>
+                  <button className="admin-btn" data-testid="admin-logout" onClick={() => void logoutAdmin()}>
+                    Keluar
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <label>
+                    Email admin
+                    <input
+                      data-testid="admin-email"
+                      type="email"
+                      value={adminEmail}
+                      onChange={(e) => setAdminEmail(e.target.value)}
+                      placeholder="admin@contoh.id"
+                      autoComplete="username"
+                    />
+                  </label>
+                  <label>
+                    Kata sandi
+                    <input
+                      data-testid="admin-password"
+                      type="password"
+                      value={adminPassword}
+                      onChange={(e) => setAdminPassword(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") void loginAdmin();
+                      }}
+                      placeholder="kata sandi admin"
+                      autoComplete="current-password"
+                    />
+                  </label>
+                  <div role="group" aria-label="Masuk admin">
+                    <button
+                      className="admin-btn-primary"
+                      data-testid="admin-login"
+                      onClick={() => void loginAdmin()}
+                      disabled={adminLoginBusy}
+                    >
+                      {adminLoginBusy ? "Memeriksa…" : "Masuk"}
+                    </button>
+                  </div>
+                  <p className="field-hint">
+                    Sesi tersimpan di tab ini saja dan kedaluwarsa dalam 24 jam.
+                  </p>
+                </>
+              )}
 
               <div role="group" aria-label="Operasional">
                 <button className="admin-btn" data-testid="admin-reload-projects" onClick={() => void loadProjects()}>
@@ -875,7 +1001,7 @@ export default function Admin() {
                 <GallerySection
                   gallery={pub.gallery}
                   onChange={(gallery) => setPub((p) => ({ ...p, gallery }))}
-                  media={serverConfigured ? { apiBase: api, adminKey, projectId: activeProject } : undefined}
+                  media={serverConfigured ? { apiBase: api, adminKey: "", projectId: activeProject, adminToken } : undefined}
                   onNotice={(msg, kind) => (kind === "error" ? noteError(msg) : noteOk(msg))}
                 />
 

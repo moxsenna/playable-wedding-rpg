@@ -147,6 +147,14 @@ async function main() {
     });
     ok(bad.status === 400, "checkout should reject unknown tier");
 
+    // 1a. Admin login rejects unknown accounts without leaking which field failed.
+    const badLogin = await fetch(`${API}/v1/admin/login`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "nobody@example.com", password: "wrongpassword1" }),
+    });
+    ok(badLogin.status === 401, "unknown admin login should be 401");
+
     // 1b. Sandbox checkout without staging creds is refused, not routed to prod.
     const sb = await fetch(`${API}/v1/checkout`, {
       method: "POST",
